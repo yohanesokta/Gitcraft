@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import Markdown from 'react-markdown'
+import { MarkdownViewer } from '../ui/MarkdownViewer'
 import { Octicon } from '../ui/Octicon'
 
 export interface BlobViewerProps {
@@ -7,6 +7,9 @@ export interface BlobViewerProps {
   content: string
   size?: number
   rawUrl?: string
+  owner?: string
+  repo?: string
+  refName?: string
 }
 
 export function BlobViewer({
@@ -14,6 +17,9 @@ export function BlobViewer({
   content,
   size,
   rawUrl,
+  owner,
+  repo,
+  refName,
 }: BlobViewerProps) {
   const isMarkdown = filename.toLowerCase().endsWith('.md')
   const [viewMode, setViewMode] = useState<'code' | 'preview'>(isMarkdown ? 'preview' : 'code')
@@ -137,8 +143,13 @@ export function BlobViewer({
       </div>
 
       {viewMode === 'preview' && isMarkdown ? (
-        <div className="p-8 markdown-body">
-          <Markdown>{content}</Markdown>
+        <div className="p-8">
+          <MarkdownViewer
+            content={content}
+            owner={owner}
+            repo={repo}
+            refName={refName}
+          />
         </div>
       ) : (
         <div className="overflow-x-auto">

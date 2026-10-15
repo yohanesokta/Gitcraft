@@ -1,16 +1,22 @@
-import Markdown from 'react-markdown'
+import { MarkdownViewer } from '../ui/MarkdownViewer'
 import { Octicon } from '../ui/Octicon'
 
 export interface ReadmeViewerProps {
   content: string
   filename?: string
   licenseName?: string
+  owner?: string
+  repo?: string
+  refName?: string
 }
 
 export function ReadmeViewer({
   content,
   filename = 'README.md',
   licenseName,
+  owner,
+  repo,
+  refName = 'main',
 }: ReadmeViewerProps) {
   return (
     <div className="space-y-4">
@@ -38,8 +44,13 @@ export function ReadmeViewer({
           </div>
         </div>
 
-        <div className="p-8 markdown-body">
-          <Markdown>{content}</Markdown>
+        <div className="p-8">
+          <MarkdownViewer
+            content={content}
+            owner={owner}
+            repo={repo}
+            refName={refName}
+          />
         </div>
       </div>
     </div>

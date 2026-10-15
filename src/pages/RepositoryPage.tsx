@@ -224,6 +224,9 @@ export function RepositoryPage() {
               filename={blobFilename}
               content={rawBlobContent || ''}
               rawUrl={rawFileUrl}
+              owner={owner}
+              repo={repo}
+              refName={selectedRef}
             />
           )}
         </div>
@@ -377,6 +380,9 @@ export function RepositoryPage() {
                 content={rawReadme}
                 filename={readmeItem?.name || 'README.md'}
                 licenseName={licenseItem ? 'Apache-2.0 license' : undefined}
+                owner={owner}
+                repo={repo}
+                refName={selectedRef}
               />
             )}
           </div>
