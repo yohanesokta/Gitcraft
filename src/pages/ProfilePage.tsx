@@ -4,10 +4,14 @@ import {
   useUser,
   useUserRepositories,
   useUserHeatmap,
+  useRepository,
+  useRepositoryContents,
+  useRepositoryRawFile,
 } from '../hooks/useForgejo'
 import { ProfileSidebar } from '../components/profile/ProfileSidebar'
 import { RepositoryListItem } from '../components/repository/RepositoryListItem'
 import { ContributionGraph } from '../components/profile/ContributionGraph'
+import { MarkdownViewer } from '../components/ui/MarkdownViewer'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Octicon } from '../components/ui/Octicon'
@@ -63,10 +67,30 @@ export function ProfilePage() {
   const starCount = user?.starred_repos_count ?? 0
   const pinnedRepos = repoList.slice(0, 6)
 
+  const { data: profileRepo } = useRepository(targetUsername, targetUsername)
+  const defaultBranch = profileRepo?.default_branch || 'main'
+  const { data: profileContents } = useRepositoryContents(
+    profileRepo ? targetUsername : undefined,
+    profileRepo ? targetUsername : undefined,
+    '',
+    defaultBranch
+  )
+  const readmeItem = Array.isArray(profileContents)
+    ? profileContents.find((f) => f.name.toLowerCase().startsWith('readme'))
+    : undefined
+  const readmePath = readmeItem?.name || 'README.md'
+
+  const { data: profileReadme } = useRepositoryRawFile(
+    profileRepo ? targetUsername : undefined,
+    profileRepo ? targetUsername : undefined,
+    readmePath,
+    defaultBranch
+  )
+
   return (
     <div className="space-y-6">
       <div className="border-b border-[#21262d] -mx-4 sm:-mx-6 px-4 sm:px-6">
-        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar -mb-[1px]">
+        <nav className="flex items-center gap-1 overflow-x-auto overflow-y-hidden no-scrollbar -mb-[1px]">
           <Link
             to={`/${targetUsername}`}
             className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
@@ -149,6 +173,25 @@ export function ProfilePage() {
         <section className="flex-1 w-full space-y-6 min-w-0">
           {activeTab === 'overview' && (
             <div className="space-y-6">
+              {profileReadme && (
+                <div className="border border-[#30363d] rounded-md bg-[#0d1117] p-6 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#21262d] text-xs text-[#8b949e]">
+                    <span className="font-mono text-[#e6edf3]">
+                      {targetUsername} / {readmePath}
+                    </span>
+                    <span className="text-[#8b949e]">
+                      <Octicon name="pencil" size={14} />
+                    </span>
+                  </div>
+                  <MarkdownViewer
+                    content={profileReadme}
+                    owner={targetUsername}
+                    repo={targetUsername}
+                    refName={defaultBranch}
+                  />
+                </div>
+              )}
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-[#e6edf3]">
@@ -167,12 +210,21 @@ export function ProfilePage() {
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <Link
-                            to={`/${repo.owner.login}/${repo.name}`}
-                            className="text-sm font-semibold text-[#58a6ff] hover:underline truncate"
-                          >
-                            {repo.name}
-                          </Link>
+                          <div className="flex items-center gap-2 truncate">
+                            {repo.avatar_url?.trim() && (
+                              <img
+                                src={repo.avatar_url}
+                                alt=""
+                                className="w-4 h-4 rounded-sm object-cover border border-[#30363d] shrink-0"
+                              />
+                            )}
+                            <Link
+                              to={`/${repo.owner.login}/${repo.name}`}
+                              className="text-sm font-semibold text-[#58a6ff] hover:underline truncate"
+                            >
+                              {repo.name}
+                            </Link>
+                          </div>
                           <span className="px-2 py-0.5 rounded-full border border-[#30363d] text-[10px] text-[#8b949e]">
                             {repo.private ? 'Private' : 'Public'}
                           </span>

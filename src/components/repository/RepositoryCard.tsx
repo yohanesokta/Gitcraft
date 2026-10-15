@@ -19,7 +19,15 @@ export function RepositoryCard({ repository }: RepositoryCardProps) {
       <div>
         <div className="flex items-center justify-between gap-2 mb-1.5">
           <div className="flex items-center gap-2 truncate">
-            <BookMarked className="w-4 h-4 text-[#8b949e] shrink-0" />
+            {repository.avatar_url?.trim() ? (
+              <img
+                src={repository.avatar_url}
+                alt=""
+                className="w-4 h-4 rounded-sm object-cover border border-[#30363d] shrink-0"
+              />
+            ) : (
+              <BookMarked className="w-4 h-4 text-[#8b949e] shrink-0" />
+            )}
             <Link
               to={`/${repository.owner.login}/${repository.name}`}
               className="text-sm font-semibold text-[#58a6ff] hover:underline truncate"

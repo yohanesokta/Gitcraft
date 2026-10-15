@@ -38,7 +38,7 @@ export function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="border-b border-[#21262d] -mx-4 sm:-mx-6 px-4 sm:px-6">
-        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar -mb-[1px]">
+        <nav className="flex items-center gap-1 overflow-x-auto overflow-y-hidden no-scrollbar -mb-[1px]">
           <Link
             to="/"
             className="flex items-center gap-2 px-3 py-2 text-xs border-b-2 border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40 transition-colors whitespace-nowrap"

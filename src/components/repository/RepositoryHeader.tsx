@@ -93,7 +93,7 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
 
   return (
     <div className="bg-[#0d1117] border-b border-[#21262d] -mx-4 sm:-mx-6 -mt-6 px-4 sm:px-6 mb-6">
-      <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar border-b border-[#21262d] pt-2">
+      <nav className="flex items-center gap-1 overflow-x-auto overflow-y-hidden no-scrollbar border-b border-[#21262d] pt-2">
         {tabs.map((tab) => (
           <Link
             key={tab.id}
@@ -120,10 +120,10 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
         <div className="flex items-center gap-2 flex-wrap">
           <img
-            src={repository.owner.avatar_url || '/default-avatar.jpg'}
-            alt={repository.owner.login}
+            src={repository.avatar_url?.trim() || repository.owner.avatar_url || '/default-avatar.jpg'}
+            alt={repository.name}
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = '/default-avatar.jpg'
+              (e.currentTarget as HTMLImageElement).src = repository.owner.avatar_url || '/default-avatar.jpg'
             }}
             className="w-6 h-6 rounded-full border border-[#30363d] object-cover shrink-0"
           />

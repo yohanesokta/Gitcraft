@@ -16,6 +16,10 @@ import {
   getRepositoryBranches,
   getRepositoryTags,
   getRepositoryRawFile,
+  getRepositoryTree,
+  getSingleIssue,
+  getIssueComments,
+  getSinglePull,
 } from '../lib/forgejo'
 
 export function useForgejoVersion() {
@@ -172,6 +176,46 @@ export function useRepositoryRawFile(owner?: string, repo?: string, filepath?: s
     queryFn: () => getRepositoryRawFile(owner!, repo!, filepath!, ref),
     enabled: Boolean(owner && repo && filepath),
     staleTime: 1000 * 60 * 5,
+    retry: 1,
+  })
+}
+
+export function useRepositoryTree(owner?: string, repo?: string, sha?: string, enabled: boolean = true) {
+  return useQuery({
+    queryKey: ['forgejo', 'tree', owner, repo, sha],
+    queryFn: () => getRepositoryTree(owner!, repo!, sha!),
+    enabled: Boolean(owner && repo && sha && enabled),
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+  })
+}
+
+export function useSingleIssue(owner?: string, repo?: string, index?: string | number) {
+  return useQuery({
+    queryKey: ['forgejo', 'issue', owner, repo, index],
+    queryFn: () => getSingleIssue(owner!, repo!, index!),
+    enabled: Boolean(owner && repo && index),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function useIssueComments(owner?: string, repo?: string, index?: string | number) {
+  return useQuery({
+    queryKey: ['forgejo', 'issue_comments', owner, repo, index],
+    queryFn: () => getIssueComments(owner!, repo!, index!),
+    enabled: Boolean(owner && repo && index),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function useSinglePull(owner?: string, repo?: string, index?: string | number) {
+  return useQuery({
+    queryKey: ['forgejo', 'pull', owner, repo, index],
+    queryFn: () => getSinglePull(owner!, repo!, index!),
+    enabled: Boolean(owner && repo && index),
+    staleTime: 1000 * 60 * 2,
     retry: 1,
   })
 }

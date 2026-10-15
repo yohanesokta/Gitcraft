@@ -204,3 +204,31 @@ export interface ForgejoTag {
     url: string
   }
 }
+
+export interface ForgejoGitTreeItem {
+  path: string
+  mode: string
+  type: 'blob' | 'tree' | 'commit'
+  size?: number
+  sha: string
+  url: string
+}
+
+export interface ForgejoGitTree {
+  sha: string
+  url: string
+  tree: ForgejoGitTreeItem[]
+  truncated: boolean
+  total_count: number
+}
+
+export interface ForgejoComment {
+  id: number
+  html_url: string
+  pull_request_url?: string
+  issue_url?: string
+  user: ForgejoUser
+  body: string
+  created_at: string
+  updated_at: string
+}

@@ -11,6 +11,8 @@ import {
   ForgejoVersion,
   ForgejoHeatmapItem,
   ForgejoTag,
+  ForgejoGitTree,
+  ForgejoComment,
 } from '../types/forgejo'
 
 export class ForgejoApiError extends Error {
@@ -343,6 +345,80 @@ export async function getRepositoryPulls(
   })
   return forgejoFetch<ForgejoPullRequest[]>(
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls?${params.toString()}`
+  )
+}
+
+export async function getRepositoryTree(
+  owner: string,
+  repo: string,
+  sha: string,
+  recursive: boolean = true
+): Promise<ForgejoGitTree> {
+  const query = recursive ? '?recursive=1' : ''
+  return forgejoFetch<ForgejoGitTree>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/git/trees/${encodeURIComponent(sha)}${query}`
+  )
+}
+
+export async function getSingleIssue(
+  owner: string,
+  repo: string,
+  index: string | number
+): Promise<ForgejoIssue> {
+  return forgejoFetch<ForgejoIssue>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/issues/${encodeURIComponent(String(index))}`
+  )
+}
+
+export async function getIssueComments(
+  owner: string,
+  repo: string,
+  index: string | number
+): Promise<ForgejoComment[]> {
+  return forgejoFetch<ForgejoComment[]>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/issues/${encodeURIComponent(String(index))}/comments`
+  )
+}
+
+export async function getSinglePull(
+  owner: string,
+  repo: string,
+  index: string | number
+): Promise<ForgejoPullRequest> {
+  return forgejoFetch<ForgejoPullRequest>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(index))}`
+  )
+}
+
+export async function createIssue(
+  owner: string,
+  repo: string,
+  title: string,
+  body?: string
+): Promise<ForgejoIssue> {
+  return forgejoFetch<ForgejoIssue>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/issues`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body: body || '' }),
+    }
+  )
+}
+
+export async function createIssueComment(
+  owner: string,
+  repo: string,
+  index: string | number,
+  body: string
+): Promise<ForgejoComment> {
+  return forgejoFetch<ForgejoComment>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/issues/${encodeURIComponent(String(index))}/comments`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ body }),
+    }
   )
 }
 

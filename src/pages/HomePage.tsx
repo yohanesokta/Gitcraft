@@ -65,10 +65,10 @@ export function HomePage() {
                   className="flex items-center gap-2 py-1 text-[#e6edf3] hover:text-[#58a6ff] group truncate"
                 >
                   <img
-                    src={repo.owner.avatar_url || '/default-avatar.jpg'}
-                    alt={repo.owner.login}
+                    src={repo.avatar_url?.trim() || repo.owner.avatar_url || '/default-avatar.jpg'}
+                    alt={repo.name}
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/default-avatar.jpg'
+                      (e.currentTarget as HTMLImageElement).src = repo.owner.avatar_url || '/default-avatar.jpg'
                     }}
                     className="w-4 h-4 rounded-full border border-[#30363d] object-cover shrink-0"
                   />
@@ -138,7 +138,15 @@ export function HomePage() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 truncate">
-                    <Octicon name="repo" size={16} className="text-[#8b949e] shrink-0" />
+                    {repo.avatar_url?.trim() ? (
+                      <img
+                        src={repo.avatar_url}
+                        alt=""
+                        className="w-4 h-4 rounded-sm object-cover border border-[#30363d] shrink-0"
+                      />
+                    ) : (
+                      <Octicon name="repo" size={16} className="text-[#8b949e] shrink-0" />
+                    )}
                     <Link
                       to={`/${repo.owner.login}/${repo.name}`}
                       className="text-sm font-semibold text-[#58a6ff] hover:underline truncate"

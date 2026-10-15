@@ -32,6 +32,13 @@ export function RepositoryListItem({ repository }: RepositoryListItemProps) {
     <li className="py-6 border-b border-[#21262d] flex flex-col md:flex-row md:items-start justify-between gap-4">
       <div className="flex-1 space-y-2">
         <div className="flex items-center gap-2 flex-wrap">
+          {repository.avatar_url?.trim() && (
+            <img
+              src={repository.avatar_url}
+              alt=""
+              className="w-5 h-5 rounded-md object-cover border border-[#30363d] shrink-0"
+            />
+          )}
           <Link
             to={`/${repository.owner.login}/${repository.name}`}
             className="text-xl font-semibold text-[#58a6ff] hover:underline"

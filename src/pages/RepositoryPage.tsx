@@ -17,6 +17,11 @@ import { BlobViewer } from '../components/repository/BlobViewer'
 import { CommitBrowser } from '../components/repository/CommitBrowser'
 import { ReadmeViewer } from '../components/repository/ReadmeViewer'
 import { RepositorySidebar } from '../components/repository/RepositorySidebar'
+import { FileSearchModal } from '../components/repository/FileSearchModal'
+import { IssueList } from '../components/repository/IssueList'
+import { IssueDetail } from '../components/repository/IssueDetail'
+import { PullRequestList } from '../components/repository/PullRequestList'
+import { PullRequestDetail } from '../components/repository/PullRequestDetail'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Octicon } from '../components/ui/Octicon'
@@ -85,6 +90,8 @@ export function RepositoryPage() {
 
   const isBlobMode = routeMode === 'blob'
   const isCommitsMode = routeMode === 'commits'
+  const isIssuesMode = routeMode === 'issues'
+  const isPullsMode = routeMode === 'pulls'
 
   const blobFilename = segments[segments.length - 1] || ''
   const {
@@ -95,7 +102,24 @@ export function RepositoryPage() {
   const [isCodeMenuOpen, setIsCodeMenuOpen] = useState(false)
   const [cloneType, setCloneType] = useState<'https' | 'ssh'>('https')
   const [hasCopiedClone, setHasCopiedClone] = useState(false)
+  const [isFileSearchOpen, setIsFileSearchOpen] = useState(false)
   const codeMenuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (
+        e.key === 't' &&
+        !isFileSearchOpen &&
+        document.activeElement?.tagName !== 'INPUT' &&
+        document.activeElement?.tagName !== 'TEXTAREA'
+      ) {
+        e.preventDefault()
+        setIsFileSearchOpen(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isFileSearchOpen])
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -155,7 +179,19 @@ export function RepositoryPage() {
     <div className="space-y-6">
       <RepositoryHeader repository={repository} />
 
-      {isCommitsMode ? (
+      {isIssuesMode ? (
+        segments[1] ? (
+          <IssueDetail owner={owner} repo={repo} index={segments[1]} />
+        ) : (
+          <IssueList owner={owner} repo={repo} />
+        )
+      ) : isPullsMode ? (
+        segments[1] ? (
+          <PullRequestDetail owner={owner} repo={repo} index={segments[1]} />
+        ) : (
+          <PullRequestList owner={owner} repo={repo} />
+        )
+      ) : isCommitsMode ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <BranchSelector
@@ -256,6 +292,7 @@ export function RepositoryPage() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  onClick={() => setIsFileSearchOpen(true)}
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
                 >
                   <Octicon name="search" size={12} className="text-[#8b949e]" />
@@ -264,16 +301,6 @@ export function RepositoryPage() {
                     t
                   </span>
                 </button>
-
-                <div className="relative">
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 px-3 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
-                  >
-                    <span>Add file</span>
-                    <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
-                  </button>
-                </div>
 
                 <div className="relative" ref={codeMenuRef}>
                   <button
@@ -394,6 +421,14 @@ export function RepositoryPage() {
           />
         </div>
       )}
+
+      <FileSearchModal
+        isOpen={isFileSearchOpen}
+        onClose={() => setIsFileSearchOpen(false)}
+        owner={owner}
+        repo={repo}
+        refName={selectedRef}
+      />
     </div>
   )
 }
