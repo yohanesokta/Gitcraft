@@ -17,6 +17,11 @@ import {
   ForgejoCompare,
   MergePullRequestOptions,
   ForgejoChangedFile,
+  CreateRepositoryOptions,
+  ForgejoLicenseTemplate,
+  UpdateUserSettingsOptions,
+  CreateForkOption,
+  EditRepoOptions,
 } from '../types/forgejo'
 
 export class ForgejoApiError extends Error {
@@ -276,6 +281,23 @@ export function logoutUser(): void {
   }
 }
 
+export async function updateUserSettings(
+  options: UpdateUserSettingsOptions
+): Promise<ForgejoUser> {
+  await forgejoFetch<unknown>('/user/settings', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(options),
+  })
+  const updatedUser = await forgejoFetch<ForgejoUser>('/user')
+  setStoredUser(updatedUser)
+  try {
+    window.dispatchEvent(new Event('gitcraft_auth_change'))
+  } catch {
+  }
+  return updatedUser
+}
+
 export async function searchRepositories(
   query: string,
   page: number = 1,
@@ -291,6 +313,30 @@ export async function searchRepositories(
 
 export async function getRepository(owner: string, repo: string): Promise<ForgejoRepository> {
   return forgejoFetch<ForgejoRepository>(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`)
+}
+
+export async function createRepository(
+  options: CreateRepositoryOptions,
+  org?: string
+): Promise<ForgejoRepository> {
+  const endpoint = org ? `/orgs/${encodeURIComponent(org)}/repos` : '/user/repos'
+  return forgejoFetch<ForgejoRepository>(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(options),
+  })
+}
+
+export async function getUserOrgs(): Promise<ForgejoUser[]> {
+  return forgejoFetch<ForgejoUser[]>('/user/orgs')
+}
+
+export async function getGitignoreTemplates(): Promise<string[]> {
+  return forgejoFetch<string[]>('/gitignore/templates')
+}
+
+export async function getLicenseTemplates(): Promise<ForgejoLicenseTemplate[]> {
+  return forgejoFetch<ForgejoLicenseTemplate[]>('/licenses')
 }
 
 export async function getRepositoryContents(
@@ -656,3 +702,120 @@ export async function updateRepositoryFile(
     }
   )
 }
+
+export async function checkRepoStarred(owner: string, repo: string): Promise<boolean> {
+  const authHeader = getAuthHeader()
+  if (!authHeader) return false
+  try {
+    const baseUrl = getForgejoBaseUrl()
+    const res = await fetch(`${baseUrl}/api/v1/user/starred/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: authHeader,
+      },
+    })
+    return res.status === 204
+  } catch {
+    return false
+  }
+}
+
+export async function starRepository(owner: string, repo: string): Promise<void> {
+  await forgejoFetch<unknown>(`/user/starred/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`, {
+    method: 'PUT',
+  })
+}
+
+export async function unstarRepository(owner: string, repo: string): Promise<void> {
+  await forgejoFetch<unknown>(`/user/starred/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function forkRepository(
+  owner: string,
+  repo: string,
+  options?: CreateForkOption
+): Promise<ForgejoRepository> {
+  return forgejoFetch<ForgejoRepository>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/forks`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options || {}),
+    }
+  )
+}
+
+export async function updateRepository(
+  owner: string,
+  repo: string,
+  options: EditRepoOptions
+): Promise<ForgejoRepository> {
+  return forgejoFetch<ForgejoRepository>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options),
+    }
+  )
+}
+
+export async function deleteRepository(
+  owner: string,
+  repo: string
+): Promise<void> {
+  await forgejoFetch<unknown>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`,
+    {
+      method: 'DELETE',
+    }
+  )
+}
+
+export function getUserPinnedRepos(username: string): string[] {
+  try {
+    const raw = localStorage.getItem(`gitcraft_pinned_repos_${username}`)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        return parsed.filter((item): item is string => typeof item === 'string')
+      }
+    }
+  } catch {
+  }
+  return []
+}
+
+export function setUserPinnedRepos(username: string, repoNames: string[]): void {
+  try {
+    localStorage.setItem(`gitcraft_pinned_repos_${username}`, JSON.stringify(repoNames.slice(0, 6)))
+    window.dispatchEvent(new Event('gitcraft_pins_change'))
+  } catch {
+  }
+}
+
+export function isRepoPinned(username: string, repoName: string): boolean {
+  const pins = getUserPinnedRepos(username)
+  return pins.includes(repoName)
+}
+
+export function toggleRepoPinned(username: string, repoName: string): boolean {
+  const pins = getUserPinnedRepos(username)
+  let updated: string[]
+  let isNowPinned: boolean
+  if (pins.includes(repoName)) {
+    updated = pins.filter((p) => p !== repoName)
+    isNowPinned = false
+  } else {
+    if (pins.length >= 6) {
+      return false
+    }
+    updated = [...pins, repoName]
+    isNowPinned = true
+  }
+  setUserPinnedRepos(username, updated)
+  return isNowPinned
+}
+

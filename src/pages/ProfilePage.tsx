@@ -1,4 +1,4 @@
-import { useState, useDeferredValue } from 'react'
+import { useState, useDeferredValue, useMemo, useEffect, useRef } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
 import {
   useUser,
@@ -12,9 +12,12 @@ import { ProfileSidebar } from '../components/profile/ProfileSidebar'
 import { RepositoryListItem } from '../components/repository/RepositoryListItem'
 import { ContributionGraph } from '../components/profile/ContributionGraph'
 import { MarkdownViewer } from '../components/ui/MarkdownViewer'
+import { CustomizePinsModal } from '../components/profile/CustomizePinsModal'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Octicon } from '../components/ui/Octicon'
+import { ForgejoRepository } from '../types/forgejo'
+import { getUserPinnedRepos, setUserPinnedRepos, getStoredUser } from '../lib/forgejo'
 
 export function ProfilePage() {
   const { owner } = useParams<{ owner: string }>()
@@ -32,6 +35,53 @@ export function ProfilePage() {
 
   const [searchInput, setSearchInput] = useState('')
   const deferredQuery = useDeferredValue(searchInput)
+
+  const [sortOption, setSortOption] = useState<'updated' | 'name' | 'stars'>('updated')
+  const [typeFilter, setTypeFilter] = useState<'all' | 'public' | 'private' | 'sources' | 'forks'>('all')
+  const [languageFilter, setLanguageFilter] = useState<string>('all')
+
+  const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
+  const [isTypeMenuOpen, setIsTypeMenuOpen] = useState(false)
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
+
+  const [isCustomizePinsOpen, setIsCustomizePinsOpen] = useState(false)
+  const [pinnedNames, setPinnedNames] = useState<string[]>(() => getUserPinnedRepos(targetUsername))
+
+  const sortMenuRef = useRef<HTMLDivElement>(null)
+  const typeMenuRef = useRef<HTMLDivElement>(null)
+  const langMenuRef = useRef<HTMLDivElement>(null)
+
+  const currentUser = getStoredUser()
+  const isOwnProfile = Boolean(currentUser && currentUser.login === targetUsername)
+
+  useEffect(() => {
+    function handlePinsChange() {
+      setPinnedNames(getUserPinnedRepos(targetUsername))
+    }
+    handlePinsChange()
+    window.addEventListener('gitcraft_pins_change', handlePinsChange)
+    return () => {
+      window.removeEventListener('gitcraft_pins_change', handlePinsChange)
+    }
+  }, [targetUsername])
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (sortMenuRef.current && !sortMenuRef.current.contains(e.target as Node)) {
+        setIsSortMenuOpen(false)
+      }
+      if (typeMenuRef.current && !typeMenuRef.current.contains(e.target as Node)) {
+        setIsTypeMenuOpen(false)
+      }
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setIsLanguageMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const {
     data: user,
@@ -53,19 +103,63 @@ export function ProfilePage() {
     data: heatmapData,
   } = useUserHeatmap(targetUsername)
 
-  const repoList = repositories || []
-  const filteredRepos = repoList.filter((repo) => {
-    if (!deferredQuery.trim()) return true
-    const q = deferredQuery.toLowerCase()
-    return (
-      repo.name.toLowerCase().includes(q) ||
-      (repo.description && repo.description.toLowerCase().includes(q))
-    )
-  })
+  const rawRepos = repositories || []
 
-  const repoCount = repoList.length
+  const availableLanguages = useMemo(() => {
+    const langs = new Set<string>()
+    rawRepos.forEach((r) => {
+      if (r.language) langs.add(r.language)
+    })
+    return Array.from(langs).sort()
+  }, [rawRepos])
+
+  const sortedRepos = useMemo(() => {
+    const list = [...rawRepos]
+    if (sortOption === 'name') {
+      return list.sort((a, b) => a.name.localeCompare(b.name))
+    }
+    if (sortOption === 'stars') {
+      return list.sort((a, b) => (b.stars_count || 0) - (a.stars_count || 0))
+    }
+    return list.sort((a, b) => {
+      const timeA = a.updated_at ? new Date(a.updated_at).getTime() : a.created_at ? new Date(a.created_at).getTime() : 0
+      const timeB = b.updated_at ? new Date(b.updated_at).getTime() : b.created_at ? new Date(b.created_at).getTime() : 0
+      return timeB - timeA
+    })
+  }, [rawRepos, sortOption])
+
+  const filteredRepos = useMemo(() => {
+    return sortedRepos.filter((repo) => {
+      if (typeFilter === 'public' && repo.private) return false
+      if (typeFilter === 'private' && !repo.private) return false
+      if (typeFilter === 'sources' && repo.fork) return false
+      if (typeFilter === 'forks' && !repo.fork) return false
+
+      if (languageFilter !== 'all' && repo.language !== languageFilter) return false
+
+      if (!deferredQuery.trim()) return true
+      const q = deferredQuery.toLowerCase()
+      return (
+        repo.name.toLowerCase().includes(q) ||
+        (repo.description && repo.description.toLowerCase().includes(q))
+      )
+    })
+  }, [sortedRepos, typeFilter, languageFilter, deferredQuery])
+
+  const repoCount = rawRepos.length
   const starCount = user?.starred_repos_count ?? 0
-  const pinnedRepos = repoList.slice(0, 6)
+
+  const pinnedRepos = useMemo(() => {
+    if (pinnedNames.length > 0) {
+      const matched = pinnedNames
+        .map((name) => sortedRepos.find((r) => r.name === name))
+        .filter((r): r is ForgejoRepository => Boolean(r))
+      if (matched.length > 0) {
+        return matched
+      }
+    }
+    return sortedRepos.slice(0, 6)
+  }, [pinnedNames, sortedRepos])
 
   const { data: profileRepo } = useRepository(targetUsername, targetUsername)
   const defaultBranch = profileRepo?.default_branch || 'main'
@@ -86,6 +180,17 @@ export function ProfilePage() {
     readmePath,
     defaultBranch
   )
+
+  function handleSavePins(newPins: string[]) {
+    setUserPinnedRepos(targetUsername, newPins)
+    setPinnedNames(newPins)
+  }
+
+  const sortLabels: Record<string, string> = {
+    updated: 'Last updated',
+    name: 'Name',
+    stars: 'Stars',
+  }
 
   return (
     <div className="space-y-6">
@@ -167,7 +272,7 @@ export function ProfilePage() {
             <Skeleton className="h-4 w-1/2" />
           </div>
         ) : (
-          <ProfileSidebar user={user} />
+          <ProfileSidebar user={user} onUserUpdated={refetchUser} />
         )}
 
         <section className="flex-1 w-full space-y-6 min-w-0">
@@ -197,9 +302,15 @@ export function ProfilePage() {
                   <h2 className="text-sm font-semibold text-[#e6edf3]">
                     Pinned
                   </h2>
-                  <span className="text-xs text-[#8b949e] hover:text-[#58a6ff] cursor-pointer">
-                    Customize your pins
-                  </span>
+                  {isOwnProfile && (
+                    <button
+                      type="button"
+                      onClick={() => setIsCustomizePinsOpen(true)}
+                      className="text-xs text-[#8b949e] hover:text-[#58a6ff] cursor-pointer"
+                    >
+                      Customize your pins
+                    </button>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -275,37 +386,114 @@ export function ProfilePage() {
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
-                  >
-                    <span>Type</span>
-                    <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
-                  </button>
+                  <div className="relative" ref={typeMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsTypeMenuOpen(!isTypeMenuOpen)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                    >
+                      <span>Type{typeFilter !== 'all' ? `: ${typeFilter}` : ''}</span>
+                      <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
+                    </button>
 
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
-                  >
-                    <span>Language</span>
-                    <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
-                  </button>
+                    {isTypeMenuOpen && (
+                      <div className="absolute left-0 mt-1 w-40 bg-[#161b22] border border-[#30363d] rounded-md shadow-lg py-1 z-30 text-xs">
+                        {(['all', 'public', 'private', 'sources', 'forks'] as const).map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => {
+                              setTypeFilter(t)
+                              setIsTypeMenuOpen(false)
+                            }}
+                            className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between capitalize cursor-pointer"
+                          >
+                            <span>{t}</span>
+                            {typeFilter === t && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
-                  >
-                    <span>Sort</span>
-                    <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
-                  </button>
+                  <div className="relative" ref={langMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                    >
+                      <span>Language{languageFilter !== 'all' ? `: ${languageFilter}` : ''}</span>
+                      <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
+                    </button>
 
-                  <button
-                    type="button"
+                    {isLanguageMenuOpen && (
+                      <div className="absolute left-0 mt-1 w-44 bg-[#161b22] border border-[#30363d] rounded-md shadow-lg py-1 z-30 text-xs max-h-60 overflow-y-auto">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLanguageFilter('all')
+                            setIsLanguageMenuOpen(false)
+                          }}
+                          className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between cursor-pointer"
+                        >
+                          <span>All</span>
+                          {languageFilter === 'all' && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                        </button>
+                        {availableLanguages.map((lang) => (
+                          <button
+                            key={lang}
+                            type="button"
+                            onClick={() => {
+                              setLanguageFilter(lang)
+                              setIsLanguageMenuOpen(false)
+                            }}
+                            className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between cursor-pointer"
+                          >
+                            <span>{lang}</span>
+                            {languageFilter === lang && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="relative" ref={sortMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                    >
+                      <span>Sort: {sortLabels[sortOption]}</span>
+                      <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
+                    </button>
+
+                    {isSortMenuOpen && (
+                      <div className="absolute right-0 mt-1 w-44 bg-[#161b22] border border-[#30363d] rounded-md shadow-lg py-1 z-30 text-xs">
+                        {(['updated', 'name', 'stars'] as const).map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setSortOption(opt)
+                              setIsSortMenuOpen(false)
+                            }}
+                            className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between cursor-pointer"
+                          >
+                            <span>{sortLabels[opt]}</span>
+                            {sortOption === opt && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <Link
+                    to="/new"
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white border border-[#2ea043] shadow-sm transition-colors cursor-pointer"
                   >
                     <Octicon name="repo" size={14} />
                     <span>New</span>
-                  </button>
+                  </Link>
                 </div>
               </div>
 
@@ -364,6 +552,15 @@ export function ProfilePage() {
           )}
         </section>
       </div>
+
+      <CustomizePinsModal
+        isOpen={isCustomizePinsOpen}
+        onClose={() => setIsCustomizePinsOpen(false)}
+        username={targetUsername}
+        repositories={sortedRepos}
+        initialPinned={pinnedNames.length > 0 ? pinnedNames : pinnedRepos.map((r) => r.name)}
+        onSave={handleSavePins}
+      />
     </div>
   )
 }

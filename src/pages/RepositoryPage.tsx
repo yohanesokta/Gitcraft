@@ -23,11 +23,12 @@ import { IssueDetail } from '../components/repository/IssueDetail'
 import { PullRequestList } from '../components/repository/PullRequestList'
 import { PullRequestDetail } from '../components/repository/PullRequestDetail'
 import { NewPullRequest } from '../components/repository/NewPullRequest'
+import { RepositorySettings } from '../components/repository/RepositorySettings'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Octicon } from '../components/ui/Octicon'
 import { ForgejoContent } from '../types/forgejo'
-import { getForgejoBaseUrl } from '../lib/forgejo'
+import { getForgejoBaseUrl, getStoredUser } from '../lib/forgejo'
 
 export function RepositoryPage() {
   const { owner, repo } = useParams<{ owner: string; repo: string }>()
@@ -94,6 +95,7 @@ export function RepositoryPage() {
   const isIssuesMode = routeMode === 'issues'
   const isPullsMode = routeMode === 'pulls'
   const isCompareMode = routeMode === 'compare'
+  const isSettingsMode = routeMode === 'settings'
 
   const blobFilename = segments[segments.length - 1] || ''
   const {
@@ -178,11 +180,25 @@ export function RepositoryPage() {
   const baseUrl = getForgejoBaseUrl()
   const rawFileUrl = `${baseUrl}/api/v1/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/raw/${subPath}?ref=${selectedRef}`
 
+  const currentUser = getStoredUser()
+  const canManage = Boolean(
+    repository?.permissions?.admin ||
+    (currentUser && repository?.owner.login === currentUser.login)
+  )
+
   return (
     <div className="space-y-6">
       <RepositoryHeader repository={repository} />
 
-      {isIssuesMode ? (
+      {isSettingsMode ? (
+        canManage ? (
+          <RepositorySettings repository={repository} onRepositoryUpdated={refetchRepo} />
+        ) : (
+          <div className="p-8 text-center text-xs text-[#8b949e] border border-[#30363d] rounded-md bg-[#161b22]">
+            You do not have administrative access to this repository.
+          </div>
+        )
+      ) : isIssuesMode ? (
         segments[1] ? (
           <IssueDetail owner={owner} repo={repo} index={segments[1]} />
         ) : (

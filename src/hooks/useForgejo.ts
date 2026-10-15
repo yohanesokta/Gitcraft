@@ -24,6 +24,11 @@ import {
   getPullRequestCommits,
   getPullRequestFiles,
   getPullRequestDiff,
+  getUserOrgs,
+  getGitignoreTemplates,
+  getLicenseTemplates,
+  getAuthToken,
+  checkRepoStarred,
 } from '../lib/forgejo'
 
 export function useForgejoVersion() {
@@ -279,3 +284,44 @@ export function useFileLastCommit(
     retry: 1,
   })
 }
+
+export function useUserOrgs() {
+  const token = getAuthToken()
+  return useQuery({
+    queryKey: ['forgejo', 'user_orgs'],
+    queryFn: getUserOrgs,
+    enabled: Boolean(token),
+    staleTime: 1000 * 60 * 10,
+    retry: 1,
+  })
+}
+
+export function useGitignoreTemplates() {
+  return useQuery({
+    queryKey: ['forgejo', 'gitignore_templates'],
+    queryFn: getGitignoreTemplates,
+    staleTime: 1000 * 60 * 60,
+    retry: 1,
+  })
+}
+
+export function useLicenseTemplates() {
+  return useQuery({
+    queryKey: ['forgejo', 'license_templates'],
+    queryFn: getLicenseTemplates,
+    staleTime: 1000 * 60 * 60,
+    retry: 1,
+  })
+}
+
+export function useRepoStarred(owner?: string, repo?: string) {
+  const token = getAuthToken()
+  return useQuery({
+    queryKey: ['forgejo', 'repo_starred', owner, repo],
+    queryFn: () => checkRepoStarred(owner!, repo!),
+    enabled: Boolean(token && owner && repo),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+

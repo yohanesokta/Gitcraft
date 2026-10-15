@@ -1,6 +1,18 @@
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { ForgejoRepository } from '../../types/forgejo'
 import { Octicon } from '../ui/Octicon'
+import { ForkModal } from './ForkModal'
+import {
+  getStoredUser,
+  getAuthToken,
+  starRepository,
+  unstarRepository,
+  isRepoPinned,
+  toggleRepoPinned,
+} from '../../lib/forgejo'
+import { useRepoStarred } from '../../hooks/useForgejo'
 
 export interface RepositoryHeaderProps {
   repository: ForgejoRepository
@@ -8,7 +20,110 @@ export interface RepositoryHeaderProps {
 
 export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
   const location = useLocation()
-  const basePath = `/${repository.owner.login}/${repository.name}`
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  const currentUser = getStoredUser()
+  const token = getAuthToken()
+  const owner = repository.owner.login
+  const repo = repository.name
+  const basePath = `/${owner}/${repo}`
+
+  const { data: isStarredFromApi } = useRepoStarred(owner, repo)
+  const [isStarred, setIsStarred] = useState<boolean>(false)
+  const [starsCount, setStarsCount] = useState<number>(repository.stars_count)
+  const [isStarring, setIsStarring] = useState<boolean>(false)
+
+  const [isPinned, setIsPinned] = useState<boolean>(() => {
+    return currentUser ? isRepoPinned(currentUser.login, repo) : false
+  })
+  const [pinAlert, setPinAlert] = useState<string | null>(null)
+
+  const [isForkModalOpen, setIsForkModalOpen] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (typeof isStarredFromApi === 'boolean') {
+      setIsStarred(isStarredFromApi)
+    }
+  }, [isStarredFromApi])
+
+  useEffect(() => {
+    setStarsCount(repository.stars_count)
+  }, [repository.stars_count])
+
+  useEffect(() => {
+    function syncPins() {
+      if (currentUser) {
+        setIsPinned(isRepoPinned(currentUser.login, repo))
+      }
+    }
+    syncPins()
+    window.addEventListener('gitcraft_pins_change', syncPins)
+    return () => {
+      window.removeEventListener('gitcraft_pins_change', syncPins)
+    }
+  }, [currentUser?.login, repo])
+
+  const canManage = Boolean(
+    repository.permissions?.admin ||
+    (currentUser && repository.owner.login === currentUser.login)
+  )
+
+  async function handleToggleStar() {
+    if (!token) {
+      navigate('/login')
+      return
+    }
+
+    if (isStarring) return
+    setIsStarring(true)
+
+    const nextStarred = !isStarred
+    setIsStarred(nextStarred)
+    setStarsCount((prev) => (nextStarred ? prev + 1 : Math.max(0, prev - 1)))
+
+    try {
+      if (nextStarred) {
+        await starRepository(owner, repo)
+      } else {
+        await unstarRepository(owner, repo)
+      }
+      queryClient.invalidateQueries({ queryKey: ['forgejo', 'repo_starred', owner, repo] })
+      queryClient.invalidateQueries({ queryKey: ['forgejo', 'repo', owner, repo] })
+      queryClient.invalidateQueries({ queryKey: ['forgejo', 'repos'] })
+      queryClient.invalidateQueries({ queryKey: ['forgejo', 'user_repos'] })
+    } catch {
+      setIsStarred(!nextStarred)
+      setStarsCount((prev) => (nextStarred ? Math.max(0, prev - 1) : prev + 1))
+    } finally {
+      setIsStarring(false)
+    }
+  }
+
+  function handleTogglePin() {
+    if (!token || !currentUser) {
+      navigate('/login')
+      return
+    }
+
+    const wasPinned = isPinned
+    const result = toggleRepoPinned(currentUser.login, repo)
+
+    if (!wasPinned && !result) {
+      setPinAlert('You can only pin up to 6 repositories.')
+      setTimeout(() => setPinAlert(null), 3000)
+    } else {
+      setIsPinned(result)
+    }
+  }
+
+  function handleForkClick() {
+    if (!token) {
+      navigate('/login')
+      return
+    }
+    setIsForkModalOpen(true)
+  }
 
   const isCodeActive =
     location.pathname === basePath ||
@@ -16,7 +131,7 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
     location.pathname.startsWith(`${basePath}/blob`) ||
     location.pathname.startsWith(`${basePath}/commits`)
 
-  const tabs = [
+  const baseTabs = [
     {
       id: 'code',
       label: 'Code',
@@ -82,14 +197,20 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
       icon: <Octicon name="graph" size={16} />,
       active: location.pathname.startsWith(`${basePath}/pulse`),
     },
-    {
-      id: 'settings',
-      label: 'Settings',
-      path: `${basePath}/settings`,
-      icon: <Octicon name="gear" size={16} />,
-      active: location.pathname.startsWith(`${basePath}/settings`),
-    },
   ]
+
+  const tabs = canManage
+    ? [
+        ...baseTabs,
+        {
+          id: 'settings',
+          label: 'Settings',
+          path: `${basePath}/settings`,
+          icon: <Octicon name="gear" size={16} />,
+          active: location.pathname.startsWith(`${basePath}/settings`),
+        },
+      ]
+    : baseTabs
 
   return (
     <div className="bg-[#0d1117] border-b border-[#21262d] -mx-4 sm:-mx-6 -mt-6 px-4 sm:px-6 mb-6">
@@ -135,13 +256,24 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap relative">
+          {pinAlert && (
+            <div className="absolute -top-8 right-0 bg-[#f85149] text-white text-[11px] px-2.5 py-1 rounded shadow-md whitespace-nowrap z-20">
+              {pinAlert}
+            </div>
+          )}
+
           <button
             type="button"
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+            onClick={handleTogglePin}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+              isPinned
+                ? 'bg-[#21262d] text-[#58a6ff] border-[#58a6ff]/40 hover:bg-[#30363d]'
+                : 'bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border-[#30363d]'
+            }`}
           >
-            <Octicon name="pin" size={14} className="text-[#8b949e]" />
-            <span>Pin</span>
+            <Octicon name="pin" size={14} className={isPinned ? 'text-[#58a6ff]' : 'text-[#8b949e]'} />
+            <span>{isPinned ? 'Unpin' : 'Pin'}</span>
           </button>
 
           <div className="inline-flex rounded-md shadow-sm">
@@ -167,6 +299,7 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
           <div className="inline-flex rounded-md shadow-sm">
             <button
               type="button"
+              onClick={handleForkClick}
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-l-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
             >
               <Octicon name="repo-forked" size={14} className="text-[#8b949e]" />
@@ -177,6 +310,7 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
             </button>
             <button
               type="button"
+              onClick={handleForkClick}
               aria-label="Fork options"
               className="px-2 py-1 rounded-r-md text-xs bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] border-y border-r border-[#30363d] transition-colors cursor-pointer"
             >
@@ -187,16 +321,27 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
           <div className="inline-flex rounded-md shadow-sm">
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-l-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+              onClick={handleToggleStar}
+              disabled={isStarring}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-l-md text-xs font-medium border border-[#30363d] transition-colors cursor-pointer ${
+                isStarred
+                  ? 'bg-[#21262d] text-[#e6edf3] hover:bg-[#30363d]'
+                  : 'bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3]'
+              }`}
             >
-              <Octicon name="star" size={14} className="text-[#8b949e]" />
-              <span>Star</span>
+              <Octicon
+                name={isStarred ? 'star-fill' : 'star'}
+                size={14}
+                className={isStarred ? 'text-[#e3b341]' : 'text-[#8b949e]'}
+              />
+              <span>{isStarred ? 'Starred' : 'Star'}</span>
               <span className="ml-1 px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
-                {repository.stars_count}
+                {starsCount}
               </span>
             </button>
             <button
               type="button"
+              onClick={handleToggleStar}
               aria-label="Star options"
               className="px-2 py-1 rounded-r-md text-xs bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] border-y border-r border-[#30363d] transition-colors cursor-pointer"
             >
@@ -205,6 +350,12 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
           </div>
         </div>
       </div>
+
+      <ForkModal
+        repository={repository}
+        isOpen={isForkModalOpen}
+        onClose={() => setIsForkModalOpen(false)}
+      />
     </div>
   )
 }

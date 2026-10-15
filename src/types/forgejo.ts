@@ -291,3 +291,47 @@ export interface ForgejoChangedFile {
   raw_url?: string
   html_url?: string
 }
+
+export interface CreateRepositoryOptions {
+  name: string
+  description?: string
+  private?: boolean
+  auto_init?: boolean
+  gitignores?: string
+  license?: string
+  readme?: string
+  default_branch?: string
+}
+
+export interface ForgejoLicenseTemplate {
+  key: string
+  name: string
+  url?: string
+}
+
+export interface UpdateUserSettingsOptions {
+  full_name?: string
+  description?: string
+  website?: string
+  location?: string
+  pronouns?: string
+}
+
+export interface CreateForkOption {
+  organization?: string
+  name?: string
+}
+
+export interface EditRepoOptions {
+  name?: string
+  description?: string
+  website?: string
+  private?: boolean
+  default_branch?: string
+  has_issues?: boolean
+  has_wiki?: boolean
+  has_pull_requests?: boolean
+  has_projects?: boolean
+  archived?: boolean
+}
+

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
   useSearchRepositories,
@@ -8,15 +8,26 @@ import {
 import { Octicon } from '../components/ui/Octicon'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
-import { getForgejoBaseUrl } from '../lib/forgejo'
+import { getForgejoBaseUrl, getStoredUser } from '../lib/forgejo'
 
 export function HomePage() {
   const [repoFilter, setRepoFilter] = useState('')
-  const { data: userRepos, isLoading: isUserReposLoading } = useUserRepositories('yohanesokta')
+  const currentUser = getStoredUser()
+  const homeUser = currentUser?.login || 'yohanesokta'
+
+  const { data: userRepos, isLoading: isUserReposLoading } = useUserRepositories(homeUser)
   const { data: exploreResults, isLoading: isExploreLoading, isError, error, refetch } = useSearchRepositories('forgejo', 1, 10)
   const { data: versionData } = useForgejoVersion()
 
-  const myRepos = userRepos || []
+  const myRepos = useMemo(() => {
+    if (!userRepos) return []
+    return [...userRepos].sort((a, b) => {
+      const timeA = a.updated_at ? new Date(a.updated_at).getTime() : a.created_at ? new Date(a.created_at).getTime() : 0
+      const timeB = b.updated_at ? new Date(b.updated_at).getTime() : b.created_at ? new Date(b.created_at).getTime() : 0
+      return timeB - timeA
+    })
+  }, [userRepos])
+
   const filteredMyRepos = myRepos.filter((r) =>
     r.name.toLowerCase().includes(repoFilter.toLowerCase())
   )
@@ -31,13 +42,13 @@ export function HomePage() {
           <h2 className="text-sm font-semibold text-[#e6edf3]">
             Top Repositories
           </h2>
-          <button
-            type="button"
+          <Link
+            to="/new"
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white transition-colors cursor-pointer"
           >
             <Octicon name="repo" size={12} />
             <span>New</span>
-          </button>
+          </Link>
         </div>
 
         <input

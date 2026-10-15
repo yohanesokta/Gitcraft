@@ -19,7 +19,9 @@ export function GlobalHeader() {
   const [currentUser, setCurrentUser] = useState<ForgejoUser | null>(getStoredUser)
   const [authToken, setAuthTokenState] = useState<string | null>(getAuthToken)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const createMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function syncAuth() {
@@ -38,6 +40,9 @@ export function GlobalHeader() {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsUserMenuOpen(false)
+      }
+      if (createMenuRef.current && !createMenuRef.current.contains(event.target as Node)) {
+        setIsCreateMenuOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
@@ -132,14 +137,30 @@ export function GlobalHeader() {
               </>
             ) : (
               <>
-                <button
-                  type="button"
-                  aria-label="Create new"
-                  className="h-8 px-2 rounded-md border border-[#30363d] bg-[#21262d]/40 hover:bg-[#30363d] hidden sm:flex items-center gap-1 text-xs font-medium cursor-pointer transition-colors"
-                >
-                  <Octicon name="plus" size={14} />
-                  <Octicon name="triangle-down" size={10} className="text-[#8b949e]" />
-                </button>
+                <div className="relative" ref={createMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
+                    aria-label="Create new"
+                    className="h-8 px-2 rounded-md border border-[#30363d] bg-[#21262d]/40 hover:bg-[#30363d] hidden sm:flex items-center gap-1 text-xs font-medium cursor-pointer transition-colors"
+                  >
+                    <Octicon name="plus" size={14} />
+                    <Octicon name="triangle-down" size={10} className="text-[#8b949e]" />
+                  </button>
+
+                  {isCreateMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-[#161b22] border border-[#30363d] rounded-md shadow-2xl z-50 py-1 text-xs text-[#e6edf3]">
+                      <Link
+                        to="/new"
+                        onClick={() => setIsCreateMenuOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-[#21262d] transition-colors"
+                      >
+                        <Octicon name="repo" size={14} className="text-[#8b949e]" />
+                        <span>New repository</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
                 <Link
                   to="/issues"
@@ -210,6 +231,13 @@ export function GlobalHeader() {
                           className="flex items-center gap-2 px-4 py-1.5 hover:bg-[#21262d] transition-colors"
                         >
                           Your stars
+                        </Link>
+                        <Link
+                          to="/new"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-[#21262d] transition-colors"
+                        >
+                          New repository
                         </Link>
                       </div>
 

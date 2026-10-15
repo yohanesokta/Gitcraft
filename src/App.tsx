@@ -6,6 +6,7 @@ import { ProfilePage } from './pages/ProfilePage'
 import { RepositoryPage } from './pages/RepositoryPage'
 import { LoginPage } from './pages/LoginPage'
 import { SignupPage } from './pages/SignupPage'
+import { NewRepositoryPage } from './pages/NewRepositoryPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 
 const queryClient = new QueryClient({
@@ -39,6 +40,22 @@ export function App() {
             element={
               <AppShell>
                 <HomePage />
+              </AppShell>
+            }
+          />
+          <Route
+            path="/new"
+            element={
+              <AppShell>
+                <NewRepositoryPage />
+              </AppShell>
+            }
+          />
+          <Route
+            path="/new/repository"
+            element={
+              <AppShell>
+                <NewRepositoryPage />
               </AppShell>
             }
           />
