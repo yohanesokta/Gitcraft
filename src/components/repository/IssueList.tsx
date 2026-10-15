@@ -85,7 +85,7 @@ export function IssueList({ owner, repo }: IssueListProps) {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <span className="absolute left-3 top-2.5 text-[#8b949e]">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#8b949e]">
             <Octicon name="search" size={14} />
           </span>
           <input

@@ -20,6 +20,10 @@ import {
   getSingleIssue,
   getIssueComments,
   getSinglePull,
+  getCompareDiff,
+  getPullRequestCommits,
+  getPullRequestFiles,
+  getPullRequestDiff,
 } from '../lib/forgejo'
 
 export function useForgejoVersion() {
@@ -216,6 +220,62 @@ export function useSinglePull(owner?: string, repo?: string, index?: string | nu
     queryFn: () => getSinglePull(owner!, repo!, index!),
     enabled: Boolean(owner && repo && index),
     staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function useCompareDiff(owner?: string, repo?: string, base?: string, head?: string) {
+  return useQuery({
+    queryKey: ['forgejo', 'compare', owner, repo, base, head],
+    queryFn: () => getCompareDiff(owner!, repo!, base!, head!),
+    enabled: Boolean(owner && repo && base && head && base !== head),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function usePullRequestCommits(owner?: string, repo?: string, index?: string | number) {
+  return useQuery({
+    queryKey: ['forgejo', 'pull_commits', owner, repo, index],
+    queryFn: () => getPullRequestCommits(owner!, repo!, index!),
+    enabled: Boolean(owner && repo && index),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function usePullRequestFiles(owner?: string, repo?: string, index?: string | number) {
+  return useQuery({
+    queryKey: ['forgejo', 'pull_files', owner, repo, index],
+    queryFn: () => getPullRequestFiles(owner!, repo!, index!),
+    enabled: Boolean(owner && repo && index),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function usePullRequestDiff(owner?: string, repo?: string, index?: string | number) {
+  return useQuery({
+    queryKey: ['forgejo', 'pull_diff', owner, repo, index],
+    queryFn: () => getPullRequestDiff(owner!, repo!, index!),
+    enabled: Boolean(owner && repo && index),
+    staleTime: 1000 * 60 * 2,
+    retry: 1,
+  })
+}
+
+export function useFileLastCommit(
+  owner?: string,
+  repo?: string,
+  ref?: string,
+  path?: string,
+  enabled: boolean = true
+) {
+  return useQuery({
+    queryKey: ['forgejo', 'file_last_commit', owner, repo, ref, path],
+    queryFn: () => getRepositoryCommits(owner!, repo!, ref, 1, 1, path),
+    enabled: Boolean(enabled && owner && repo && path),
+    staleTime: 1000 * 60 * 10,
     retry: 1,
   })
 }

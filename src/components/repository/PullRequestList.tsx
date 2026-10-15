@@ -54,7 +54,7 @@ export function PullRequestList({ owner, repo }: PullRequestListProps) {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <span className="absolute left-3 top-2.5 text-[#8b949e]">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#8b949e]">
             <Octicon name="search" size={14} />
           </span>
           <input
@@ -65,6 +65,14 @@ export function PullRequestList({ owner, repo }: PullRequestListProps) {
             className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
           />
         </div>
+
+        <Link
+          to={`/${owner}/${repo}/pulls/new`}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white border border-[#2ea043] shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+        >
+          <Octicon name="git-pull-request" size={14} />
+          <span>New pull request</span>
+        </Link>
       </div>
 
       <div className="border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden">

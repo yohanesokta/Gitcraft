@@ -13,6 +13,10 @@ import {
   ForgejoTag,
   ForgejoGitTree,
   ForgejoComment,
+  CreatePullRequestOptions,
+  ForgejoCompare,
+  MergePullRequestOptions,
+  ForgejoChangedFile,
 } from '../types/forgejo'
 
 export class ForgejoApiError extends Error {
@@ -153,18 +157,20 @@ export async function forgejoFetch<T>(endpoint: string, init?: RequestInit): Pro
     let errorDetail = response.statusText
     let responseData: unknown = null
     try {
-      responseData = await response.json()
-      if (typeof responseData === 'object' && responseData !== null && 'message' in responseData) {
-        errorDetail = String((responseData as { message: unknown }).message)
+      const errorText = await response.text()
+      if (errorText) {
+        try {
+          responseData = JSON.parse(errorText)
+          if (typeof responseData === 'object' && responseData !== null && 'message' in responseData) {
+            errorDetail = String((responseData as { message: unknown }).message)
+          } else {
+            errorDetail = errorText
+          }
+        } catch {
+          errorDetail = errorText
+        }
       }
     } catch {
-      try {
-        const rawText = await response.text()
-        if (rawText) {
-          errorDetail = rawText
-        }
-      } catch {
-      }
     }
     throw new ForgejoApiError(
       `Forgejo API error (${response.status}): ${errorDetail}`,
@@ -175,7 +181,20 @@ export async function forgejoFetch<T>(endpoint: string, init?: RequestInit): Pro
     )
   }
 
-  return response.json() as Promise<T>
+  if (response.status === 204) {
+    return {} as T
+  }
+
+  const responseText = await response.text()
+  if (!responseText || !responseText.trim()) {
+    return {} as T
+  }
+
+  try {
+    return JSON.parse(responseText) as T
+  } catch {
+    return responseText as unknown as T
+  }
 }
 
 export async function getForgejoVersion(): Promise<ForgejoVersion> {
@@ -281,14 +300,26 @@ export async function getRepositoryContents(
   ref?: string
 ): Promise<ForgejoContent[] | ForgejoContent> {
   const cleanPath = path ? `/${path.replace(/^\/+/, '')}` : ''
-  const params = new URLSearchParams()
+  const extParams = new URLSearchParams()
   if (ref) {
-    params.set('ref', ref)
+    extParams.set('ref', ref)
   }
-  const query = params.toString() ? `?${params.toString()}` : ''
-  return forgejoFetch<ForgejoContent[] | ForgejoContent>(
-    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents${cleanPath}${query}`
-  )
+  extParams.set('includes', 'commit_metadata,commit_message')
+
+  try {
+    return await forgejoFetch<ForgejoContent[] | ForgejoContent>(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents-ext${cleanPath}?${extParams.toString()}`
+    )
+  } catch {
+    const fallbackParams = new URLSearchParams()
+    if (ref) {
+      fallbackParams.set('ref', ref)
+    }
+    const fallbackQuery = fallbackParams.toString() ? `?${fallbackParams.toString()}` : ''
+    return forgejoFetch<ForgejoContent[] | ForgejoContent>(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents${cleanPath}${fallbackQuery}`
+    )
+  }
 }
 
 export async function getRepositoryBranches(owner: string, repo: string): Promise<ForgejoBranch[]> {
@@ -300,7 +331,8 @@ export async function getRepositoryCommits(
   repo: string,
   sha?: string,
   page: number = 1,
-  limit: number = 30
+  limit: number = 30,
+  path?: string
 ): Promise<ForgejoCommit[]> {
   const params = new URLSearchParams({
     page: String(page),
@@ -308,6 +340,9 @@ export async function getRepositoryCommits(
   })
   if (sha) {
     params.set('sha', sha)
+  }
+  if (path) {
+    params.set('path', path)
   }
   return forgejoFetch<ForgejoCommit[]>(
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/commits?${params.toString()}`
@@ -388,6 +423,90 @@ export async function getSinglePull(
   return forgejoFetch<ForgejoPullRequest>(
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(index))}`
   )
+}
+
+export async function createPullRequest(
+  owner: string,
+  repo: string,
+  options: CreatePullRequestOptions
+): Promise<ForgejoPullRequest> {
+  return forgejoFetch<ForgejoPullRequest>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options),
+    }
+  )
+}
+
+export async function getCompareDiff(
+  owner: string,
+  repo: string,
+  base: string,
+  head: string
+): Promise<ForgejoCompare> {
+  return forgejoFetch<ForgejoCompare>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/compare/${encodeURIComponent(base)}...${encodeURIComponent(head)}`
+  )
+}
+
+export async function mergePullRequest(
+  owner: string,
+  repo: string,
+  index: string | number,
+  options: MergePullRequestOptions
+): Promise<unknown> {
+  return forgejoFetch<unknown>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(index))}/merge`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options),
+    }
+  )
+}
+
+export async function getPullRequestCommits(
+  owner: string,
+  repo: string,
+  index: string | number
+): Promise<ForgejoCommit[]> {
+  return forgejoFetch<ForgejoCommit[]>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(index))}/commits`
+  )
+}
+
+export async function getPullRequestFiles(
+  owner: string,
+  repo: string,
+  index: string | number
+): Promise<ForgejoChangedFile[]> {
+  return forgejoFetch<ForgejoChangedFile[]>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(index))}/files`
+  )
+}
+
+export async function getPullRequestDiff(
+  owner: string,
+  repo: string,
+  index: string | number
+): Promise<string> {
+  const baseUrl = getForgejoBaseUrl()
+  const targetUrl = `${baseUrl}/api/v1/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/pulls/${encodeURIComponent(String(index))}.diff`
+  const authHeader = getAuthHeader()
+  const customHeaders: Record<string, string> = {}
+  if (authHeader) {
+    customHeaders['Authorization'] = authHeader
+  }
+  let res = await fetch(targetUrl, { headers: customHeaders })
+  if (!res.ok && res.status === 401 && authHeader) {
+    res = await fetch(targetUrl)
+  }
+  if (!res.ok) {
+    throw new ForgejoApiError(`Failed to fetch PR diff: ${res.statusText}`, res.status, res.statusText, targetUrl)
+  }
+  return res.text()
 }
 
 export async function createIssue(
@@ -512,4 +631,28 @@ export async function getRepositoryRawFile(
     throw new ForgejoApiError(`Failed to fetch raw file: ${res.statusText}`, res.status, res.statusText, targetUrl)
   }
   return res.text()
+}
+
+export interface UpdateFileOptions {
+  content: string
+  sha: string
+  branch?: string
+  message?: string
+}
+
+export async function updateRepositoryFile(
+  owner: string,
+  repo: string,
+  filepath: string,
+  options: UpdateFileOptions
+): Promise<unknown> {
+  const cleanPath = filepath.replace(/^\/+/, '')
+  return forgejoFetch<unknown>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${cleanPath}`,
+    {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options),
+    }
+  )
 }

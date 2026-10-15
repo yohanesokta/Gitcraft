@@ -22,6 +22,7 @@ import { IssueList } from '../components/repository/IssueList'
 import { IssueDetail } from '../components/repository/IssueDetail'
 import { PullRequestList } from '../components/repository/PullRequestList'
 import { PullRequestDetail } from '../components/repository/PullRequestDetail'
+import { NewPullRequest } from '../components/repository/NewPullRequest'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Octicon } from '../components/ui/Octicon'
@@ -92,11 +93,13 @@ export function RepositoryPage() {
   const isCommitsMode = routeMode === 'commits'
   const isIssuesMode = routeMode === 'issues'
   const isPullsMode = routeMode === 'pulls'
+  const isCompareMode = routeMode === 'compare'
 
   const blobFilename = segments[segments.length - 1] || ''
   const {
     data: rawBlobContent,
     isLoading: isBlobLoading,
+    refetch: refetchRawBlob,
   } = useRepositoryRawFile(owner, repo, subPath, selectedRef)
 
   const [isCodeMenuOpen, setIsCodeMenuOpen] = useState(false)
@@ -186,11 +189,15 @@ export function RepositoryPage() {
           <IssueList owner={owner} repo={repo} />
         )
       ) : isPullsMode ? (
-        segments[1] ? (
+        segments[1] === 'new' ? (
+          <NewPullRequest owner={owner} repo={repo} defaultBase={defaultRef} />
+        ) : segments[1] ? (
           <PullRequestDetail owner={owner} repo={repo} index={segments[1]} />
         ) : (
           <PullRequestList owner={owner} repo={repo} />
         )
+      ) : isCompareMode ? (
+        <NewPullRequest owner={owner} repo={repo} defaultBase={defaultRef} />
       ) : isCommitsMode ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -258,11 +265,16 @@ export function RepositoryPage() {
           ) : (
             <BlobViewer
               filename={blobFilename}
+              path={subPath}
               content={rawBlobContent || ''}
               rawUrl={rawFileUrl}
               owner={owner}
               repo={repo}
               refName={selectedRef}
+              onContentUpdated={() => {
+                refetchRawBlob()
+                refetchRepo()
+              }}
             />
           )}
         </div>

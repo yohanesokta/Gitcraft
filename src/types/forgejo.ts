@@ -68,6 +68,23 @@ export interface ForgejoFileLinks {
   html?: string
 }
 
+export interface ForgejoContentCommitMetadata {
+  id?: string
+  sha?: string
+  message?: string
+  url?: string
+  author?: {
+    name?: string
+    email?: string
+    date?: string
+  }
+  committer?: {
+    name?: string
+    email?: string
+    date?: string
+  }
+}
+
 export interface ForgejoContent {
   name: string
   path: string
@@ -83,6 +100,8 @@ export interface ForgejoContent {
   html_url?: string | null
   download_url?: string | null
   _links?: ForgejoFileLinks
+  commit_metadata?: ForgejoContentCommitMetadata
+  commit_message?: string
 }
 
 export interface ForgejoBranch {
@@ -159,6 +178,8 @@ export interface ForgejoPullRequest {
   updated_at: string
   merged?: boolean
   merged_at?: string | null
+  merged_by?: ForgejoUser | null
+  mergeable?: boolean
   comments?: number
   head?: {
     label: string
@@ -231,4 +252,42 @@ export interface ForgejoComment {
   body: string
   created_at: string
   updated_at: string
+}
+
+export interface CreatePullRequestOptions {
+  title: string
+  base: string
+  head: string
+  body?: string
+}
+
+export interface ForgejoCompareFile {
+  filename: string
+  status?: string
+}
+
+export interface ForgejoCompare {
+  commits: ForgejoCommit[]
+  files?: ForgejoCompareFile[]
+  total_commits: number
+}
+
+export type MergeStyle = 'merge' | 'squash' | 'rebase' | 'rebase-merge'
+
+export interface MergePullRequestOptions {
+  Do: MergeStyle
+  MergeTitleField?: string
+  MergeMessageField?: string
+  delete_branch_after_merge?: boolean
+}
+
+export interface ForgejoChangedFile {
+  filename: string
+  status: string
+  additions: number
+  deletions: number
+  changes: number
+  contents_url?: string
+  raw_url?: string
+  html_url?: string
 }

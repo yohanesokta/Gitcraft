@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Octicon } from '../ui/Octicon'
 import { ForgejoContent, ForgejoCommit } from '../../types/forgejo'
+import { useFileLastCommit } from '../../hooks/useForgejo'
 
 export interface FileBrowserProps {
   owner: string
@@ -11,6 +12,96 @@ export interface FileBrowserProps {
   latestCommit?: ForgejoCommit | null
   commitCount?: number
   isLoading?: boolean
+}
+
+function formatCommitDate(dateStr?: string): string {
+  if (!dateStr) return ''
+  try {
+    const d = new Date(dateStr)
+    const now = new Date()
+    const diffSec = Math.floor((now.getTime() - d.getTime()) / 1000)
+    if (diffSec < 60) return 'just now'
+    if (diffSec < 3600) return `${Math.floor(diffSec / 60)} minutes ago`
+    if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} hours ago`
+    if (diffSec < 86400 * 30) return `${Math.floor(diffSec / 86400)} days ago`
+    if (diffSec < 86400 * 365) return `${Math.floor(diffSec / (86400 * 30))} months ago`
+    return `${Math.floor(diffSec / (86400 * 365))} years ago`
+  } catch {
+    return dateStr
+  }
+}
+
+interface FileRowProps {
+  item: ForgejoContent
+  owner: string
+  repo: string
+  refName: string
+}
+
+function FileRow({ item, owner, repo, refName }: FileRowProps) {
+  const directMessage = item.commit_message || item.commit_metadata?.message
+  const directDate =
+    item.commit_metadata?.author?.date ||
+    item.commit_metadata?.committer?.date ||
+    item.last_commit_when
+
+  const hasDirect = Boolean(directMessage)
+
+  const { data: commits, isLoading } = useFileLastCommit(
+    owner,
+    repo,
+    refName,
+    item.path,
+    !hasDirect
+  )
+
+  const fileCommit = commits && commits.length > 0 ? commits[0] : null
+  const commitMsg = hasDirect
+    ? directMessage!.split('\n')[0]
+    : fileCommit
+    ? fileCommit.commit.message.split('\n')[0]
+    : ''
+
+  const commitDateStr = hasDirect
+    ? directDate
+    : fileCommit?.commit.author.date || ''
+
+  const targetUrl =
+    item.type === 'dir'
+      ? `/${owner}/${repo}/tree/${encodeURIComponent(refName)}/${item.path}`
+      : `/${owner}/${repo}/blob/${encodeURIComponent(refName)}/${item.path}`
+
+  return (
+    <tr className="hover:bg-[#161b22]/70 transition-colors group">
+      <td className="py-2 px-3 whitespace-nowrap">
+        <Link
+          to={targetUrl}
+          className="flex items-center gap-2 text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
+        >
+          {item.type === 'dir' ? (
+            <Octicon name="file-directory" size={16} className="text-[#58a6ff]" />
+          ) : (
+            <Octicon name="file" size={16} className="text-[#8b949e]" />
+          )}
+          <span>{item.name}</span>
+        </Link>
+      </td>
+      <td className="py-2 px-3 truncate max-w-xs text-[#8b949e] group-hover:text-[#c9d1d9] hidden md:table-cell">
+        {!hasDirect && isLoading ? (
+          <span className="inline-block w-32 h-3 bg-[#21262d] rounded animate-pulse" />
+        ) : (
+          commitMsg
+        )}
+      </td>
+      <td className="py-2 px-3 whitespace-nowrap text-right text-[#8b949e] hidden md:table-cell">
+        {!hasDirect && isLoading ? (
+          <span className="inline-block w-16 h-3 bg-[#21262d] rounded animate-pulse" />
+        ) : (
+          formatCommitDate(commitDateStr)
+        )}
+      </td>
+    </tr>
+  )
 }
 
 export function FileBrowser({
@@ -33,17 +124,13 @@ export function FileBrowser({
   const isSubdirectory = pathSegments.length > 0
   const parentPath = pathSegments.slice(0, -1).join('/')
 
-  const commitDate = latestCommit?.commit.author.date
-    ? new Date(latestCommit.commit.author.date).toLocaleDateString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
+  const topCommitDate = latestCommit?.commit.author.date
+    ? formatCommitDate(latestCommit.commit.author.date)
     : 'recently'
 
   const authorName = latestCommit?.author?.login || latestCommit?.commit.author.name || owner
   const avatarUrl = latestCommit?.author?.avatar_url || '/default-avatar.jpg'
-  const commitMsg = latestCommit?.commit.message.split('\n')[0] || 'Initial commit'
+  const topCommitMsg = latestCommit?.commit.message.split('\n')[0] || 'Initial commit'
   const shortSha = latestCommit?.sha ? latestCommit.sha.slice(0, 7) : ''
 
   return (
@@ -66,7 +153,7 @@ export function FileBrowser({
               {authorName}
             </Link>
             <span className="text-[#e6edf3] truncate">
-              {commitMsg}
+              {topCommitMsg}
             </span>
           </div>
 
@@ -80,7 +167,7 @@ export function FileBrowser({
               </Link>
             )}
             <span>&middot;</span>
-            <span>{commitDate}</span>
+            <span>{topCommitDate}</span>
             <Link
               to={`/${owner}/${repo}/commits/${refName}`}
               className="flex items-center gap-1.5 font-bold text-[#e6edf3] hover:text-[#58a6ff] ml-1"
@@ -131,39 +218,15 @@ export function FileBrowser({
               </tr>
             )}
 
-            {sortedItems.map((item) => {
-              const targetUrl =
-                item.type === 'dir'
-                  ? `/${owner}/${repo}/tree/${encodeURIComponent(refName)}/${item.path}`
-                  : `/${owner}/${repo}/blob/${encodeURIComponent(refName)}/${item.path}`
-
-              return (
-                <tr
-                  key={item.path}
-                  className="hover:bg-[#161b22]/70 transition-colors group"
-                >
-                  <td className="py-2 px-3 whitespace-nowrap">
-                    <Link
-                      to={targetUrl}
-                      className="flex items-center gap-2 text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
-                    >
-                      {item.type === 'dir' ? (
-                        <Octicon name="file-directory" size={16} className="text-[#58a6ff]" />
-                      ) : (
-                        <Octicon name="file" size={16} className="text-[#8b949e]" />
-                      )}
-                      <span>{item.name}</span>
-                    </Link>
-                  </td>
-                  <td className="py-2 px-3 truncate max-w-xs text-[#8b949e] group-hover:text-[#c9d1d9] hidden md:table-cell">
-                    {commitMsg}
-                  </td>
-                  <td className="py-2 px-3 whitespace-nowrap text-right text-[#8b949e] hidden md:table-cell">
-                    {commitDate}
-                  </td>
-                </tr>
-              )
-            })}
+            {sortedItems.map((item) => (
+              <FileRow
+                key={item.path}
+                item={item}
+                owner={owner}
+                repo={repo}
+                refName={refName}
+              />
+            ))}
           </tbody>
         </table>
       )}
