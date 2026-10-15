@@ -195,3 +195,12 @@ export interface ForgejoHeatmapItem {
   timestamp: number
   contributions: number
 }
+
+export interface ForgejoTag {
+  name: string
+  id: string
+  commit: {
+    sha: string
+    url: string
+  }
+}

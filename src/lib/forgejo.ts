@@ -10,6 +10,7 @@ import {
   ForgejoRelease,
   ForgejoVersion,
   ForgejoHeatmapItem,
+  ForgejoTag,
 } from '../types/forgejo'
 
 export class ForgejoApiError extends Error {
@@ -36,6 +37,8 @@ export function getForgejoBaseUrl(): string {
   return 'https://codeberg.org'
 }
 
+export type AuthType = 'token' | 'basic'
+
 export function getAuthToken(): string | null {
   try {
     return localStorage.getItem('gitcraft_auth_token') || sessionStorage.getItem('gitcraft_auth_token')
@@ -44,19 +47,58 @@ export function getAuthToken(): string | null {
   }
 }
 
-export function setAuthToken(token: string | null, remember: boolean = true): void {
+export function getAuthType(): AuthType {
+  try {
+    const val = localStorage.getItem('gitcraft_auth_type') || sessionStorage.getItem('gitcraft_auth_type')
+    if (val === 'basic' || val === 'token') {
+      return val
+    }
+  } catch {
+  }
+  const token = getAuthToken()
+  if (token) {
+    try {
+      const decoded = atob(token)
+      if (decoded.includes(':') && decoded.length > 2) {
+        return 'basic'
+      }
+    } catch {
+    }
+  }
+  return 'token'
+}
+
+export function getAuthHeader(): string | null {
+  const token = getAuthToken()
+  if (!token) return null
+  const authType = getAuthType()
+  if (authType === 'basic') {
+    return `Basic ${token}`
+  }
+  return `token ${token}`
+}
+
+export function setAuthToken(token: string | null, type: AuthType = 'token', remember: boolean = true): void {
   try {
     if (token) {
       if (remember) {
         localStorage.setItem('gitcraft_auth_token', token)
+        localStorage.setItem('gitcraft_auth_type', type)
       } else {
         sessionStorage.setItem('gitcraft_auth_token', token)
+        sessionStorage.setItem('gitcraft_auth_type', type)
       }
     } else {
       localStorage.removeItem('gitcraft_auth_token')
       sessionStorage.removeItem('gitcraft_auth_token')
+      localStorage.removeItem('gitcraft_auth_type')
+      sessionStorage.removeItem('gitcraft_auth_type')
       localStorage.removeItem('gitcraft_user')
     }
+  } catch {
+  }
+  try {
+    window.dispatchEvent(new Event('gitcraft_auth_change'))
   } catch {
   }
 }
@@ -88,13 +130,13 @@ export async function forgejoFetch<T>(endpoint: string, init?: RequestInit): Pro
   const cleanPath = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
   const targetUrl = `${baseUrl}/api/v1${cleanPath}`
 
-  const token = getAuthToken()
+  const authHeader = getAuthHeader()
   const customHeaders: Record<string, string> = {
     Accept: 'application/json',
   }
 
-  if (token) {
-    customHeaders['Authorization'] = `token ${token}`
+  if (authHeader) {
+    customHeaders['Authorization'] = authHeader
   }
 
   const response = await fetch(targetUrl, {
@@ -161,7 +203,7 @@ export async function loginUser(
   const isLikelyToken = trimmedKey.length >= 30 && !trimmedKey.includes(' ')
 
   if (isLikelyToken) {
-    setAuthToken(trimmedKey, remember)
+    setAuthToken(trimmedKey, 'token', remember)
     try {
       const user = await forgejoFetch<ForgejoUser>('/user')
       setStoredUser(user)
@@ -200,13 +242,17 @@ export async function loginUser(
 
   const user = (await response.json()) as ForgejoUser
   setStoredUser(user)
-  setAuthToken(credentials, remember)
+  setAuthToken(credentials, 'basic', remember)
   return user
 }
 
 export function logoutUser(): void {
   setAuthToken(null)
   setStoredUser(null)
+  try {
+    window.dispatchEvent(new Event('gitcraft_auth_change'))
+  } catch {
+  }
 }
 
 export async function searchRepositories(
@@ -357,4 +403,37 @@ export async function getRepositoryLanguages(
   return forgejoFetch<Record<string, number>>(
     `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/languages`
   )
+}
+
+export async function getRepositoryTags(owner: string, repo: string): Promise<ForgejoTag[]> {
+  return forgejoFetch<ForgejoTag[]>(`/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/tags`)
+}
+
+export async function getRepositoryRawFile(
+  owner: string,
+  repo: string,
+  filepath: string,
+  ref?: string
+): Promise<string> {
+  const baseUrl = getForgejoBaseUrl()
+  const cleanPath = filepath.replace(/^\/+/, '')
+  const params = new URLSearchParams()
+  if (ref) {
+    params.set('ref', ref)
+  }
+  const query = params.toString() ? `?${params.toString()}` : ''
+  const targetUrl = `${baseUrl}/api/v1/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/raw/${cleanPath}${query}`
+  const authHeader = getAuthHeader()
+  const customHeaders: Record<string, string> = {}
+  if (authHeader) {
+    customHeaders['Authorization'] = authHeader
+  }
+  let res = await fetch(targetUrl, { headers: customHeaders })
+  if (!res.ok && res.status === 401 && authHeader) {
+    res = await fetch(targetUrl)
+  }
+  if (!res.ok) {
+    throw new ForgejoApiError(`Failed to fetch raw file: ${res.statusText}`, res.status, res.statusText, targetUrl)
+  }
+  return res.text()
 }

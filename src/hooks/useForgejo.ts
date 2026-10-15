@@ -13,6 +13,9 @@ import {
   getUserHeatmap,
   getCurrentUser,
   getRepositoryLanguages,
+  getRepositoryBranches,
+  getRepositoryTags,
+  getRepositoryRawFile,
 } from '../lib/forgejo'
 
 export function useForgejoVersion() {
@@ -139,6 +142,36 @@ export function useRepositoryLanguages(owner?: string, repo?: string) {
     queryFn: () => getRepositoryLanguages(owner!, repo!),
     enabled: Boolean(owner && repo),
     staleTime: 1000 * 60 * 10,
+    retry: 1,
+  })
+}
+
+export function useRepositoryBranches(owner?: string, repo?: string) {
+  return useQuery({
+    queryKey: ['forgejo', 'branches', owner, repo],
+    queryFn: () => getRepositoryBranches(owner!, repo!),
+    enabled: Boolean(owner && repo),
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+  })
+}
+
+export function useRepositoryTags(owner?: string, repo?: string) {
+  return useQuery({
+    queryKey: ['forgejo', 'tags', owner, repo],
+    queryFn: () => getRepositoryTags(owner!, repo!),
+    enabled: Boolean(owner && repo),
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+  })
+}
+
+export function useRepositoryRawFile(owner?: string, repo?: string, filepath?: string, ref?: string) {
+  return useQuery({
+    queryKey: ['forgejo', 'raw', owner, repo, filepath, ref],
+    queryFn: () => getRepositoryRawFile(owner!, repo!, filepath!, ref),
+    enabled: Boolean(owner && repo && filepath),
+    staleTime: 1000 * 60 * 5,
     retry: 1,
   })
 }

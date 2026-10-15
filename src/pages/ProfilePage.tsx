@@ -1,5 +1,5 @@
 import { useState, useDeferredValue } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useSearchParams } from 'react-router-dom'
 import {
   useUser,
   useUserRepositories,
@@ -16,7 +16,16 @@ export function ProfilePage() {
   const { owner } = useParams<{ owner: string }>()
   const targetUsername = owner || 'yohanesokta'
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'repositories' | 'projects' | 'packages' | 'stars'>('repositories')
+  const [searchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const activeTab =
+    tabParam === 'repositories' ||
+    tabParam === 'projects' ||
+    tabParam === 'packages' ||
+    tabParam === 'stars'
+      ? tabParam
+      : 'overview'
+
   const [searchInput, setSearchInput] = useState('')
   const deferredQuery = useDeferredValue(searchInput)
 
@@ -58,10 +67,9 @@ export function ProfilePage() {
     <div className="space-y-6">
       <div className="border-b border-[#21262d] -mx-4 sm:-mx-6 px-4 sm:px-6">
         <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar -mb-[1px]">
-          <button
-            type="button"
-            onClick={() => setActiveTab('overview')}
-            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          <Link
+            to={`/${targetUsername}`}
+            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'overview'
                 ? 'border-[#f78166] text-[#e6edf3] font-semibold'
                 : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
@@ -69,12 +77,11 @@ export function ProfilePage() {
           >
             <Octicon name="book" size={16} />
             <span>Overview</span>
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('repositories')}
-            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          <Link
+            to={`/${targetUsername}?tab=repositories`}
+            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'repositories'
                 ? 'border-[#f78166] text-[#e6edf3] font-semibold'
                 : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
@@ -85,12 +92,11 @@ export function ProfilePage() {
             <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
               {repoCount}
             </span>
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('projects')}
-            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          <Link
+            to={`/${targetUsername}?tab=projects`}
+            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'projects'
                 ? 'border-[#f78166] text-[#e6edf3] font-semibold'
                 : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
@@ -98,12 +104,11 @@ export function ProfilePage() {
           >
             <Octicon name="table" size={16} />
             <span>Projects</span>
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('packages')}
-            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          <Link
+            to={`/${targetUsername}?tab=packages`}
+            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'packages'
                 ? 'border-[#f78166] text-[#e6edf3] font-semibold'
                 : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
@@ -111,12 +116,11 @@ export function ProfilePage() {
           >
             <Octicon name="repo" size={16} />
             <span>Packages</span>
-          </button>
+          </Link>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('stars')}
-            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          <Link
+            to={`/${targetUsername}?tab=stars`}
+            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'stars'
                 ? 'border-[#f78166] text-[#e6edf3] font-semibold'
                 : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
@@ -127,7 +131,7 @@ export function ProfilePage() {
             <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
               {starCount}
             </span>
-          </button>
+          </Link>
         </nav>
       </div>
 
