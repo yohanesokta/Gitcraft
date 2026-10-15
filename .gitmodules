@@ -1,0 +1,3 @@
+[submodule "vendor/forgejo"]
+	path = vendor/forgejo
+	url = https://codeberg.org/forgejo/forgejo.git
