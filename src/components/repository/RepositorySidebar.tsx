@@ -1,18 +1,30 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Octicon } from '../ui/Octicon'
 import { ForgejoRepository } from '../../types/forgejo'
+import { getStoredUser } from '../../lib/forgejo'
+import { EditAboutModal } from './EditAboutModal'
 
 export interface RepositorySidebarProps {
   repository: ForgejoRepository
   languagesData?: Record<string, number>
   hasLicense?: boolean
+  onRepositoryUpdated?: () => void
 }
 
 export function RepositorySidebar({
   repository,
   languagesData,
   hasLicense = false,
+  onRepositoryUpdated,
 }: RepositorySidebarProps) {
+  const [isEditAboutOpen, setIsEditAboutOpen] = useState(false)
+  const currentUser = getStoredUser()
+  const canManage = Boolean(
+    repository.permissions?.admin ||
+    (currentUser && repository.owner.login === currentUser.login)
+  )
+
   const languageColors: Record<string, string> = {
     TypeScript: '#3178c6',
     JavaScript: '#f1e05a',
@@ -47,13 +59,16 @@ export function RepositorySidebar({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-[#e6edf3]">About</h2>
-          <button
-            type="button"
-            aria-label="Edit repository details"
-            className="text-[#8b949e] hover:text-[#e6edf3] cursor-pointer"
-          >
-            <Octicon name="gear" size={14} />
-          </button>
+          {canManage && (
+            <button
+              type="button"
+              onClick={() => setIsEditAboutOpen(true)}
+              aria-label="Edit repository details"
+              className="text-[#8b949e] hover:text-[#e6edf3] cursor-pointer"
+            >
+              <Octicon name="gear" size={14} />
+            </button>
+          )}
         </div>
 
         {repository.description ? (
@@ -120,7 +135,19 @@ export function RepositorySidebar({
       </div>
 
       <div className="border-t border-[#30363d] pt-4 space-y-2">
-        <h2 className="text-sm font-semibold text-[#e6edf3]">Releases</h2>
+        <div className="flex items-center justify-between">
+          <Link
+            to={`/${repository.owner.login}/${repository.name}/releases`}
+            className="text-sm font-semibold text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
+          >
+            Releases
+          </Link>
+          {repository.release_counter ? (
+            <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+              {repository.release_counter}
+            </span>
+          ) : null}
+        </div>
         <p className="text-xs text-[#8b949e]">
           {repository.release_counter ? `${repository.release_counter} releases` : 'No releases published'}
         </p>
@@ -208,6 +235,13 @@ export function RepositorySidebar({
           </div>
         </div>
       )}
+
+      <EditAboutModal
+        repository={repository}
+        isOpen={isEditAboutOpen}
+        onClose={() => setIsEditAboutOpen(false)}
+        onUpdated={onRepositoryUpdated}
+      />
     </aside>
   )
 }

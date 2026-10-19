@@ -332,6 +332,22 @@ export interface EditRepoOptions {
   has_wiki?: boolean
   has_pull_requests?: boolean
   has_projects?: boolean
+  allow_merge_commits?: boolean
+  allow_squash_merge?: boolean
+  allow_rebase?: boolean
+  allow_rebase_explicit?: boolean
+  autodetect_manual_merge?: boolean
+  ignore_whitespace_conflicts?: boolean
   archived?: boolean
 }
+
+export interface CreateReleaseOptions {
+  tag_name: string
+  target_commitish?: string
+  name: string
+  body?: string
+  draft?: boolean
+  prerelease?: boolean
+}
+
 

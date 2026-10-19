@@ -156,13 +156,6 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
       active: location.pathname.startsWith(`${basePath}/pulls`),
     },
     {
-      id: 'agents',
-      label: 'Agents',
-      path: `${basePath}/agents`,
-      icon: <Octicon name="organization" size={16} />,
-      active: location.pathname.startsWith(`${basePath}/agents`),
-    },
-    {
       id: 'actions',
       label: 'Actions',
       path: `${basePath}/actions`,

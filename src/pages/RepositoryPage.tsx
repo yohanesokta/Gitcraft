@@ -24,6 +24,10 @@ import { PullRequestList } from '../components/repository/PullRequestList'
 import { PullRequestDetail } from '../components/repository/PullRequestDetail'
 import { NewPullRequest } from '../components/repository/NewPullRequest'
 import { RepositorySettings } from '../components/repository/RepositorySettings'
+import { RepositoryActions } from '../components/repository/RepositoryActions'
+import { RepositoryProjects } from '../components/repository/RepositoryProjects'
+import { ReleaseList } from '../components/repository/ReleaseList'
+import { NewRelease } from '../components/repository/NewRelease'
 import { Skeleton } from '../components/ui/Skeleton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Octicon } from '../components/ui/Octicon'
@@ -95,7 +99,10 @@ export function RepositoryPage() {
   const isIssuesMode = routeMode === 'issues'
   const isPullsMode = routeMode === 'pulls'
   const isCompareMode = routeMode === 'compare'
+  const isActionsMode = routeMode === 'actions'
+  const isProjectsMode = routeMode === 'projects'
   const isSettingsMode = routeMode === 'settings'
+  const isReleasesMode = routeMode === 'releases'
 
   const blobFilename = segments[segments.length - 1] || ''
   const {
@@ -197,6 +204,16 @@ export function RepositoryPage() {
           <div className="p-8 text-center text-xs text-[#8b949e] border border-[#30363d] rounded-md bg-[#161b22]">
             You do not have administrative access to this repository.
           </div>
+        )
+      ) : isActionsMode ? (
+        <RepositoryActions repository={repository} owner={owner} repo={repo} />
+      ) : isProjectsMode ? (
+        <RepositoryProjects repository={repository} owner={owner} repo={repo} />
+      ) : isReleasesMode ? (
+        segments[1] === 'new' ? (
+          <NewRelease owner={owner} repo={repo} defaultBranch={defaultRef} />
+        ) : (
+          <ReleaseList owner={owner} repo={repo} repository={repository} />
         )
       ) : isIssuesMode ? (
         segments[1] ? (
@@ -446,6 +463,7 @@ export function RepositoryPage() {
             repository={repository}
             languagesData={languagesData}
             hasLicense={Boolean(licenseItem)}
+            onRepositoryUpdated={refetchRepo}
           />
         </div>
       )}

@@ -22,6 +22,7 @@ import {
   UpdateUserSettingsOptions,
   CreateForkOption,
   EditRepoOptions,
+  CreateReleaseOptions,
 } from '../types/forgejo'
 
 export class ForgejoApiError extends Error {
@@ -602,6 +603,34 @@ export async function getRepositoryReleases(
   )
 }
 
+export async function createRelease(
+  owner: string,
+  repo: string,
+  options: CreateReleaseOptions
+): Promise<ForgejoRelease> {
+  return forgejoFetch<ForgejoRelease>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/releases`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(options),
+    }
+  )
+}
+
+export async function deleteRelease(
+  owner: string,
+  repo: string,
+  id: number | string
+): Promise<void> {
+  await forgejoFetch<unknown>(
+    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/releases/${encodeURIComponent(String(id))}`,
+    {
+      method: 'DELETE',
+    }
+  )
+}
+
 export async function getUser(username: string): Promise<ForgejoUser> {
   return forgejoFetch<ForgejoUser>(`/users/${encodeURIComponent(username)}`)
 }
@@ -818,4 +847,32 @@ export function toggleRepoPinned(username: string, repoName: string): boolean {
   setUserPinnedRepos(username, updated)
   return isNowPinned
 }
+
+export async function getRepositoryTopics(owner: string, repo: string): Promise<string[]> {
+  try {
+    const res = await forgejoFetch<{ topics: string[] }>(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/topics`
+    )
+    return res.topics || []
+  } catch {
+    return []
+  }
+}
+
+export async function updateRepositoryTopics(owner: string, repo: string, topics: string[]): Promise<string[]> {
+  try {
+    const res = await forgejoFetch<{ topics: string[] }>(
+      `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/topics`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topics }),
+      }
+    )
+    return res.topics || topics
+  } catch {
+    return topics
+  }
+}
+
 

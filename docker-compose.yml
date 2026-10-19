@@ -1,0 +1,29 @@
+networks:
+  forgejo:
+    external: false
+
+services:
+  web:
+    image: ghcr.io/yohanesokta/gitcraft:latest
+    container_name: github-web
+    # environment:
+    #   - VITE_FORGEJO_URL= THROW URL PUBLIC FORGEJO SERVER 
+    networks:
+      - forgejo
+    ports:
+      - '80:80'
+  server:
+    image: codeberg.org/forgejo/forgejo:15
+    container_name: forgejo
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    networks:
+      - forgejo
+    volumes:
+      - ./forgejo:/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - '3000:3000'
+      - '222:22'
