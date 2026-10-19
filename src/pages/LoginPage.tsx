@@ -30,31 +30,31 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0d1117] text-[#e6edf3] flex flex-col justify-between py-8 px-4">
+    <div className="min-h-screen bg-canvas-default text-fg-default flex flex-col justify-between py-8 px-4">
       <div className="w-full max-w-[340px] mx-auto space-y-4">
         <div className="text-center pt-4">
-          <Link to="/" className="inline-block text-[#e6edf3] hover:text-[#58a6ff] transition-colors">
+          <Link to="/" className="inline-block text-fg-default hover:text-accent-fg transition-colors">
             <Octicon name="mark-github" size={48} />
           </Link>
-          <h1 className="text-2xl font-light text-[#e6edf3] mt-6 tracking-tight">
-            Sign in to GitHub
+          <h1 className="text-2xl font-light text-fg-default mt-6 tracking-tight">
+            Sign in to Gitcraft
           </h1>
         </div>
 
         {errorMessage && (
-          <div className="p-3 bg-[#f85149]/15 border border-[#f85149]/40 rounded-md text-xs text-[#f85149] text-center">
+          <div className="p-3 bg-danger-fg/10 border border-danger-fg/30 rounded-[var(--radius-control)] text-xs text-danger-fg text-center">
             {errorMessage}
           </div>
         )}
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[#161b22] border border-[#30363d] rounded-md p-4 space-y-4"
+          className="bg-canvas-subtle border border-border-default rounded-[var(--radius-card)] p-5 space-y-4"
         >
           <div className="space-y-1.5">
             <label
               htmlFor="login_field"
-              className="block text-sm font-normal text-[#e6edf3]"
+              className="block text-xs font-medium text-fg-default"
             >
               Username or email address
             </label>
@@ -65,7 +65,7 @@ export function LoginPage() {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-1.5 text-sm bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] focus:ring-1 focus:ring-[#58a6ff] transition-all"
+              className="w-full px-3 py-1.5 text-xs bg-canvas-default text-fg-default border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg focus:ring-1 focus:ring-accent-fg transition-all"
             />
           </div>
 
@@ -73,13 +73,13 @@ export function LoginPage() {
             <div className="flex items-center justify-between">
               <label
                 htmlFor="password_field"
-                className="block text-sm font-normal text-[#e6edf3]"
+                className="block text-xs font-medium text-fg-default"
               >
                 Password
               </label>
               <Link
                 to="#"
-                className="text-xs text-[#58a6ff] hover:underline"
+                className="text-xs text-accent-fg hover:underline"
               >
                 Forgot password?
               </Link>
@@ -90,35 +90,33 @@ export function LoginPage() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-1.5 text-sm bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] focus:ring-1 focus:ring-[#58a6ff] transition-all"
+              className="w-full px-3 py-1.5 text-xs bg-canvas-default text-fg-default border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg focus:ring-1 focus:ring-accent-fg transition-all"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-1.5 px-3 rounded-md text-sm font-semibold bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 text-white border border-[#2ea043] transition-colors cursor-pointer shadow-sm"
+            className="w-full py-1.5 px-3 rounded-[var(--radius-control)] text-xs font-medium bg-accent-fg hover:bg-accent-hover disabled:opacity-50 text-accent-text active:scale-[0.97] transition-all cursor-pointer shadow-sm"
           >
             {isLoading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
 
-        <div className="border border-[#30363d] rounded-md p-4 text-center text-sm text-[#e6edf3]">
-          New to GitHub?{' '}
-          <Link to="/signup" className="text-[#58a6ff] hover:underline">
+        <div className="border border-border-default rounded-[var(--radius-card)] p-4 text-center text-xs text-fg-default bg-canvas-subtle">
+          New to Gitcraft?{' '}
+          <Link to="/signup" className="text-accent-fg hover:underline font-medium">
             Create an account
           </Link>
         </div>
       </div>
 
       <footer className="pt-12 text-center">
-        <nav className="flex flex-wrap items-center justify-center gap-4 text-xs text-[#58a6ff]">
-          <a href="https://docs.github.com" target="_blank" rel="noreferrer" className="hover:underline">Terms</a>
-          <a href="https://docs.github.com" target="_blank" rel="noreferrer" className="hover:underline">Privacy</a>
-          <a href="https://docs.github.com" target="_blank" rel="noreferrer" className="hover:underline">Docs</a>
-          <a href="https://support.github.com" target="_blank" rel="noreferrer" className="hover:underline">Contact GitHub Support</a>
-          <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:underline">Manage cookies</a>
-          <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:underline">Do not share my personal information</a>
+        <nav className="flex flex-wrap items-center justify-center gap-4 text-xs text-fg-muted">
+          <a href="#" className="hover:text-accent-fg hover:underline">Terms</a>
+          <a href="#" className="hover:text-accent-fg hover:underline">Privacy</a>
+          <a href="#" className="hover:text-accent-fg hover:underline">Docs</a>
+          <a href="#" className="hover:text-accent-fg hover:underline">Contact Support</a>
         </nav>
       </footer>
     </div>

@@ -5,11 +5,13 @@ import { Octicon } from '../ui/Octicon'
 export interface GlobalSearchProps {
   initialQuery?: string
   placeholder?: string
+  onOpenCommandPalette?: () => void
 }
 
 export function GlobalSearch({
   initialQuery = '',
   placeholder = 'Type / to search',
+  onOpenCommandPalette,
 }: GlobalSearchProps) {
   const [query, setQuery] = useState(initialQuery)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -43,7 +45,7 @@ export function GlobalSearch({
   return (
     <form onSubmit={handleSubmit} className="relative w-full max-w-xs md:max-w-sm">
       <div className="relative flex items-center">
-        <span className="absolute left-2.5 text-[#8b949e] pointer-events-none flex items-center">
+        <span className="absolute left-2.5 text-fg-muted pointer-events-none flex items-center">
           <Octicon name="search" size={14} />
         </span>
         <input
@@ -52,11 +54,24 @@ export function GlobalSearch({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-8 pr-8 py-1 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] focus:ring-1 focus:ring-[#58a6ff] transition-all h-8"
+          className="w-full pl-8 pr-12 py-1 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg focus:ring-1 focus:ring-accent-fg transition-all h-8"
         />
-        <kbd className="absolute right-2 text-[10px] text-[#8b949e] border border-[#30363d] bg-[#21262d] px-1.5 py-0.5 rounded font-mono pointer-events-none">
-          /
-        </kbd>
+        <div className="absolute right-2 flex items-center gap-1">
+          {onOpenCommandPalette ? (
+            <button
+              type="button"
+              onClick={onOpenCommandPalette}
+              title="Open Command Palette (⌘K)"
+              className="text-[10px] font-mono text-fg-subtle border border-border-default bg-canvas-subtle px-1.5 py-0.5 rounded hover:text-fg-default hover:bg-canvas-hover transition-colors cursor-pointer"
+            >
+              ⌘K
+            </button>
+          ) : (
+            <kbd className="text-[10px] font-mono text-fg-subtle border border-border-default bg-canvas-subtle px-1.5 py-0.5 rounded pointer-events-none">
+              /
+            </kbd>
+          )}
+        </div>
       </div>
     </form>
   )

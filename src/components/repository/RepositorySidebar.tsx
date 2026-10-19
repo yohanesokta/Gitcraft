@@ -58,13 +58,13 @@ export function RepositorySidebar({
     <aside className="space-y-6">
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-[#e6edf3]">About</h2>
+          <h2 className="text-sm font-semibold text-fg-default">About</h2>
           {canManage && (
             <button
               type="button"
               onClick={() => setIsEditAboutOpen(true)}
               aria-label="Edit repository details"
-              className="text-[#8b949e] hover:text-[#e6edf3] cursor-pointer"
+              className="text-fg-muted hover:text-fg-default cursor-pointer p-1 rounded-md hover:bg-canvas-hover transition-colors"
             >
               <Octicon name="gear" size={14} />
             </button>
@@ -72,18 +72,18 @@ export function RepositorySidebar({
         </div>
 
         {repository.description ? (
-          <p className="text-xs text-[#e6edf3] leading-relaxed">
+          <p className="text-xs text-fg-default leading-relaxed">
             {repository.description}
           </p>
         ) : (
-          <p className="text-xs text-[#8b949e] italic">
+          <p className="text-xs text-fg-muted italic">
             No description, website, or topics provided.
           </p>
         )}
 
         {repository.website && (
-          <div className="flex items-center gap-2 text-xs text-[#58a6ff]">
-            <Octicon name="link" size={14} className="text-[#8b949e] shrink-0" />
+          <div className="flex items-center gap-2 text-xs text-accent-fg">
+            <Octicon name="link" size={14} className="text-fg-muted shrink-0" />
             <a
               href={repository.website.startsWith('http') ? repository.website : `https://${repository.website}`}
               target="_blank"
@@ -100,7 +100,7 @@ export function RepositorySidebar({
             {repository.topics.map((t) => (
               <span
                 key={t}
-                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1f6feb]/15 text-[#58a6ff] hover:bg-[#1f6feb]/25 cursor-pointer transition-colors"
+                className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-subtle text-accent-fg hover:opacity-80 cursor-pointer transition-opacity"
               >
                 {t}
               </span>
@@ -108,79 +108,79 @@ export function RepositorySidebar({
           </div>
         )}
 
-        <div className="space-y-2 pt-2 text-xs text-[#8b949e]">
+        <div className="space-y-2.5 pt-2 text-xs text-fg-muted">
           {hasLicense && (
-            <div className="flex items-center gap-2 hover:text-[#58a6ff] cursor-pointer">
+            <div className="flex items-center gap-2 hover:text-accent-fg cursor-pointer transition-colors">
               <Octicon name="law" size={14} />
               <span>Apache-2.0 license</span>
             </div>
           )}
-          <div className="flex items-center gap-2 hover:text-[#58a6ff] cursor-pointer">
+          <div className="flex items-center gap-2 hover:text-accent-fg cursor-pointer transition-colors">
             <Octicon name="pulse" size={14} />
             <span>Activity</span>
           </div>
-          <div className="flex items-center gap-2 hover:text-[#58a6ff] cursor-pointer">
+          <div className="flex items-center gap-2 hover:text-accent-fg cursor-pointer transition-colors">
             <Octicon name="star" size={14} />
             <span>{repository.stars_count} stars</span>
           </div>
-          <div className="flex items-center gap-2 hover:text-[#58a6ff] cursor-pointer">
+          <div className="flex items-center gap-2 hover:text-accent-fg cursor-pointer transition-colors">
             <Octicon name="eye" size={14} />
             <span>{repository.watchers_count} watching</span>
           </div>
-          <div className="flex items-center gap-2 hover:text-[#58a6ff] cursor-pointer">
+          <div className="flex items-center gap-2 hover:text-accent-fg cursor-pointer transition-colors">
             <Octicon name="repo-forked" size={14} />
             <span>{repository.forks_count} forks</span>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-[#30363d] pt-4 space-y-2">
+      <div className="border-t border-border-default pt-4 space-y-2">
         <div className="flex items-center justify-between">
           <Link
             to={`/${repository.owner.login}/${repository.name}/releases`}
-            className="text-sm font-semibold text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
+            className="text-sm font-semibold text-fg-default hover:text-accent-fg hover:underline"
           >
             Releases
           </Link>
           {repository.release_counter ? (
-            <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+            <span className="px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
               {repository.release_counter}
             </span>
           ) : null}
         </div>
-        <p className="text-xs text-[#8b949e]">
+        <p className="text-xs text-fg-muted">
           {repository.release_counter ? `${repository.release_counter} releases` : 'No releases published'}
         </p>
         <Link
           to={`/${repository.owner.login}/${repository.name}/releases/new`}
-          className="inline-block text-xs text-[#58a6ff] hover:underline"
+          className="inline-block text-xs text-accent-fg hover:underline font-medium"
         >
           Create a new release
         </Link>
       </div>
 
-      <div className="border-t border-[#30363d] pt-4 space-y-2">
-        <h2 className="text-sm font-semibold text-[#e6edf3]">Packages</h2>
-        <p className="text-xs text-[#8b949e]">No packages published</p>
+      <div className="border-t border-border-default pt-4 space-y-2">
+        <h2 className="text-sm font-semibold text-fg-default">Packages</h2>
+        <p className="text-xs text-fg-muted">No packages published</p>
         <Link
           to="#"
-          className="inline-block text-xs text-[#58a6ff] hover:underline"
+          className="inline-block text-xs text-accent-fg hover:underline font-medium"
         >
           Publish your first package
         </Link>
       </div>
 
-      <div className="border-t border-[#30363d] pt-4 space-y-2">
+      <div className="border-t border-border-default pt-4 space-y-2">
         <div className="flex items-center gap-1.5">
-          <h2 className="text-sm font-semibold text-[#e6edf3]">Contributors</h2>
-          <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+          <h2 className="text-sm font-semibold text-fg-default">Contributors</h2>
+          <span className="px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
             1
           </span>
         </div>
         <div className="flex items-center gap-2 pt-1">
           <Link
             to={`/${repository.owner.login}`}
-            className="flex items-center gap-2 text-xs text-[#58a6ff] hover:underline group"
+            className="flex items-center gap-2 text-xs text-accent-fg hover:underline group"
           >
             <img
               src={repository.owner.avatar_url || '/default-avatar.jpg'}
@@ -188,14 +188,14 @@ export function RepositorySidebar({
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = '/default-avatar.jpg'
               }}
-              className="w-8 h-8 rounded-full border border-[#30363d] object-cover"
+              className="w-8 h-8 rounded-full border border-border-default object-cover"
             />
             <div className="text-xs">
-              <span className="font-semibold text-[#e6edf3] group-hover:text-[#58a6ff] block">
+              <span className="font-semibold text-fg-default group-hover:text-accent-fg block">
                 {repository.owner.login}
               </span>
               {repository.owner.full_name && (
-                <span className="text-[#8b949e] block">
+                <span className="text-fg-muted block">
                   {repository.owner.full_name}
                 </span>
               )}
@@ -205,15 +205,15 @@ export function RepositorySidebar({
       </div>
 
       {languageEntries.length > 0 && (
-        <div className="border-t border-[#30363d] pt-4 space-y-3">
-          <h2 className="text-sm font-semibold text-[#e6edf3]">Languages</h2>
-          <div className="w-full h-2 rounded-full overflow-hidden flex bg-[#21262d]">
+        <div className="border-t border-border-default pt-4 space-y-3">
+          <h2 className="text-sm font-semibold text-fg-default">Languages</h2>
+          <div className="w-full h-2 rounded-full overflow-hidden flex bg-canvas-raised border border-border-default">
             {languageEntries.map((lang) => (
               <div
                 key={lang.name}
                 style={{
                   width: `${lang.percentage}%`,
-                  backgroundColor: languageColors[lang.name] || '#58a6ff',
+                  backgroundColor: languageColors[lang.name] || 'var(--accent)',
                 }}
                 className="h-full"
               />
@@ -225,11 +225,11 @@ export function RepositorySidebar({
                 <span
                   className="w-2.5 h-2.5 rounded-full"
                   style={{
-                    backgroundColor: languageColors[lang.name] || '#58a6ff',
+                    backgroundColor: languageColors[lang.name] || 'var(--accent)',
                   }}
                 />
-                <span className="font-semibold text-[#e6edf3]">{lang.name}</span>
-                <span className="text-[#8b949e]">{lang.percentage}%</span>
+                <span className="font-medium text-fg-default">{lang.name}</span>
+                <span className="text-fg-muted font-mono">{lang.percentage}%</span>
               </div>
             ))}
           </div>

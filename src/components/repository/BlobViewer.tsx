@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Editor from '@monaco-editor/react'
 import { MarkdownViewer } from '../ui/MarkdownViewer'
 import { Octicon } from '../ui/Octicon'
+import { useTheme } from '../../themes/ThemeContext'
 import {
   getRepositoryContents,
   updateRepositoryFile,
@@ -128,6 +129,7 @@ export function BlobViewer({
   refName = 'main',
   onContentUpdated,
 }: BlobViewerProps) {
+  const { actualMode } = useTheme()
   const isMarkdown = filename.toLowerCase().endsWith('.md')
   const defaultLanguage = useMemo(() => getLanguageFromFilename(filename), [filename])
   const [selectedLanguage, setSelectedLanguage] = useState(defaultLanguage)
@@ -251,63 +253,63 @@ export function BlobViewer({
   return (
     <div className="space-y-4">
       {commitSuccess && (
-        <div className="p-3 bg-[#238636]/20 border border-[#238636]/50 rounded-md text-xs text-[#3fb950] flex items-center gap-2">
+        <div className="p-3 bg-success-fg/10 border border-success-fg/40 rounded-md text-xs text-success-fg flex items-center gap-2">
           <Octicon name="check" size={14} />
           <span>File successfully committed and updated!</span>
         </div>
       )}
 
-      <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#0d1117]">
-        <div className="p-3 bg-[#161b22] border-b border-[#30363d] flex items-center justify-between text-xs text-[#8b949e] flex-wrap gap-2">
+      <div className="border border-border-default rounded-lg overflow-hidden bg-canvas-default">
+        <div className="px-4 py-2.5 bg-canvas-subtle border-b border-border-default flex items-center justify-between text-xs text-fg-muted flex-wrap gap-2">
           <div className="flex items-center gap-3">
             {isMarkdown && !isEditing && (
-              <div className="inline-flex rounded-md shadow-sm border border-[#30363d] p-0.5 bg-[#0d1117]">
+              <div className="inline-flex rounded-md border border-border-default p-0.5 bg-canvas-default">
                 <button
                   type="button"
                   onClick={() => setViewMode('code')}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer active:scale-[0.97] ${
                     viewMode === 'code'
-                      ? 'bg-[#21262d] text-[#e6edf3] font-semibold'
-                      : 'text-[#8b949e] hover:text-[#e6edf3]'
+                      ? 'bg-canvas-raised text-fg-default font-semibold shadow-xs'
+                      : 'text-fg-muted hover:text-fg-default'
                   }`}
                 >
-                  <Octicon name="code" size={14} />
+                  <Octicon name="code" size={13} />
                   <span>Code</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode('preview')}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer active:scale-[0.97] ${
                     viewMode === 'preview'
-                      ? 'bg-[#21262d] text-[#e6edf3] font-semibold'
-                      : 'text-[#8b949e] hover:text-[#e6edf3]'
+                      ? 'bg-canvas-raised text-fg-default font-semibold shadow-xs'
+                      : 'text-fg-muted hover:text-fg-default'
                   }`}
                 >
-                  <Octicon name="book" size={14} />
+                  <Octicon name="book" size={13} />
                   <span>Preview</span>
                 </button>
               </div>
             )}
 
             {isEditing && (
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#1f6feb]/20 text-[#58a6ff] border border-[#1f6feb]/40 font-semibold text-xs">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accent-subtle text-accent-fg border border-accent-fg/30 font-semibold text-xs">
                 <Octicon name="pencil" size={12} />
                 <span>Editing</span>
               </span>
             )}
 
-            <div className="flex items-center gap-2 text-xs font-mono text-[#8b949e]">
+            <div className="flex items-center gap-2 text-xs font-mono text-fg-muted">
               <span>{lineCount} lines</span>
               <span>&middot;</span>
               <span>{formattedSize}</span>
             </div>
 
-            <div className="flex items-center gap-1 border-l border-[#30363d] pl-3">
-              <span className="text-[11px] text-[#8b949e]">Syntax:</span>
+            <div className="flex items-center gap-1 border-l border-border-default pl-3">
+              <span className="text-[11px] text-fg-muted">Syntax:</span>
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded px-2 py-0.5 text-xs font-mono focus:outline-none focus:border-[#58a6ff] cursor-pointer"
+                className="bg-canvas-default text-fg-default border border-border-default rounded px-2 py-0.5 text-xs font-mono focus:outline-none focus:border-accent-fg cursor-pointer"
               >
                 {SUPPORTED_LANGUAGES.map((lang) => (
                   <option key={lang} value={lang}>
@@ -323,16 +325,16 @@ export function BlobViewer({
               <button
                 type="button"
                 onClick={handleStartEdit}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
               >
-                <Octicon name="pencil" size={13} className="text-[#8b949e]" />
+                <Octicon name="pencil" size={13} className="text-fg-muted" />
                 <span>Edit file</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={handleCancelEdit}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] hover:text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-muted hover:text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
               >
                 Cancel
               </button>
@@ -343,7 +345,7 @@ export function BlobViewer({
                 href={rawUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors active:scale-[0.97]"
               >
                 Raw
               </a>
@@ -354,16 +356,16 @@ export function BlobViewer({
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
                 >
                   {hasCopied ? (
                     <>
-                      <Octicon name="check" size={14} className="text-[#3fb950]" />
-                      <span className="text-[#3fb950]">Copied!</span>
+                      <Octicon name="check" size={13} className="text-success-fg" />
+                      <span className="text-success-fg">Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Octicon name="copy" size={14} className="text-[#8b949e]" />
+                      <Octicon name="copy" size={13} className="text-fg-muted" />
                       <span>Copy raw</span>
                     </>
                   )}
@@ -373,7 +375,7 @@ export function BlobViewer({
                   type="button"
                   onClick={handleDownload}
                   aria-label="Download raw file"
-                  className="w-7 h-7 rounded-md border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] flex items-center justify-center text-[#8b949e] hover:text-[#e6edf3] transition-colors cursor-pointer"
+                  className="w-8 h-8 rounded-md border border-border-default bg-canvas-subtle hover:bg-canvas-hover flex items-center justify-center text-fg-muted hover:text-fg-default transition-colors cursor-pointer active:scale-[0.97]"
                 >
                   <Octicon name="download" size={14} />
                 </button>
@@ -383,7 +385,7 @@ export function BlobViewer({
         </div>
 
         {viewMode === 'preview' && isMarkdown && !isEditing ? (
-          <div className="p-8">
+          <div className="p-6 sm:p-8">
             <MarkdownViewer
               content={editorValue}
               owner={owner}
@@ -397,14 +399,14 @@ export function BlobViewer({
               height={editorHeight}
               language={selectedLanguage}
               value={editorValue}
-              theme="vs-dark"
+              theme={actualMode === 'dark' ? 'vs-dark' : 'light'}
               onChange={(value) => setEditorValue(value || '')}
               options={{
                 readOnly: !isEditing,
                 minimap: { enabled: lineCount > 40 },
                 scrollBeyondLastLine: false,
                 fontSize: 12,
-                fontFamily: "ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace",
+                fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, monospace",
                 automaticLayout: true,
                 wordWrap: 'on',
                 lineNumbers: 'on',
@@ -413,7 +415,7 @@ export function BlobViewer({
                 padding: { top: 8, bottom: 8 },
               }}
               loading={
-                <div className="p-8 text-center text-xs text-[#8b949e]">
+                <div className="p-8 text-center text-xs text-fg-muted">
                   Loading Monaco Editor...
                 </div>
               }
@@ -425,24 +427,24 @@ export function BlobViewer({
       {isEditing && (
         <form
           onSubmit={handleCommit}
-          className="p-5 border border-[#30363d] rounded-md bg-[#161b22] space-y-4"
+          className="p-5 border border-border-default rounded-lg bg-canvas-subtle space-y-4"
         >
-          <div className="flex items-center justify-between pb-3 border-b border-[#30363d]">
-            <h3 className="text-sm font-semibold text-[#e6edf3]">Commit changes</h3>
-            <span className="text-xs text-[#8b949e]">
-              Branch: <span className="font-mono text-[#e6edf3]">{refName}</span>
+          <div className="flex items-center justify-between pb-3 border-b border-border-default">
+            <h3 className="text-sm font-semibold text-fg-default">Commit changes</h3>
+            <span className="text-xs text-fg-muted">
+              Branch: <span className="font-mono text-fg-default">{refName}</span>
             </span>
           </div>
 
           {commitError && (
-            <div className="p-3 bg-[#f85149]/10 border border-[#f85149]/40 rounded-md text-xs text-[#f85149]">
+            <div className="p-3 bg-danger-fg/10 border border-danger-fg/40 rounded-md text-xs text-danger-fg">
               {commitError}
             </div>
           )}
 
           <div className="space-y-3">
             <div>
-              <label className="block text-xs font-medium text-[#e6edf3] mb-1">
+              <label className="block text-xs font-medium text-fg-default mb-1">
                 Commit message
               </label>
               <input
@@ -450,12 +452,12 @@ export function BlobViewer({
                 value={commitMessage}
                 onChange={(e) => setCommitMessage(e.target.value)}
                 required
-                className="w-full px-3 py-1.5 text-xs bg-[#0d1117] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+                className="w-full px-3 py-1.5 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#8b949e] mb-1">
+              <label className="block text-xs font-medium text-fg-muted mb-1">
                 Extended description (optional)
               </label>
               <textarea
@@ -463,28 +465,28 @@ export function BlobViewer({
                 onChange={(e) => setCommitDescription(e.target.value)}
                 placeholder="Add an optional extended description..."
                 rows={3}
-                className="w-full px-3 py-1.5 text-xs bg-[#0d1117] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] resize-y"
+                className="w-full px-3 py-1.5 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg resize-y"
               />
             </div>
 
-            <div className="flex items-center gap-2 pt-2 text-xs text-[#8b949e]">
-              <div className="w-2 h-2 rounded-full bg-[#3fb950]" />
-              <span>Commit directly to the <span className="font-mono text-[#e6edf3]">{refName}</span> branch</span>
+            <div className="flex items-center gap-2 pt-2 text-xs text-fg-muted">
+              <div className="w-2 h-2 rounded-full bg-success-fg" />
+              <span>Commit directly to the <span className="font-mono text-fg-default">{refName}</span> branch</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#30363d]">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-border-default">
             <button
               type="button"
               onClick={handleCancelEdit}
-              className="px-3 py-1.5 text-xs text-[#8b949e] hover:text-[#e6edf3] rounded-md border border-[#30363d] bg-[#21262d] cursor-pointer"
+              className="px-3 py-1.5 text-xs text-fg-muted hover:text-fg-default rounded-md border border-border-default bg-canvas-default cursor-pointer active:scale-[0.97]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isCommitting || !commitMessage.trim()}
-              className="px-4 py-1.5 text-xs font-semibold text-white rounded-md bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 cursor-pointer transition-colors"
+              className="px-4 py-1.5 text-xs font-semibold text-[var(--accent-text)] rounded-md bg-accent-fg hover:opacity-90 disabled:opacity-50 cursor-pointer transition-opacity active:scale-[0.97]"
             >
               {isCommitting ? 'Committing changes...' : 'Commit changes'}
             </button>

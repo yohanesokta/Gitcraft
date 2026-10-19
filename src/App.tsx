@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ThemeProvider } from './themes/ThemeContext'
 import { AppShell } from './components/layout/AppShell'
 import { HomePage } from './pages/HomePage'
 import { ProfilePage } from './pages/ProfilePage'
@@ -22,77 +23,79 @@ const queryClient = new QueryClient({
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
 
-          <Route
-            path="/"
-            element={
-              <AppShell>
-                <HomePage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="/explore"
-            element={
-              <AppShell>
-                <HomePage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="/new"
-            element={
-              <AppShell>
-                <NewRepositoryPage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="/new/repository"
-            element={
-              <AppShell>
-                <NewRepositoryPage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="/:owner"
-            element={
-              <AppShell>
-                <ProfilePage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="/:owner/:repo"
-            element={
-              <AppShell>
-                <RepositoryPage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="/:owner/:repo/*"
-            element={
-              <AppShell>
-                <RepositoryPage />
-              </AppShell>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <AppShell>
-                <NotFoundPage />
-              </AppShell>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+            <Route
+              path="/"
+              element={
+                <AppShell>
+                  <HomePage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="/explore"
+              element={
+                <AppShell>
+                  <HomePage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="/new"
+              element={
+                <AppShell>
+                  <NewRepositoryPage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="/new/repository"
+              element={
+                <AppShell>
+                  <NewRepositoryPage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="/:owner"
+              element={
+                <AppShell>
+                  <ProfilePage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="/:owner/:repo"
+              element={
+                <AppShell>
+                  <RepositoryPage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="/:owner/:repo/*"
+              element={
+                <AppShell>
+                  <RepositoryPage />
+                </AppShell>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <AppShell>
+                  <NotFoundPage />
+                </AppShell>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </QueryClientProvider>
   )
 }

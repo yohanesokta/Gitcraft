@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Command } from 'lucide-react'
 import { Octicon } from '../ui/Octicon'
 import { GlobalSearch } from './GlobalSearch'
 import { getStoredUser, getAuthToken, logoutUser } from '../../lib/forgejo'
 import { ForgejoUser } from '../../types/forgejo'
+import { useTheme } from '../../themes/ThemeContext'
 
-export function GlobalHeader() {
+export interface GlobalHeaderProps {
+  onOpenCommandPalette?: () => void
+}
+
+export function GlobalHeader({ onOpenCommandPalette }: GlobalHeaderProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const pathParts = location.pathname.split('/').filter(Boolean)
@@ -22,6 +28,8 @@ export function GlobalHeader() {
   const [isCreateMenuOpen, setIsCreateMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const createMenuRef = useRef<HTMLDivElement>(null)
+
+  const { actualMode, toggleMode, themeId, setThemeId, themes } = useTheme()
 
   useEffect(() => {
     function syncAuth() {
@@ -61,13 +69,15 @@ export function GlobalHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-[#010409] border-b border-[#21262d] px-4 py-2 text-[#e6edf3]">
-      <div className="flex items-center justify-between gap-3 h-8">
+    <header className="sticky top-0 z-50 bg-canvas-subtle border-b border-border-default px-4 py-2 text-fg-default shadow-xs">
+      <div className="flex items-center justify-between gap-3 h-8 max-w-[1280px] mx-auto">
         <div className="flex items-center gap-3">
           <button
             type="button"
             aria-label="Open menu"
-            className="w-8 h-8 rounded-md border border-[#30363d] bg-[#21262d]/50 hover:bg-[#30363d] flex items-center justify-center text-[#e6edf3] transition-colors cursor-pointer"
+            onClick={onOpenCommandPalette}
+            className="w-8 h-8 rounded-md border border-border-default bg-canvas-raised/50 hover:bg-canvas-hover flex items-center justify-center text-fg-muted hover:text-fg-default transition-colors cursor-pointer"
+            title="Open command palette (⌘K)"
           >
             <Octicon name="three-bars" size={16} />
           </button>
@@ -75,40 +85,41 @@ export function GlobalHeader() {
           <Link
             to="/"
             aria-label="Homepage"
-            className="text-[#e6edf3] hover:text-[#58a6ff] transition-colors flex items-center"
+            className="text-fg-default hover:text-accent-fg transition-colors flex items-center gap-2"
           >
-            <Octicon name="mark-github" size={32} />
+            <Octicon name="mark-github" size={26} />
+            <span className="font-semibold text-sm hidden sm:inline-block tracking-tight">Gitcraft</span>
           </Link>
 
           {isRepoPage && owner && repo ? (
             <div className="hidden sm:flex items-center gap-1.5 text-sm">
               <Link
                 to={`/${owner}`}
-                className="text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
+                className="text-fg-muted hover:text-accent-fg hover:underline transition-colors"
               >
                 {owner}
               </Link>
-              <span className="text-[#8b949e]">/</span>
+              <span className="text-fg-subtle">/</span>
               <Link
                 to={`/${owner}/${repo}`}
-                className="font-semibold text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
+                className="font-semibold text-fg-default hover:text-accent-fg hover:underline transition-colors"
               >
                 {repo}
               </Link>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full border border-[#30363d] text-[11px] text-[#8b949e]">
+              <span className="ml-1 px-1.5 py-0.2 rounded-full border border-border-default text-[11px] text-fg-muted bg-canvas-raised">
                 Public
               </span>
             </div>
           ) : isProfilePage && owner ? (
             <div className="hidden sm:flex items-center gap-1.5 text-sm">
-              <span className="font-semibold text-[#e6edf3]">
+              <span className="font-semibold text-fg-default">
                 {owner}
               </span>
             </div>
           ) : (
             <Link
               to="/"
-              className="hidden sm:inline-block font-semibold text-sm text-[#e6edf3] hover:text-[#58a6ff]"
+              className="hidden sm:inline-block font-semibold text-sm text-fg-muted hover:text-fg-default transition-colors"
             >
               Dashboard
             </Link>
@@ -116,21 +127,36 @@ export function GlobalHeader() {
         </div>
 
         <div className="flex items-center gap-2 flex-1 justify-end max-w-2xl">
-          <GlobalSearch />
+          <GlobalSearch onOpenCommandPalette={onOpenCommandPalette} />
 
-          <div className="flex items-center gap-1 text-[#e6edf3]">
+          <div className="flex items-center gap-1.5 text-fg-default">
+            {/* Theme Toggle Button (Light/Dark) */}
+            <button
+              type="button"
+              onClick={toggleMode}
+              aria-label={`Switch to ${actualMode === 'dark' ? 'light' : 'dark'} mode`}
+              title={`Switch to ${actualMode === 'dark' ? 'light' : 'dark'} mode`}
+              className="w-8 h-8 rounded-md border border-border-default bg-canvas-raised/40 hover:bg-canvas-hover flex items-center justify-center text-fg-muted hover:text-fg-default transition-colors cursor-pointer"
+            >
+              {actualMode === 'dark' ? (
+                <Octicon name="sun" size={15} />
+              ) : (
+                <Octicon name="moon" size={15} />
+              )}
+            </button>
+
             {!isLoggedIn ? (
               <>
                 <Link
                   to="/login"
-                  className="inline-flex items-center px-3 py-1 text-xs text-[#e6edf3] hover:text-[#58a6ff] transition-colors font-medium whitespace-nowrap"
+                  className="inline-flex items-center px-3 py-1 text-xs text-fg-default hover:text-accent-fg transition-colors font-medium whitespace-nowrap"
                 >
                   Sign in
                 </Link>
 
                 <Link
                   to="/signup"
-                  className="inline-flex items-center px-3 py-1 text-xs text-[#e6edf3] border border-[#30363d] rounded-md hover:border-[#8b949e] transition-colors font-medium whitespace-nowrap"
+                  className="inline-flex items-center px-3 py-1 text-xs text-fg-default border border-border-default rounded-md hover:border-border-strong hover:bg-canvas-hover transition-colors font-medium whitespace-nowrap"
                 >
                   Sign up
                 </Link>
@@ -142,48 +168,34 @@ export function GlobalHeader() {
                     type="button"
                     onClick={() => setIsCreateMenuOpen(!isCreateMenuOpen)}
                     aria-label="Create new"
-                    className="h-8 px-2 rounded-md border border-[#30363d] bg-[#21262d]/40 hover:bg-[#30363d] hidden sm:flex items-center gap-1 text-xs font-medium cursor-pointer transition-colors"
+                    className="h-8 px-2 rounded-md border border-border-default bg-canvas-raised/40 hover:bg-canvas-hover hidden sm:flex items-center gap-1 text-xs font-medium cursor-pointer transition-colors"
                   >
                     <Octicon name="plus" size={14} />
-                    <Octicon name="triangle-down" size={10} className="text-[#8b949e]" />
+                    <Octicon name="triangle-down" size={10} className="text-fg-muted" />
                   </button>
 
                   {isCreateMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-[#161b22] border border-[#30363d] rounded-md shadow-2xl z-50 py-1 text-xs text-[#e6edf3]">
+                    <div className="absolute right-0 mt-2 w-48 bg-canvas-raised border border-border-default rounded-md shadow-xl z-50 py-1 text-xs text-fg-default">
                       <Link
                         to="/new"
                         onClick={() => setIsCreateMenuOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 hover:bg-[#21262d] transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 hover:bg-canvas-hover transition-colors"
                       >
-                        <Octicon name="repo" size={14} className="text-[#8b949e]" />
+                        <Octicon name="repo" size={14} className="text-fg-muted" />
                         <span>New repository</span>
                       </Link>
                     </div>
                   )}
                 </div>
 
-                <Link
-                  to="/issues"
-                  aria-label="Issues"
-                  className="w-8 h-8 rounded-md border border-[#30363d] bg-[#21262d]/40 hover:bg-[#30363d] hidden md:flex items-center justify-center transition-colors"
-                >
-                  <Octicon name="issue-opened" size={16} />
-                </Link>
-
-                <Link
-                  to="/pulls"
-                  aria-label="Pull requests"
-                  className="w-8 h-8 rounded-md border border-[#30363d] bg-[#21262d]/40 hover:bg-[#30363d] hidden md:flex items-center justify-center transition-colors"
-                >
-                  <Octicon name="git-pull-request" size={16} />
-                </Link>
-
                 <button
                   type="button"
-                  aria-label="Notifications"
-                  className="w-8 h-8 rounded-md border border-[#30363d] bg-[#21262d]/40 hover:bg-[#30363d] flex items-center justify-center transition-colors cursor-pointer"
+                  onClick={onOpenCommandPalette}
+                  aria-label="Command palette"
+                  title="Command palette (⌘K)"
+                  className="w-8 h-8 rounded-md border border-border-default bg-canvas-raised/40 hover:bg-canvas-hover hidden md:flex items-center justify-center text-fg-muted hover:text-fg-default transition-colors cursor-pointer"
                 >
-                  <Octicon name="bell" size={16} />
+                  <Command className="w-3.5 h-3.5" />
                 </button>
 
                 <div className="relative ml-1 shrink-0" ref={menuRef}>
@@ -191,7 +203,7 @@ export function GlobalHeader() {
                     type="button"
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     aria-label="User profile menu"
-                    className="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-[#58a6ff] cursor-pointer"
+                    className="flex items-center rounded-full focus:outline-none focus:ring-2 focus:ring-accent-fg cursor-pointer"
                   >
                     <img
                       src={currentUser?.avatar_url || '/default-avatar.jpg'}
@@ -199,53 +211,77 @@ export function GlobalHeader() {
                       onError={(e) => {
                         (e.currentTarget as HTMLImageElement).src = '/default-avatar.jpg'
                       }}
-                      className="w-8 h-8 rounded-full border border-[#30363d] object-cover hover:opacity-90 transition-opacity"
+                      className="w-8 h-8 rounded-full border border-border-default object-cover hover:opacity-90 transition-opacity"
                     />
                   </button>
 
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-[#161b22] border border-[#30363d] rounded-md shadow-2xl z-50 py-1 text-xs text-[#e6edf3]">
-                      <div className="px-4 py-2 border-b border-[#30363d]">
-                        <p className="text-[#8b949e]">Signed in as</p>
-                        <p className="font-bold truncate text-[#e6edf3]">{currentUser?.login}</p>
+                    <div className="absolute right-0 mt-2 w-56 bg-canvas-raised border border-border-default rounded-md shadow-2xl z-50 py-1 text-xs text-fg-default">
+                      <div className="px-4 py-2 border-b border-border-default">
+                        <p className="text-fg-muted">Signed in as</p>
+                        <p className="font-bold truncate text-fg-default">{currentUser?.login}</p>
                       </div>
 
                       <div className="py-1">
                         <Link
                           to={`/${currentUser?.login}`}
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-[#21262d] transition-colors"
+                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-canvas-hover transition-colors"
                         >
                           Your profile
                         </Link>
                         <Link
                           to={`/${currentUser?.login}?tab=repositories`}
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-[#21262d] transition-colors"
+                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-canvas-hover transition-colors"
                         >
                           Your repositories
                         </Link>
                         <Link
                           to={`/${currentUser?.login}?tab=stars`}
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-[#21262d] transition-colors"
+                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-canvas-hover transition-colors"
                         >
                           Your stars
                         </Link>
                         <Link
                           to="/new"
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-[#21262d] transition-colors"
+                          className="flex items-center gap-2 px-4 py-1.5 hover:bg-canvas-hover transition-colors"
                         >
                           New repository
                         </Link>
                       </div>
 
-                      <div className="border-t border-[#30363d] pt-1">
+                      {/* Theme Palette Switcher Section */}
+                      <div className="border-t border-border-default px-4 py-2">
+                        <p className="text-fg-muted font-semibold mb-1 text-[11px] uppercase tracking-wider">
+                          Theme Palette
+                        </p>
+                        <div className="space-y-1">
+                          {themes.map((t) => (
+                            <button
+                              key={t.id}
+                              type="button"
+                              onClick={() => setThemeId(t.id)}
+                              className={`w-full text-left px-2 py-1 rounded text-xs flex items-center justify-between cursor-pointer ${
+                                themeId === t.id
+                                  ? 'bg-accent-subtle text-accent-fg font-semibold'
+                                  : 'text-fg-muted hover:bg-canvas-hover hover:text-fg-default'
+                              }`}
+                            >
+                              <span>{t.name}</span>
+                              {themeId === t.id && <span>✓</span>}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="border-t border-border-default pt-1">
                         <button
                           type="button"
                           onClick={handleSignOut}
-                          className="w-full text-left px-4 py-1.5 hover:bg-[#21262d] text-[#f85149] hover:text-[#f85149] transition-colors cursor-pointer"
+                          className="w-full text-left px-4 py-1.5 hover:bg-canvas-hover text-danger-fg transition-colors cursor-pointer"
                         >
                           Sign out
                         </button>

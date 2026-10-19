@@ -274,7 +274,7 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
   return (
     <div className="space-y-6">
       {triggerMessage && (
-        <div className="p-3 bg-[#238636]/15 border border-[#238636]/40 rounded-md text-[#3fb950] text-xs flex items-center justify-between">
+        <div className="p-3 bg-success-fg/10 border border-success-fg/30 rounded-md text-success-fg text-xs flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Octicon name="check" size={14} />
             <span>{triggerMessage}</span>
@@ -282,7 +282,7 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
           <button
             type="button"
             onClick={() => setTriggerMessage(null)}
-            className="text-[#8b949e] hover:text-[#e6edf3]"
+            className="text-fg-muted hover:text-fg-default"
           >
             <Octicon name="x" size={14} />
           </button>
@@ -291,8 +291,8 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
 
       <div className="flex flex-col md:flex-row gap-6 items-start">
         <aside className="w-full md:w-64 shrink-0 space-y-4">
-          <div className="p-3 bg-[#161b22] border border-[#30363d] rounded-md space-y-3">
-            <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider">
+          <div className="p-3 bg-canvas-subtle border border-border-default rounded-md space-y-3">
+            <h3 className="text-xs font-semibold text-fg-muted uppercase tracking-wider">
               Workflows
             </h3>
             <div className="space-y-1">
@@ -301,15 +301,15 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                 onClick={() => setSelectedWorkflow('all')}
                 className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors text-left cursor-pointer ${
                   selectedWorkflow === 'all'
-                    ? 'bg-[#21262d] text-[#e6edf3] font-semibold'
-                    : 'text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#21262d]/50'
+                    ? 'bg-canvas-raised text-fg-default font-semibold'
+                    : 'text-fg-muted hover:text-fg-default hover:bg-canvas-hover'
                 }`}
               >
                 <div className="flex items-center gap-2 truncate">
                   <Octicon name="play" size={14} />
                   <span>All workflows</span>
                 </div>
-                <span className="text-[10px] px-1.5 py-0.2 bg-[#30363d] rounded-full text-[#e6edf3]">
+                <span className="text-[10px] px-1.5 py-0.2 bg-canvas-default border border-border-default rounded-full text-fg-default">
                   {workflowRuns.length}
                 </span>
               </button>
@@ -321,8 +321,8 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                   onClick={() => setSelectedWorkflow(wf.name)}
                   className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors text-left cursor-pointer ${
                     selectedWorkflow === wf.name
-                      ? 'bg-[#21262d] text-[#e6edf3] font-semibold'
-                      : 'text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#21262d]/50'
+                      ? 'bg-canvas-raised text-fg-default font-semibold'
+                      : 'text-fg-muted hover:text-fg-default hover:bg-canvas-hover'
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
@@ -334,35 +334,35 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
             </div>
           </div>
 
-          <div className="p-3 bg-[#161b22] border border-[#30363d] rounded-md space-y-2 text-xs">
-            <h4 className="font-semibold text-[#e6edf3]">About Actions</h4>
-            <p className="text-[#8b949e] text-[11px] leading-relaxed">
+          <div className="p-3 bg-canvas-subtle border border-border-default rounded-md space-y-2 text-xs">
+            <h4 className="font-semibold text-fg-default">About Actions</h4>
+            <p className="text-fg-muted text-[11px] leading-relaxed">
               Automate, customize, and execute software development workflows right in your repository with Forgejo and GitHub Actions compatibility.
             </p>
           </div>
         </aside>
 
         <section className="flex-1 w-full space-y-4 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#21262d]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-default">
             <div className="relative flex-1 max-w-sm">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Filter workflow runs"
-                className="w-full px-3 py-1.5 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] h-8"
+                className="w-full px-3 py-1.5 text-xs bg-canvas-subtle text-fg-default placeholder-fg-muted border border-border-default rounded-md focus:outline-none focus:border-accent-fg h-8"
               />
             </div>
 
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="inline-flex rounded-md border border-[#30363d] bg-[#161b22] p-0.5 text-xs">
+              <div className="inline-flex rounded-md border border-border-default bg-canvas-subtle p-0.5 text-xs">
                 <button
                   type="button"
                   onClick={() => setStatusFilter('all')}
                   className={`px-2.5 py-1 rounded font-medium cursor-pointer transition-colors ${
                     statusFilter === 'all'
-                      ? 'bg-[#21262d] text-[#e6edf3]'
-                      : 'text-[#8b949e] hover:text-[#e6edf3]'
+                      ? 'bg-canvas-raised text-fg-default'
+                      : 'text-fg-muted hover:text-fg-default'
                   }`}
                 >
                   All
@@ -372,8 +372,8 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                   onClick={() => setStatusFilter('success')}
                   className={`px-2.5 py-1 rounded font-medium cursor-pointer transition-colors ${
                     statusFilter === 'success'
-                      ? 'bg-[#21262d] text-[#e6edf3]'
-                      : 'text-[#8b949e] hover:text-[#e6edf3]'
+                      ? 'bg-canvas-raised text-fg-default'
+                      : 'text-fg-muted hover:text-fg-default'
                   }`}
                 >
                   Success
@@ -383,21 +383,21 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
               <button
                 type="button"
                 onClick={() => setIsRunWorkflowModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] shadow-sm transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default border border-border-default shadow-sm transition-all cursor-pointer"
               >
-                <Octicon name="play" size={12} className="text-[#3fb950]" />
+                <Octicon name="play" size={12} className="text-success-fg" />
                 <span>Run workflow</span>
               </button>
             </div>
           </div>
 
           {!hasWorkflows && (
-            <div className="p-6 bg-[#0d1117] border border-[#30363d] rounded-md space-y-4">
+            <div className="p-6 bg-canvas-default border border-border-default rounded-md space-y-4">
               <div>
-                <h3 className="text-base font-semibold text-[#e6edf3]">
+                <h3 className="text-base font-semibold text-fg-default">
                   Get started with Actions
                 </h3>
-                <p className="text-xs text-[#8b949e] mt-1">
+                <p className="text-xs text-fg-muted mt-1">
                   Choose a workflow template to automatically build, test, and package your code.
                 </p>
               </div>
@@ -406,16 +406,16 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                 {STARTER_TEMPLATES.map((tmpl) => (
                   <div
                     key={tmpl.id}
-                    className="p-4 bg-[#161b22] border border-[#30363d] rounded-md flex flex-col justify-between hover:border-[#8b949e]/50 transition-colors"
+                    className="p-4 bg-canvas-subtle border border-border-default rounded-md flex flex-col justify-between hover:border-fg-muted/40 transition-colors"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <h4 className="text-xs font-bold text-[#e6edf3]">{tmpl.name}</h4>
-                        <span className="text-[10px] font-mono text-[#8b949e]">
+                        <h4 className="text-xs font-bold text-fg-default">{tmpl.name}</h4>
+                        <span className="text-[10px] font-mono text-fg-muted">
                           {tmpl.filename.split('/').pop()}
                         </span>
                       </div>
-                      <p className="text-xs text-[#8b949e] line-clamp-2 mb-4">
+                      <p className="text-xs text-fg-muted line-clamp-2 mb-4">
                         {tmpl.description}
                       </p>
                     </div>
@@ -423,7 +423,7 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                     <button
                       type="button"
                       onClick={() => handleConfigureTemplate(tmpl)}
-                      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white transition-colors cursor-pointer w-full"
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-success-fg hover:opacity-90 active:scale-[0.97] text-white transition-all cursor-pointer w-full"
                     >
                       <Octicon name="pencil" size={13} />
                       <span>Configure</span>
@@ -434,49 +434,49 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
             </div>
           )}
 
-          <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#0d1117]">
-            <div className="px-4 py-3 bg-[#161b22] border-b border-[#30363d] flex items-center justify-between text-xs">
-              <span className="font-semibold text-[#e6edf3]">
+          <div className="border border-border-default rounded-md overflow-hidden bg-canvas-default">
+            <div className="px-4 py-3 bg-canvas-subtle border-b border-border-default flex items-center justify-between text-xs">
+              <span className="font-semibold text-fg-default">
                 {filteredRuns.length} workflow runs
               </span>
-              <span className="text-[#8b949e]">Recent executions</span>
+              <span className="text-fg-muted">Recent executions</span>
             </div>
 
             {isCommitsLoading ? (
-              <div className="p-8 text-center text-xs text-[#8b949e]">
+              <div className="p-8 text-center text-xs text-fg-muted">
                 Loading workflow runs...
               </div>
             ) : filteredRuns.length === 0 ? (
-              <div className="p-8 text-center text-xs text-[#8b949e]">
+              <div className="p-8 text-center text-xs text-fg-muted">
                 No workflow runs found.
               </div>
             ) : (
-              <ul className="divide-y divide-[#21262d]">
+              <ul className="divide-y divide-border-default">
                 {filteredRuns.map((run) => (
                   <li
                     key={run.id}
                     onClick={() => setSelectedRun(run)}
-                    className="p-4 hover:bg-[#161b22]/70 transition-colors cursor-pointer flex items-center justify-between gap-4"
+                    className="p-4 hover:bg-canvas-hover transition-colors cursor-pointer flex items-center justify-between gap-4"
                   >
                     <div className="flex items-start gap-3 min-w-0">
                       <div className="pt-0.5">
                         {run.status === 'success' ? (
-                          <span className="w-5 h-5 rounded-full bg-[#238636]/20 text-[#3fb950] flex items-center justify-center">
+                          <span className="w-5 h-5 rounded-full bg-success-fg/15 text-success-fg flex items-center justify-center">
                             <Octicon name="check" size={12} />
                           </span>
                         ) : (
-                          <span className="w-5 h-5 rounded-full border-2 border-[#d29922] border-t-transparent animate-spin inline-block" />
+                          <span className="w-5 h-5 rounded-full border-2 border-attention-fg border-t-transparent animate-spin inline-block" />
                         )}
                       </div>
 
                       <div className="min-w-0">
-                        <h4 className="text-xs font-semibold text-[#e6edf3] hover:text-[#58a6ff] truncate">
+                        <h4 className="text-xs font-semibold text-fg-default hover:text-accent-fg transition-colors truncate">
                           {run.title}
                         </h4>
-                        <div className="flex items-center gap-2 text-[11px] text-[#8b949e] mt-1 flex-wrap">
-                          <span className="font-semibold text-[#e6edf3]">CI Pipeline</span>
+                        <div className="flex items-center gap-2 text-[11px] text-fg-muted mt-1 flex-wrap">
+                          <span className="font-semibold text-fg-default">CI Pipeline</span>
                           <span>•</span>
-                          <span className="inline-flex items-center gap-1 font-mono text-[#58a6ff]">
+                          <span className="inline-flex items-center gap-1 font-mono text-accent-fg">
                             <Octicon name="git-branch" size={11} />
                             <span>{run.branch}</span>
                           </span>
@@ -495,9 +495,9 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0 text-[11px] text-[#8b949e]">
+                    <div className="text-right shrink-0 text-[11px] text-fg-muted">
                       <div>{run.time}</div>
-                      <div className="text-[10px] text-[#3fb950] font-medium mt-0.5">
+                      <div className="text-[10px] text-success-fg font-medium mt-0.5">
                         {run.status === 'success' ? 'Completed in 42s' : 'In progress...'}
                       </div>
                     </div>
@@ -511,20 +511,20 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
 
       {activeTemplate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-            <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]">
+          <div className="bg-canvas-raised border border-border-default rounded-lg shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-4 border-b border-border-default flex items-center justify-between bg-canvas-subtle">
               <div>
-                <h3 className="text-sm font-semibold text-[#e6edf3]">
+                <h3 className="text-sm font-semibold text-fg-default">
                   Configure {activeTemplate.name}
                 </h3>
-                <p className="text-xs font-mono text-[#8b949e] mt-0.5">
+                <p className="text-xs font-mono text-fg-muted mt-0.5">
                   {activeTemplate.filename}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTemplate(null)}
-                className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded-md"
+                className="text-fg-muted hover:text-fg-default p-1 rounded-md cursor-pointer transition-colors"
               >
                 <Octicon name="x" size={16} />
               </button>
@@ -532,17 +532,17 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
 
             <div className="p-4 space-y-3 overflow-y-auto flex-1 text-xs">
               {commitSuccess && (
-                <div className="p-2.5 bg-[#238636]/15 border border-[#238636]/40 rounded-md text-[#3fb950]">
+                <div className="p-2.5 bg-success-fg/15 border border-success-fg/40 rounded-md text-success-fg">
                   {commitSuccess}
                 </div>
               )}
               {commitError && (
-                <div className="p-2.5 bg-[#f85149]/15 border border-[#f85149]/40 rounded-md text-[#f85149]">
+                <div className="p-2.5 bg-danger-fg/15 border border-danger-fg/40 rounded-md text-danger-fg">
                   {commitError}
                 </div>
               )}
 
-              <p className="text-[#8b949e]">
+              <p className="text-fg-muted">
                 Edit your workflow file below. When committed, it will be placed in your repository root.
               </p>
 
@@ -550,15 +550,15 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                 value={templateContent}
                 onChange={(e) => setTemplateContent(e.target.value)}
                 rows={14}
-                className="w-full font-mono text-xs p-3 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] leading-relaxed resize-none"
+                className="w-full font-mono text-xs p-3 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg leading-relaxed resize-none"
               />
             </div>
 
-            <div className="p-3 border-t border-[#30363d] bg-[#0d1117] flex items-center justify-end gap-2">
+            <div className="p-3 border-t border-border-default bg-canvas-subtle flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setActiveTemplate(null)}
-                className="px-3 py-1.5 rounded-md border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] text-xs font-medium cursor-pointer"
+                className="px-3 py-1.5 rounded-md border border-border-default bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default text-xs font-medium cursor-pointer transition-all"
               >
                 Cancel
               </button>
@@ -566,7 +566,7 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                 type="button"
                 onClick={handleCommitWorkflow}
                 disabled={isCommitting}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-success-fg hover:opacity-90 active:scale-[0.97] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer disabled:opacity-50"
               >
                 {isCommitting ? 'Committing...' : 'Commit new workflow'}
               </button>
@@ -577,56 +577,56 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
 
       {selectedRun && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl max-w-xl w-full overflow-hidden text-xs">
-            <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]">
+          <div className="bg-canvas-raised border border-border-default rounded-lg shadow-2xl max-w-xl w-full overflow-hidden text-xs">
+            <div className="p-4 border-b border-border-default flex items-center justify-between bg-canvas-subtle">
               <div className="flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-[#238636]/20 text-[#3fb950] flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full bg-success-fg/15 text-success-fg flex items-center justify-center">
                   <Octicon name="check" size={12} />
                 </span>
-                <h3 className="font-semibold text-[#e6edf3]">{selectedRun.title}</h3>
+                <h3 className="font-semibold text-fg-default">{selectedRun.title}</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedRun(null)}
-                className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded-md cursor-pointer"
+                className="text-fg-muted hover:text-fg-default p-1 rounded-md cursor-pointer transition-colors"
               >
                 <Octicon name="x" size={16} />
               </button>
             </div>
 
             <div className="p-4 space-y-4">
-              <div className="flex items-center gap-3 text-xs text-[#8b949e] pb-3 border-b border-[#21262d]">
-                <span className="font-mono text-[#58a6ff]">#{selectedRun.sha}</span>
-                <span>Branch: <span className="font-semibold text-[#e6edf3]">{selectedRun.branch}</span></span>
-                <span>Triggered by: <span className="font-semibold text-[#e6edf3]">{selectedRun.author}</span></span>
+              <div className="flex items-center gap-3 text-xs text-fg-muted pb-3 border-b border-border-default">
+                <span className="font-mono text-accent-fg">#{selectedRun.sha}</span>
+                <span>Branch: <span className="font-semibold text-fg-default">{selectedRun.branch}</span></span>
+                <span>Triggered by: <span className="font-semibold text-fg-default">{selectedRun.author}</span></span>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-semibold text-[#e6edf3]">Job Steps: build-and-test</h4>
-                <div className="space-y-1 font-mono text-[11px] bg-[#0d1117] p-3 rounded-md border border-[#21262d]">
-                  <div className="text-[#3fb950] flex items-center justify-between">
+                <h4 className="font-semibold text-fg-default">Job Steps: build-and-test</h4>
+                <div className="space-y-1 font-mono text-[11px] bg-canvas-default p-3 rounded-md border border-border-default">
+                  <div className="text-success-fg flex items-center justify-between">
                     <span>✓ Set up job</span>
-                    <span className="text-[#8b949e]">2s</span>
+                    <span className="text-fg-muted">2s</span>
                   </div>
-                  <div className="text-[#3fb950] flex items-center justify-between">
+                  <div className="text-success-fg flex items-center justify-between">
                     <span>✓ Check out repository code</span>
-                    <span className="text-[#8b949e]">4s</span>
+                    <span className="text-fg-muted">4s</span>
                   </div>
-                  <div className="text-[#3fb950] flex items-center justify-between">
+                  <div className="text-success-fg flex items-center justify-between">
                     <span>✓ Set up environment & runtime</span>
-                    <span className="text-[#8b949e]">12s</span>
+                    <span className="text-fg-muted">12s</span>
                   </div>
-                  <div className="text-[#3fb950] flex items-center justify-between">
+                  <div className="text-success-fg flex items-center justify-between">
                     <span>✓ Run test suites</span>
-                    <span className="text-[#8b949e]">20s</span>
+                    <span className="text-fg-muted">20s</span>
                   </div>
-                  <div className="text-[#3fb950] flex items-center justify-between">
+                  <div className="text-success-fg flex items-center justify-between">
                     <span>✓ Post Check out repository code</span>
-                    <span className="text-[#8b949e]">1s</span>
+                    <span className="text-fg-muted">1s</span>
                   </div>
-                  <div className="text-[#3fb950] flex items-center justify-between">
+                  <div className="text-success-fg flex items-center justify-between">
                     <span>✓ Complete job</span>
-                    <span className="text-[#8b949e]">1s</span>
+                    <span className="text-fg-muted">1s</span>
                   </div>
                 </div>
               </div>
@@ -635,7 +635,7 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                 <button
                   type="button"
                   onClick={() => setSelectedRun(null)}
-                  className="px-3 py-1.5 rounded-md bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] font-medium cursor-pointer"
+                  className="px-3 py-1.5 rounded-md bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default border border-border-default font-medium cursor-pointer transition-all"
                 >
                   Close
                 </button>
@@ -647,29 +647,29 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
 
       {isRunWorkflowModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl max-w-md w-full overflow-hidden text-xs">
-            <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]">
-              <h3 className="font-semibold text-[#e6edf3]">Run workflow</h3>
+          <div className="bg-canvas-raised border border-border-default rounded-lg shadow-2xl max-w-md w-full overflow-hidden text-xs">
+            <div className="p-4 border-b border-border-default flex items-center justify-between bg-canvas-subtle">
+              <h3 className="font-semibold text-fg-default">Run workflow</h3>
               <button
                 type="button"
                 onClick={() => setIsRunWorkflowModalOpen(false)}
-                className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded-md cursor-pointer"
+                className="text-fg-muted hover:text-fg-default p-1 rounded-md cursor-pointer transition-colors"
               >
                 <Octicon name="x" size={16} />
               </button>
             </div>
 
             <div className="p-4 space-y-4">
-              <p className="text-[#8b949e]">
+              <p className="text-fg-muted">
                 This will dispatch an on-demand workflow execution on the target branch.
               </p>
 
               <div className="space-y-1.5">
-                <label className="block font-semibold text-[#e6edf3]">Use workflow from branch</label>
+                <label className="block font-semibold text-fg-default">Use workflow from branch</label>
                 <select
                   value={runBranch}
                   onChange={(e) => setRunBranch(e.target.value)}
-                  className="w-full px-2.5 py-1.5 bg-[#0d1117] border border-[#30363d] rounded-md text-[#e6edf3] focus:border-[#58a6ff] focus:outline-none h-8 font-mono"
+                  className="w-full px-2.5 py-1.5 bg-canvas-default border border-border-default rounded-md text-fg-default focus:border-accent-fg focus:outline-none h-8 font-mono"
                 >
                   {(branches || []).map((b) => (
                     <option key={b.name} value={b.name}>
@@ -686,14 +686,14 @@ export function RepositoryActions({ repository, owner, repo }: RepositoryActions
                 <button
                   type="button"
                   onClick={() => setIsRunWorkflowModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] font-medium cursor-pointer"
+                  className="px-3 py-1.5 rounded-md border border-border-default bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default font-medium cursor-pointer transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleTriggerRun}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] text-white font-semibold transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-success-fg hover:opacity-90 active:scale-[0.97] text-white font-semibold transition-all cursor-pointer"
                 >
                   <Octicon name="play" size={12} />
                   <span>Run workflow</span>

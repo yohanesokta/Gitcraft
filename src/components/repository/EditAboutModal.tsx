@@ -76,14 +76,14 @@ export function EditAboutModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl max-w-lg w-full overflow-hidden text-xs">
-        <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]">
-          <h3 className="font-semibold text-sm text-[#e6edf3]">Edit repository details</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="bg-canvas-raised border border-border-default rounded-lg shadow-2xl max-w-lg w-full overflow-hidden text-xs">
+        <div className="p-4 border-b border-border-default flex items-center justify-between bg-canvas-subtle">
+          <h3 className="font-semibold text-sm text-fg-default">Edit repository details</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded-md cursor-pointer"
+            className="text-fg-muted hover:text-fg-default p-1 rounded-md hover:bg-canvas-hover transition-colors cursor-pointer"
           >
             <Octicon name="x" size={16} />
           </button>
@@ -91,49 +91,49 @@ export function EditAboutModal({
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {errorMessage && (
-            <div className="p-2.5 bg-[#f85149]/15 border border-[#f85149]/40 rounded text-[#f85149]">
+            <div className="p-2.5 bg-danger-fg/10 border border-danger-fg/40 rounded-md text-danger-fg">
               {errorMessage}
             </div>
           )}
 
           <div className="space-y-1.5">
-            <label className="block font-semibold text-[#e6edf3]">Description</label>
+            <label className="block font-semibold text-fg-default">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Short description of the repository"
               rows={3}
-              className="w-full px-3 py-2 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] resize-none leading-relaxed"
+              className="w-full px-3 py-2 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg resize-none leading-relaxed"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block font-semibold text-[#e6edf3]">Website</label>
+            <label className="block font-semibold text-fg-default">Website</label>
             <input
               type="text"
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="https://example.com"
-              className="w-full px-3 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] h-8"
+              className="w-full px-3 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg h-8"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="block font-semibold text-[#e6edf3]">Topics</label>
-            <div className="flex flex-wrap gap-1.5 min-h-[28px] p-2 bg-[#0d1117] border border-[#30363d] rounded-md">
+            <label className="block font-semibold text-fg-default">Topics</label>
+            <div className="flex flex-wrap gap-1.5 min-h-[28px] p-2 bg-canvas-default border border-border-default rounded-md">
               {topics.length === 0 && (
-                <span className="text-[#8b949e] text-[11px] self-center">No topics added</span>
+                <span className="text-fg-muted text-[11px] self-center">No topics added</span>
               )}
               {topics.map((t) => (
                 <span
                   key={t}
-                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#1f6feb]/20 text-[#58a6ff] border border-[#1f6feb]/30"
+                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium bg-accent-subtle text-accent-fg border border-accent-fg/30"
                 >
                   <span>{t}</span>
                   <button
                     type="button"
                     onClick={() => handleRemoveTopic(t)}
-                    className="hover:text-white"
+                    className="hover:opacity-75 cursor-pointer"
                   >
                     <Octicon name="x" size={10} />
                   </button>
@@ -153,37 +153,37 @@ export function EditAboutModal({
                   }
                 }}
                 placeholder="Add a topic (e.g. react, api)"
-                className="flex-1 px-3 py-1 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] h-8"
+                className="flex-1 px-3 py-1 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg h-8"
               />
               <button
                 type="button"
                 onClick={handleAddTopic}
-                className="px-3 py-1 bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] rounded-md font-semibold h-8 cursor-pointer"
+                className="px-3 py-1 bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default rounded-md font-semibold h-8 cursor-pointer active:scale-[0.97]"
               >
                 Add
               </button>
             </div>
-            <p className="text-[10px] text-[#8b949e]">
+            <p className="text-[10px] text-fg-muted">
               Use lowercase letters, numbers, and hyphens.
             </p>
           </div>
 
-          <div className="pt-3 border-t border-[#30363d] flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-border-default flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="px-3 py-1.5 rounded-md border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] font-medium cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md border border-border-default bg-canvas-default hover:bg-canvas-hover text-fg-muted hover:text-fg-default font-medium transition-colors cursor-pointer active:scale-[0.97]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] text-white font-semibold shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-accent-fg hover:opacity-90 text-[var(--accent-text)] font-semibold transition-opacity cursor-pointer disabled:opacity-50 active:scale-[0.97]"
             >
               {isSaving && (
-                <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <span className="w-3.5 h-3.5 border-2 border-current/20 border-t-current rounded-full animate-spin" />
               )}
               <span>{isSaving ? 'Saving changes...' : 'Save changes'}</span>
             </button>

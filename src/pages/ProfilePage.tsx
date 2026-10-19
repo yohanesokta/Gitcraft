@@ -194,17 +194,17 @@ export function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-[#21262d] -mx-4 sm:-mx-6 px-4 sm:px-6">
+      <div className="border-b border-border-default -mx-4 sm:-mx-6 px-4 sm:px-6">
         <nav className="flex items-center gap-1 overflow-x-auto overflow-y-hidden no-scrollbar -mb-[1px]">
           <Link
             to={`/${targetUsername}`}
             className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'overview'
-                ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
+                ? 'border-accent-fg text-fg-default font-semibold'
+                : 'border-transparent text-fg-muted hover:text-fg-default hover:border-border-default'
             }`}
           >
-            <Octicon name="book" size={16} />
+            <Octicon name="book" size={15} />
             <span>Overview</span>
           </Link>
 
@@ -212,13 +212,13 @@ export function ProfilePage() {
             to={`/${targetUsername}?tab=repositories`}
             className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'repositories'
-                ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
+                ? 'border-accent-fg text-fg-default font-semibold'
+                : 'border-transparent text-fg-muted hover:text-fg-default hover:border-border-default'
             }`}
           >
-            <Octicon name="repo" size={16} />
+            <Octicon name="repo" size={15} />
             <span>Repositories</span>
-            <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+            <span className="px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
               {repoCount}
             </span>
           </Link>
@@ -227,11 +227,11 @@ export function ProfilePage() {
             to={`/${targetUsername}?tab=projects`}
             className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'projects'
-                ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
+                ? 'border-accent-fg text-fg-default font-semibold'
+                : 'border-transparent text-fg-muted hover:text-fg-default hover:border-border-default'
             }`}
           >
-            <Octicon name="table" size={16} />
+            <Octicon name="table" size={15} />
             <span>Projects</span>
           </Link>
 
@@ -239,11 +239,11 @@ export function ProfilePage() {
             to={`/${targetUsername}?tab=packages`}
             className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'packages'
-                ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
+                ? 'border-accent-fg text-fg-default font-semibold'
+                : 'border-transparent text-fg-muted hover:text-fg-default hover:border-border-default'
             }`}
           >
-            <Octicon name="repo" size={16} />
+            <Octicon name="repo" size={15} />
             <span>Packages</span>
           </Link>
 
@@ -251,13 +251,13 @@ export function ProfilePage() {
             to={`/${targetUsername}?tab=stars`}
             className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
               activeTab === 'stars'
-                ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
+                ? 'border-accent-fg text-fg-default font-semibold'
+                : 'border-transparent text-fg-muted hover:text-fg-default hover:border-border-default'
             }`}
           >
-            <Octicon name="star" size={16} />
+            <Octicon name="star" size={15} />
             <span>Stars</span>
-            <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+            <span className="px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
               {starCount}
             </span>
           </Link>
@@ -279,12 +279,12 @@ export function ProfilePage() {
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {profileReadme && (
-                <div className="border border-[#30363d] rounded-md bg-[#0d1117] p-6 space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-[#21262d] text-xs text-[#8b949e]">
-                    <span className="font-mono text-[#e6edf3]">
+                <div className="border border-border-default rounded-lg bg-canvas-default p-6 space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-border-default text-xs text-fg-muted">
+                    <span className="font-mono text-fg-default">
                       {targetUsername} / {readmePath}
                     </span>
-                    <span className="text-[#8b949e]">
+                    <span className="text-fg-muted">
                       <Octicon name="pencil" size={14} />
                     </span>
                   </div>
@@ -299,14 +299,14 @@ export function ProfilePage() {
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-semibold text-[#e6edf3]">
+                  <h2 className="text-sm font-semibold text-fg-default">
                     Pinned
                   </h2>
                   {isOwnProfile && (
                     <button
                       type="button"
                       onClick={() => setIsCustomizePinsOpen(true)}
-                      className="text-xs text-[#8b949e] hover:text-[#58a6ff] cursor-pointer"
+                      className="text-xs text-fg-muted hover:text-accent-fg cursor-pointer"
                     >
                       Customize your pins
                     </button>
@@ -317,7 +317,7 @@ export function ProfilePage() {
                   {pinnedRepos.map((repo) => (
                     <div
                       key={repo.id}
-                      className="p-4 border border-[#30363d] rounded-md bg-[#0d1117] flex flex-col justify-between hover:border-[#8b949e]/50 transition-colors"
+                      className="p-4 border border-border-default rounded-lg bg-canvas-default flex flex-col justify-between hover:border-accent-fg/40 transition-colors"
                     >
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-2">
@@ -326,31 +326,31 @@ export function ProfilePage() {
                               <img
                                 src={repo.avatar_url}
                                 alt=""
-                                className="w-4 h-4 rounded-sm object-cover border border-[#30363d] shrink-0"
+                                className="w-4 h-4 rounded-sm object-cover border border-border-default shrink-0"
                               />
                             )}
                             <Link
                               to={`/${repo.owner.login}/${repo.name}`}
-                              className="text-sm font-semibold text-[#58a6ff] hover:underline truncate"
+                              className="text-sm font-semibold text-accent-fg hover:underline truncate"
                             >
                               {repo.name}
                             </Link>
                           </div>
-                          <span className="px-2 py-0.5 rounded-full border border-[#30363d] text-[10px] text-[#8b949e]">
+                          <span className="px-2 py-0.5 rounded-full border border-border-default text-[10px] text-fg-muted bg-canvas-subtle">
                             {repo.private ? 'Private' : 'Public'}
                           </span>
                         </div>
                         {repo.description && (
-                          <p className="text-xs text-[#8b949e] line-clamp-2 mb-3">
+                          <p className="text-xs text-fg-muted line-clamp-2 mb-3">
                             {repo.description}
                           </p>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-4 text-xs text-[#8b949e] pt-2 border-t border-[#21262d]">
+                      <div className="flex items-center gap-4 text-xs text-fg-muted pt-2 border-t border-border-default">
                         {repo.language && (
                           <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#3178c6]" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-accent-fg" />
                             <span>{repo.language}</span>
                           </div>
                         )}
@@ -374,14 +374,14 @@ export function ProfilePage() {
 
           {activeTab === 'repositories' && (
             <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#21262d]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-border-default">
                 <div className="relative flex-1 max-w-sm">
                   <input
                     type="text"
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Find a repository..."
-                    className="w-full pl-3 pr-3 py-1.5 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] focus:ring-1 focus:ring-[#58a6ff] transition-all h-8"
+                    className="w-full pl-3 pr-3 py-1.5 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg transition-all h-8"
                   />
                 </div>
 
@@ -390,14 +390,14 @@ export function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setIsTypeMenuOpen(!isTypeMenuOpen)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
                     >
                       <span>Type{typeFilter !== 'all' ? `: ${typeFilter}` : ''}</span>
-                      <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
+                      <Octicon name="triangle-down" size={12} className="text-fg-muted" />
                     </button>
 
                     {isTypeMenuOpen && (
-                      <div className="absolute left-0 mt-1 w-40 bg-[#161b22] border border-[#30363d] rounded-md shadow-lg py-1 z-30 text-xs">
+                      <div className="absolute left-0 mt-1.5 w-40 bg-canvas-raised border border-border-default rounded-lg shadow-lg py-1 z-30 text-xs">
                         {(['all', 'public', 'private', 'sources', 'forks'] as const).map((t) => (
                           <button
                             key={t}
@@ -406,10 +406,10 @@ export function ProfilePage() {
                               setTypeFilter(t)
                               setIsTypeMenuOpen(false)
                             }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between capitalize cursor-pointer"
+                            className="w-full text-left px-3 py-1.5 hover:bg-canvas-hover text-fg-default flex items-center justify-between capitalize cursor-pointer"
                           >
                             <span>{t}</span>
-                            {typeFilter === t && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                            {typeFilter === t && <Octicon name="check" size={12} className="text-accent-fg" />}
                           </button>
                         ))}
                       </div>
@@ -420,24 +420,24 @@ export function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
                     >
                       <span>Language{languageFilter !== 'all' ? `: ${languageFilter}` : ''}</span>
-                      <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
+                      <Octicon name="triangle-down" size={12} className="text-fg-muted" />
                     </button>
 
                     {isLanguageMenuOpen && (
-                      <div className="absolute left-0 mt-1 w-44 bg-[#161b22] border border-[#30363d] rounded-md shadow-lg py-1 z-30 text-xs max-h-60 overflow-y-auto">
+                      <div className="absolute left-0 mt-1.5 w-44 bg-canvas-raised border border-border-default rounded-lg shadow-lg py-1 z-30 text-xs max-h-60 overflow-y-auto">
                         <button
                           type="button"
                           onClick={() => {
                             setLanguageFilter('all')
                             setIsLanguageMenuOpen(false)
                           }}
-                          className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between cursor-pointer"
+                          className="w-full text-left px-3 py-1.5 hover:bg-canvas-hover text-fg-default flex items-center justify-between cursor-pointer"
                         >
                           <span>All</span>
-                          {languageFilter === 'all' && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                          {languageFilter === 'all' && <Octicon name="check" size={12} className="text-accent-fg" />}
                         </button>
                         {availableLanguages.map((lang) => (
                           <button
@@ -447,10 +447,10 @@ export function ProfilePage() {
                               setLanguageFilter(lang)
                               setIsLanguageMenuOpen(false)
                             }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between cursor-pointer"
+                            className="w-full text-left px-3 py-1.5 hover:bg-canvas-hover text-fg-default flex items-center justify-between cursor-pointer"
                           >
                             <span>{lang}</span>
-                            {languageFilter === lang && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                            {languageFilter === lang && <Octicon name="check" size={12} className="text-accent-fg" />}
                           </button>
                         ))}
                       </div>
@@ -461,14 +461,14 @@ export function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
                     >
                       <span>Sort: {sortLabels[sortOption]}</span>
-                      <Octicon name="triangle-down" size={12} className="text-[#8b949e]" />
+                      <Octicon name="triangle-down" size={12} className="text-fg-muted" />
                     </button>
 
                     {isSortMenuOpen && (
-                      <div className="absolute right-0 mt-1 w-44 bg-[#161b22] border border-[#30363d] rounded-md shadow-lg py-1 z-30 text-xs">
+                      <div className="absolute right-0 mt-1.5 w-44 bg-canvas-raised border border-border-default rounded-lg shadow-lg py-1 z-30 text-xs">
                         {(['updated', 'name', 'stars'] as const).map((opt) => (
                           <button
                             key={opt}
@@ -477,10 +477,10 @@ export function ProfilePage() {
                               setSortOption(opt)
                               setIsSortMenuOpen(false)
                             }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-[#21262d] text-[#e6edf3] flex items-center justify-between cursor-pointer"
+                            className="w-full text-left px-3 py-1.5 hover:bg-canvas-hover text-fg-default flex items-center justify-between cursor-pointer"
                           >
                             <span>{sortLabels[opt]}</span>
-                            {sortOption === opt && <Octicon name="check" size={12} className="text-[#58a6ff]" />}
+                            {sortOption === opt && <Octicon name="check" size={12} className="text-accent-fg" />}
                           </button>
                         ))}
                       </div>
@@ -489,7 +489,7 @@ export function ProfilePage() {
 
                   <Link
                     to="/new"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white border border-[#2ea043] shadow-sm transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-accent-fg hover:opacity-90 text-[var(--accent-text)] border border-accent-fg shadow-xs transition-opacity cursor-pointer active:scale-[0.97]"
                   >
                     <Octicon name="repo" size={14} />
                     <span>New</span>
@@ -500,7 +500,7 @@ export function ProfilePage() {
               {isReposLoading && (
                 <div className="space-y-4">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="py-6 border-b border-[#21262d] space-y-3">
+                    <div key={i} className="py-6 border-b border-border-default space-y-3">
                       <Skeleton className="h-5 w-48" />
                       <Skeleton className="h-4 w-3/4" />
                       <div className="flex gap-4 pt-2">
@@ -521,22 +521,22 @@ export function ProfilePage() {
               )}
 
               {isUserError && (
-                <div className="p-3 rounded-md bg-[#3c1e21]/20 border border-[#f85149]/30 text-xs text-[#f85149]">
+                <div className="p-3 rounded-md bg-danger-fg/10 border border-danger-fg/30 text-xs text-danger-fg">
                   {userError instanceof Error ? userError.message : 'User data offline'}
-                  <button onClick={() => refetchUser()} className="ml-2 underline font-semibold">
+                  <button onClick={() => refetchUser()} className="ml-2 underline font-semibold cursor-pointer">
                     Retry
                   </button>
                 </div>
               )}
 
               {!isReposLoading && !isReposError && filteredRepos.length === 0 && (
-                <div className="p-8 text-center text-xs text-[#8b949e] border border-[#30363d] rounded-md bg-[#161b22]">
+                <div className="p-8 text-center text-xs text-fg-muted border border-border-default rounded-lg bg-canvas-default">
                   {targetUsername} doesn’t have any repositories that match.
                 </div>
               )}
 
               {!isReposLoading && !isReposError && filteredRepos.length > 0 && (
-                <ul className="divide-y divide-[#21262d]">
+                <ul className="divide-y divide-border-default">
                   {filteredRepos.map((repo) => (
                     <RepositoryListItem key={repo.id} repository={repo} />
                   ))}
@@ -546,7 +546,7 @@ export function ProfilePage() {
           )}
 
           {activeTab !== 'overview' && activeTab !== 'repositories' && (
-            <div className="p-12 text-center text-xs text-[#8b949e] border border-[#30363d] rounded-md bg-[#161b22]">
+            <div className="p-12 text-center text-xs text-fg-muted border border-border-default rounded-lg bg-canvas-default">
               No {activeTab} available for {targetUsername}.
             </div>
           )}

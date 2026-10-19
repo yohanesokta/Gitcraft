@@ -332,37 +332,37 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
   if (activeBoard) {
     return (
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#21262d]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-default">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setActiveBoardId(null)}
-                className="text-xs text-[#58a6ff] hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                className="text-xs text-accent-fg hover:underline flex items-center gap-1 font-medium cursor-pointer transition-colors"
               >
                 <Octicon name="arrow-left" size={14} />
                 <span>Projects</span>
               </button>
-              <span className="text-[#8b949e]">/</span>
-              <h2 className="text-base font-bold text-[#e6edf3]">{activeBoard.title}</h2>
+              <span className="text-fg-muted">/</span>
+              <h2 className="text-base font-bold text-fg-default">{activeBoard.title}</h2>
               <span
                 className={`px-2 py-0.2 rounded-full text-[10px] font-semibold border ${
                   activeBoard.state === 'open'
-                    ? 'border-[#238636] text-[#3fb950] bg-[#238636]/10'
-                    : 'border-[#8b949e] text-[#8b949e] bg-[#21262d]'
+                    ? 'border-success-fg/30 text-success-fg bg-success-fg/10'
+                    : 'border-border-default text-fg-muted bg-canvas-raised'
                 }`}
               >
                 {activeBoard.state === 'open' ? 'Open' : 'Closed'}
               </span>
             </div>
-            <p className="text-xs text-[#8b949e]">{activeBoard.description}</p>
+            <p className="text-xs text-fg-muted">{activeBoard.description}</p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setIsAddingColumn(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default border border-border-default transition-all cursor-pointer"
             >
               <Octicon name="plus" size={13} />
               <span>Add column</span>
@@ -370,7 +370,7 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
             <button
               type="button"
               onClick={() => handleToggleBoardState(activeBoard.id)}
-              className="px-3 py-1.5 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] hover:text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+              className="px-3 py-1.5 rounded-md text-xs font-semibold bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-muted hover:text-fg-default border border-border-default transition-all cursor-pointer"
             >
               {activeBoard.state === 'open' ? 'Close project' : 'Reopen project'}
             </button>
@@ -381,19 +381,19 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
           {activeBoard.columns.map((column) => (
             <div
               key={column.id}
-              className="w-80 shrink-0 bg-[#161b22] border border-[#30363d] rounded-lg flex flex-col max-h-[75vh]"
+              className="w-80 shrink-0 bg-canvas-subtle border border-border-default rounded-lg flex flex-col max-h-[75vh]"
             >
-              <div className="p-3 border-b border-[#21262d] flex items-center justify-between">
+              <div className="p-3 border-b border-border-default flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-xs text-[#e6edf3]">{column.title}</span>
-                  <span className="px-1.5 py-0.2 bg-[#21262d] rounded-full text-[10px] text-[#8b949e] font-semibold">
+                  <span className="font-semibold text-xs text-fg-default">{column.title}</span>
+                  <span className="px-1.5 py-0.2 bg-canvas-default border border-border-default rounded-full text-[10px] text-fg-muted font-semibold">
                     {column.cards.length}
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setAddingCardColumnId(column.id)}
-                  className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded hover:bg-[#21262d] cursor-pointer"
+                  className="text-fg-muted hover:text-fg-default p-1 rounded hover:bg-canvas-hover active:scale-[0.97] cursor-pointer transition-colors"
                   title="Add card"
                 >
                   <Octicon name="plus" size={14} />
@@ -404,14 +404,14 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                 {column.cards.map((card) => (
                   <div
                     key={card.id}
-                    className="p-3 bg-[#0d1117] border border-[#30363d] rounded-md hover:border-[#8b949e]/50 transition-colors space-y-2 text-xs"
+                    className="p-3 bg-canvas-default border border-border-default rounded-md hover:border-fg-muted/40 transition-colors space-y-2 text-xs"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="font-medium text-[#e6edf3] leading-snug">{card.title}</span>
+                      <span className="font-medium text-fg-default leading-snug">{card.title}</span>
                       <button
                         type="button"
                         onClick={() => handleDeleteCard(column.id, card.id)}
-                        className="text-[#8b949e] hover:text-[#f85149] shrink-0 p-0.5 cursor-pointer"
+                        className="text-fg-muted hover:text-danger-fg shrink-0 p-0.5 cursor-pointer transition-colors"
                         title="Delete card"
                       >
                         <Octicon name="trash" size={12} />
@@ -419,7 +419,7 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                     </div>
 
                     {card.note && (
-                      <p className="text-[11px] text-[#8b949e] leading-relaxed">{card.note}</p>
+                      <p className="text-[11px] text-fg-muted leading-relaxed">{card.note}</p>
                     )}
 
                     <div className="flex items-center justify-between pt-1 text-[10px]">
@@ -427,10 +427,10 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                         <span
                           className={`px-1.5 py-0.2 rounded-full font-medium ${
                             card.label === 'feature'
-                              ? 'bg-[#1f6feb]/20 text-[#58a6ff] border border-[#1f6feb]/30'
+                              ? 'bg-accent-subtle text-accent-fg border border-accent-fg/30'
                               : card.label === 'bug'
-                              ? 'bg-[#f85149]/20 text-[#f85149] border border-[#f85149]/30'
-                              : 'bg-[#238636]/20 text-[#3fb950] border border-[#238636]/30'
+                              ? 'bg-danger-fg/15 text-danger-fg border border-danger-fg/30'
+                              : 'bg-success-fg/15 text-success-fg border border-success-fg/30'
                           }`}
                         >
                           {card.label}
@@ -441,7 +441,7 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                         aria-label="Move card to column"
                         value={column.id}
                         onChange={(e) => handleMoveCard(column.id, e.target.value, card.id)}
-                        className="bg-[#21262d] text-[#8b949e] hover:text-[#e6edf3] border border-[#30363d] rounded px-1.5 py-0.5 text-[10px] cursor-pointer"
+                        className="bg-canvas-raised text-fg-muted hover:text-fg-default border border-border-default rounded px-1.5 py-0.5 text-[10px] cursor-pointer"
                       >
                         {activeBoard.columns.map((c) => (
                           <option key={c.id} value={c.id}>
@@ -454,27 +454,27 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                 ))}
 
                 {addingCardColumnId === column.id ? (
-                  <div className="p-3 bg-[#0d1117] border border-[#58a6ff]/50 rounded-md space-y-2 text-xs">
+                  <div className="p-3 bg-canvas-default border border-accent-fg/50 rounded-md space-y-2 text-xs">
                     <input
                       type="text"
                       value={newCardTitle}
                       onChange={(e) => setNewCardTitle(e.target.value)}
                       placeholder="Card title..."
                       autoFocus
-                      className="w-full px-2 py-1 bg-[#161b22] text-[#e6edf3] border border-[#30363d] rounded text-xs focus:outline-none focus:border-[#58a6ff]"
+                      className="w-full px-2 py-1 bg-canvas-subtle text-fg-default border border-border-default rounded text-xs focus:outline-none focus:border-accent-fg"
                     />
                     <textarea
                       value={newCardNote}
                       onChange={(e) => setNewCardNote(e.target.value)}
                       placeholder="Note or details (optional)..."
                       rows={2}
-                      className="w-full px-2 py-1 bg-[#161b22] text-[#e6edf3] border border-[#30363d] rounded text-xs focus:outline-none focus:border-[#58a6ff] resize-none"
+                      className="w-full px-2 py-1 bg-canvas-subtle text-fg-default border border-border-default rounded text-xs focus:outline-none focus:border-accent-fg resize-none"
                     />
                     <div className="flex items-center justify-between gap-2">
                       <select
                         value={newCardLabel}
                         onChange={(e) => setNewCardLabel(e.target.value)}
-                        className="bg-[#161b22] text-[#e6edf3] border border-[#30363d] rounded px-2 py-1 text-[11px]"
+                        className="bg-canvas-subtle text-fg-default border border-border-default rounded px-2 py-1 text-[11px]"
                       >
                         <option value="feature">feature</option>
                         <option value="bug">bug</option>
@@ -486,14 +486,14 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                         <button
                           type="button"
                           onClick={() => setAddingCardColumnId(null)}
-                          className="px-2 py-1 rounded bg-[#21262d] text-[#8b949e] hover:text-[#e6edf3] text-[11px] cursor-pointer"
+                          className="px-2 py-1 rounded bg-canvas-raised text-fg-muted hover:text-fg-default active:scale-[0.97] text-[11px] cursor-pointer transition-all"
                         >
                           Cancel
                         </button>
                         <button
                           type="button"
                           onClick={() => handleAddCard(column.id)}
-                          className="px-2 py-1 rounded bg-[#238636] hover:bg-[#2ea043] text-white font-semibold text-[11px] cursor-pointer"
+                          className="px-2 py-1 rounded bg-success-fg hover:opacity-90 active:scale-[0.97] text-white font-semibold text-[11px] cursor-pointer transition-all"
                         >
                           Add card
                         </button>
@@ -504,7 +504,7 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                   <button
                     type="button"
                     onClick={() => setAddingCardColumnId(column.id)}
-                    className="w-full py-2 text-xs text-[#8b949e] hover:text-[#e6edf3] hover:bg-[#21262d]/50 rounded-md transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                    className="w-full py-2 text-xs text-fg-muted hover:text-fg-default hover:bg-canvas-hover rounded-md transition-colors flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Octicon name="plus" size={12} />
                     <span>Add item</span>
@@ -517,28 +517,28 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
           {isAddingColumn ? (
             <form
               onSubmit={handleAddColumn}
-              className="w-80 shrink-0 bg-[#161b22] border border-[#58a6ff]/50 rounded-lg p-3 space-y-2 text-xs"
+              className="w-80 shrink-0 bg-canvas-subtle border border-accent-fg/50 rounded-lg p-3 space-y-2 text-xs"
             >
-              <h4 className="font-semibold text-[#e6edf3]">New column</h4>
+              <h4 className="font-semibold text-fg-default">New column</h4>
               <input
                 type="text"
                 value={newColumnTitle}
                 onChange={(e) => setNewColumnTitle(e.target.value)}
                 placeholder="Column title (e.g. In review)"
                 autoFocus
-                className="w-full px-2.5 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded focus:outline-none focus:border-[#58a6ff]"
+                className="w-full px-2.5 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded focus:outline-none focus:border-accent-fg"
               />
               <div className="flex justify-end gap-1.5 pt-1">
                 <button
                   type="button"
                   onClick={() => setIsAddingColumn(false)}
-                  className="px-2.5 py-1 rounded bg-[#21262d] text-[#8b949e] hover:text-[#e6edf3] cursor-pointer"
+                  className="px-2.5 py-1 rounded bg-canvas-raised text-fg-muted hover:text-fg-default active:scale-[0.97] cursor-pointer transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-2.5 py-1 rounded bg-[#238636] hover:bg-[#2ea043] text-white font-semibold cursor-pointer"
+                  className="px-2.5 py-1 rounded bg-success-fg hover:opacity-90 active:scale-[0.97] text-white font-semibold cursor-pointer transition-all"
                 >
                   Create
                 </button>
@@ -552,10 +552,10 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#21262d]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-default">
         <div className="space-y-1">
-          <h2 className="text-base font-semibold text-[#e6edf3]">Projects</h2>
-          <p className="text-xs text-[#8b949e]">
+          <h2 className="text-base font-semibold text-fg-default">Projects</h2>
+          <p className="text-xs text-fg-muted">
             Coordinate, track, and update your work in one place with customizable Kanban boards.
           </p>
         </div>
@@ -563,7 +563,7 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
         <button
           type="button"
           onClick={() => setIsNewProjectModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-success-fg hover:opacity-90 active:scale-[0.97] text-white shadow-sm transition-all cursor-pointer self-start sm:self-auto"
         >
           <Octicon name="table" size={14} />
           <span>New project</span>
@@ -571,14 +571,14 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-1 border-b sm:border-b-0 border-[#21262d] pb-2 sm:pb-0">
+        <div className="flex items-center gap-1 border-b sm:border-b-0 border-border-default pb-2 sm:pb-0">
           <button
             type="button"
             onClick={() => setActiveTab('open')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
               activeTab === 'open'
-                ? 'bg-[#21262d] text-[#e6edf3]'
-                : 'text-[#8b949e] hover:text-[#e6edf3]'
+                ? 'bg-canvas-raised text-fg-default'
+                : 'text-fg-muted hover:text-fg-default'
             }`}
           >
             <Octicon name="table" size={14} />
@@ -589,8 +589,8 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
             onClick={() => setActiveTab('closed')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
               activeTab === 'closed'
-                ? 'bg-[#21262d] text-[#e6edf3]'
-                : 'text-[#8b949e] hover:text-[#e6edf3]'
+                ? 'bg-canvas-raised text-fg-default'
+                : 'text-fg-muted hover:text-fg-default'
             }`}
           >
             <Octicon name="check" size={14} />
@@ -604,55 +604,55 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search all projects..."
-            className="w-full px-3 py-1.5 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] h-8"
+            className="w-full px-3 py-1.5 text-xs bg-canvas-subtle text-fg-default placeholder-fg-muted border border-border-default rounded-md focus:outline-none focus:border-accent-fg h-8"
           />
         </div>
       </div>
 
-      <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#0d1117]">
+      <div className="border border-border-default rounded-md overflow-hidden bg-canvas-default">
         {filteredProjects.length === 0 ? (
-          <div className="p-12 text-center text-xs text-[#8b949e] space-y-3">
-            <Octicon name="table" size={32} className="mx-auto text-[#8b949e]/60" />
-            <p className="font-semibold text-[#e6edf3]">No {activeTab} projects found</p>
+          <div className="p-12 text-center text-xs text-fg-muted space-y-3">
+            <Octicon name="table" size={32} className="mx-auto text-fg-muted/60" />
+            <p className="font-semibold text-fg-default">No {activeTab} projects found</p>
             <p>Create a project board to begin organizing your issues and tasks.</p>
           </div>
         ) : (
-          <ul className="divide-y divide-[#21262d]">
+          <ul className="divide-y divide-border-default">
             {filteredProjects.map((board) => {
               const stats = getBoardStats(board)
               return (
                 <li
                   key={board.id}
-                  className="p-5 hover:bg-[#161b22]/70 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  className="p-5 hover:bg-canvas-hover transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
                   <div className="space-y-1.5 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <button
                         type="button"
                         onClick={() => setActiveBoardId(board.id)}
-                        className="text-sm font-bold text-[#58a6ff] hover:underline text-left cursor-pointer"
+                        className="text-sm font-bold text-accent-fg hover:underline text-left cursor-pointer"
                       >
                         {board.title}
                       </button>
-                      <span className="px-2 py-0.2 rounded-full border border-[#30363d] text-[10px] text-[#8b949e]">
+                      <span className="px-2 py-0.2 rounded-full border border-border-default text-[10px] text-fg-muted bg-canvas-subtle">
                         {board.columns.length} columns
                       </span>
                     </div>
-                    <p className="text-xs text-[#8b949e] line-clamp-1">{board.description}</p>
-                    <div className="text-[11px] text-[#8b949e]">
+                    <p className="text-xs text-fg-muted line-clamp-1">{board.description}</p>
+                    <div className="text-[11px] text-fg-muted">
                       Updated on {new Date(board.updatedAt).toLocaleDateString()}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4 shrink-0">
                     <div className="w-36 space-y-1">
-                      <div className="flex justify-between text-[10px] text-[#8b949e]">
+                      <div className="flex justify-between text-[10px] text-fg-muted">
                         <span>Progress</span>
                         <span>{stats.percent}%</span>
                       </div>
-                      <div className="w-full h-2 bg-[#21262d] rounded-full overflow-hidden">
+                      <div className="w-full h-2 bg-canvas-subtle rounded-full overflow-hidden border border-border-default/50">
                         <div
-                          className="h-full bg-[#238636] transition-all duration-300"
+                          className="h-full bg-success-fg transition-all duration-300"
                           style={{ width: `${stats.percent}%` }}
                         />
                       </div>
@@ -662,14 +662,14 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                       <button
                         type="button"
                         onClick={() => setActiveBoardId(board.id)}
-                        className="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] text-xs font-semibold border border-[#30363d] cursor-pointer"
+                        className="px-2.5 py-1 rounded bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default text-xs font-semibold border border-border-default cursor-pointer transition-all"
                       >
                         View board
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDeleteBoard(board.id)}
-                        className="p-1 rounded text-[#8b949e] hover:text-[#f85149] hover:bg-[#21262d] cursor-pointer"
+                        className="p-1 rounded text-fg-muted hover:text-danger-fg hover:bg-canvas-hover active:scale-[0.97] cursor-pointer transition-all"
                         title="Delete project"
                       >
                         <Octicon name="trash" size={14} />
@@ -685,13 +685,13 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
 
       {isNewProjectModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl max-w-md w-full overflow-hidden text-xs">
-            <div className="p-4 border-b border-[#30363d] flex items-center justify-between bg-[#0d1117]">
-              <h3 className="font-semibold text-[#e6edf3]">Create a new project board</h3>
+          <div className="bg-canvas-raised border border-border-default rounded-lg shadow-2xl max-w-md w-full overflow-hidden text-xs">
+            <div className="p-4 border-b border-border-default flex items-center justify-between bg-canvas-subtle">
+              <h3 className="font-semibold text-fg-default">Create a new project board</h3>
               <button
                 type="button"
                 onClick={() => setIsNewProjectModalOpen(false)}
-                className="text-[#8b949e] hover:text-[#e6edf3] p-1 rounded-md cursor-pointer"
+                className="text-fg-muted hover:text-fg-default p-1 rounded-md cursor-pointer transition-colors"
               >
                 <Octicon name="x" size={16} />
               </button>
@@ -699,7 +699,7 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
 
             <form onSubmit={handleCreateProject} className="p-4 space-y-4">
               <div className="space-y-1.5">
-                <label className="block font-semibold text-[#e6edf3]">Project board name</label>
+                <label className="block font-semibold text-fg-default">Project board name</label>
                 <input
                   type="text"
                   value={newProjectTitle}
@@ -707,23 +707,23 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                   placeholder="e.g. Release 2.0 Roadmap"
                   required
                   autoFocus
-                  className="w-full px-3 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded focus:outline-none focus:border-[#58a6ff] h-8"
+                  className="w-full px-3 py-1.5 bg-canvas-default text-fg-default placeholder-fg-muted border border-border-default rounded focus:outline-none focus:border-accent-fg h-8"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="block font-semibold text-[#e6edf3]">Description</label>
+                <label className="block font-semibold text-fg-default">Description</label>
                 <textarea
                   value={newProjectDescription}
                   onChange={(e) => setNewProjectDescription(e.target.value)}
                   placeholder="What is this project board about?"
                   rows={3}
-                  className="w-full px-3 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded focus:outline-none focus:border-[#58a6ff] resize-none"
+                  className="w-full px-3 py-1.5 bg-canvas-default text-fg-default placeholder-fg-muted border border-border-default rounded focus:outline-none focus:border-accent-fg resize-none"
                 />
               </div>
 
-              <div className="p-3 bg-[#0d1117] border border-[#30363d] rounded text-[11px] text-[#8b949e] space-y-1">
-                <span className="font-semibold text-[#e6edf3]">Template: Basic Kanban</span>
+              <div className="p-3 bg-canvas-default border border-border-default rounded text-[11px] text-fg-muted space-y-1">
+                <span className="font-semibold text-fg-default">Template: Basic Kanban</span>
                 <p>Includes To do, In progress, and Done columns automatically.</p>
               </div>
 
@@ -731,13 +731,13 @@ export function RepositoryProjects({ owner, repo }: RepositoryProjectsProps) {
                 <button
                   type="button"
                   onClick={() => setIsNewProjectModalOpen(false)}
-                  className="px-3 py-1.5 rounded-md border border-[#30363d] bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] font-medium cursor-pointer"
+                  className="px-3 py-1.5 rounded-md border border-border-default bg-canvas-raised hover:bg-canvas-hover active:scale-[0.97] text-fg-default font-medium cursor-pointer transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-3 py-1.5 rounded-md bg-[#238636] hover:bg-[#2ea043] text-white font-semibold transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-md bg-success-fg hover:opacity-90 active:scale-[0.97] text-white font-semibold transition-all cursor-pointer"
                 >
                   Create project
                 </button>

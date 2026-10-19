@@ -72,30 +72,30 @@ function FileRow({ item, owner, repo, refName }: FileRowProps) {
       : `/${owner}/${repo}/blob/${encodeURIComponent(refName)}/${item.path}`
 
   return (
-    <tr className="hover:bg-[#161b22]/70 transition-colors group">
-      <td className="py-2 px-3 whitespace-nowrap">
+    <tr className="hover:bg-canvas-hover transition-colors group">
+      <td className="py-2.5 px-3.5 whitespace-nowrap">
         <Link
           to={targetUrl}
-          className="flex items-center gap-2 text-[#e6edf3] hover:text-[#58a6ff] hover:underline"
+          className="flex items-center gap-2.5 text-fg-default hover:text-accent-fg hover:underline font-normal"
         >
           {item.type === 'dir' ? (
-            <Octicon name="file-directory" size={16} className="text-[#58a6ff]" />
+            <Octicon name="file-directory" size={16} className="text-accent-fg shrink-0" />
           ) : (
-            <Octicon name="file" size={16} className="text-[#8b949e]" />
+            <Octicon name="file" size={16} className="text-fg-subtle shrink-0" />
           )}
           <span>{item.name}</span>
         </Link>
       </td>
-      <td className="py-2 px-3 truncate max-w-xs text-[#8b949e] group-hover:text-[#c9d1d9] hidden md:table-cell">
+      <td className="py-2.5 px-3.5 truncate max-w-md text-fg-muted group-hover:text-fg-default hidden md:table-cell">
         {!hasDirect && isLoading ? (
-          <span className="inline-block w-32 h-3 bg-[#21262d] rounded animate-pulse" />
+          <span className="inline-block w-32 h-3 bg-canvas-hover rounded animate-pulse" />
         ) : (
           commitMsg
         )}
       </td>
-      <td className="py-2 px-3 whitespace-nowrap text-right text-[#8b949e] hidden md:table-cell">
+      <td className="py-2.5 px-3.5 whitespace-nowrap text-right text-fg-subtle hidden md:table-cell">
         {!hasDirect && isLoading ? (
-          <span className="inline-block w-16 h-3 bg-[#21262d] rounded animate-pulse" />
+          <span className="inline-block w-16 h-3 bg-canvas-hover rounded animate-pulse" />
         ) : (
           formatCommitDate(commitDateStr)
         )}
@@ -134,9 +134,9 @@ export function FileBrowser({
   const shortSha = latestCommit?.sha ? latestCommit.sha.slice(0, 7) : ''
 
   return (
-    <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#0d1117]">
+    <div className="border border-border-default rounded-lg overflow-hidden bg-canvas-default">
       {latestCommit && (
-        <div className="p-3 bg-[#161b22] border-b border-[#30363d] flex items-center justify-between text-xs text-[#8b949e] flex-wrap gap-2">
+        <div className="px-3.5 py-3 bg-canvas-subtle border-b border-border-default flex items-center justify-between text-xs text-fg-muted flex-wrap gap-2">
           <div className="flex items-center gap-2 truncate">
             <img
               src={avatarUrl}
@@ -144,15 +144,15 @@ export function FileBrowser({
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = '/default-avatar.jpg'
               }}
-              className="w-5 h-5 rounded-full border border-[#30363d] object-cover shrink-0"
+              className="w-5 h-5 rounded-full border border-border-default object-cover shrink-0"
             />
             <Link
               to={`/${authorName}`}
-              className="font-bold text-[#e6edf3] hover:underline hover:text-[#58a6ff]"
+              className="font-semibold text-fg-default hover:underline hover:text-accent-fg"
             >
               {authorName}
             </Link>
-            <span className="text-[#e6edf3] truncate">
+            <span className="text-fg-default truncate">
               {topCommitMsg}
             </span>
           </div>
@@ -161,18 +161,18 @@ export function FileBrowser({
             {shortSha && (
               <Link
                 to={`/${owner}/${repo}/commits/${refName}`}
-                className="font-mono text-[#58a6ff] hover:underline"
+                className="font-mono text-xs text-accent-fg hover:underline"
               >
                 {shortSha}
               </Link>
             )}
-            <span>&middot;</span>
-            <span>{topCommitDate}</span>
+            <span className="text-fg-subtle">&middot;</span>
+            <span className="text-fg-subtle">{topCommitDate}</span>
             <Link
               to={`/${owner}/${repo}/commits/${refName}`}
-              className="flex items-center gap-1.5 font-bold text-[#e6edf3] hover:text-[#58a6ff] ml-1"
+              className="flex items-center gap-1.5 font-semibold text-fg-default hover:text-accent-fg ml-1"
             >
-              <Octicon name="history" size={14} className="text-[#8b949e]" />
+              <Octicon name="history" size={14} className="text-fg-muted" />
               <span>{commitCount} Commits</span>
             </Link>
           </div>
@@ -180,13 +180,13 @@ export function FileBrowser({
       )}
 
       {isLoading && (
-        <div className="p-6 text-center text-xs text-[#8b949e]">
+        <div className="p-8 text-center text-xs text-fg-muted">
           Loading directory contents...
         </div>
       )}
 
       {!isLoading && items.length === 0 && !isSubdirectory && (
-        <div className="p-8 text-center text-xs text-[#8b949e]">
+        <div className="p-8 text-center text-xs text-fg-muted">
           This directory is empty.
         </div>
       )}
@@ -194,23 +194,23 @@ export function FileBrowser({
       {!isLoading && (items.length > 0 || isSubdirectory) && (
         <table className="w-full text-xs text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#30363d] bg-[#161b22] text-[#8b949e] hidden md:table-row">
-              <th className="py-2 px-3 font-semibold w-1/3">Name</th>
-              <th className="py-2 px-3 font-semibold">Last commit message</th>
-              <th className="py-2 px-3 font-semibold text-right w-36">Last commit date</th>
+            <tr className="border-b border-border-default bg-canvas-subtle text-fg-muted hidden md:table-row">
+              <th className="py-2.5 px-3.5 font-medium w-1/3">Name</th>
+              <th className="py-2.5 px-3.5 font-medium">Last commit message</th>
+              <th className="py-2.5 px-3.5 font-medium text-right w-36">Last commit date</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#21262d]">
+          <tbody className="divide-y divide-border-default">
             {isSubdirectory && (
-              <tr className="hover:bg-[#161b22]/70 transition-colors">
-                <td colSpan={3} className="py-2 px-3">
+              <tr className="hover:bg-canvas-hover transition-colors">
+                <td colSpan={3} className="py-2.5 px-3.5">
                   <Link
                     to={
                       parentPath
                         ? `/${owner}/${repo}/tree/${encodeURIComponent(refName)}/${parentPath}`
                         : `/${owner}/${repo}/tree/${encodeURIComponent(refName)}`
                     }
-                    className="flex items-center gap-2 text-[#58a6ff] font-semibold hover:underline"
+                    className="flex items-center gap-2 text-accent-fg font-semibold hover:underline"
                   >
                     <span>..</span>
                   </Link>

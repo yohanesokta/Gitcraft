@@ -49,20 +49,20 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
 
   return (
     <div className="space-y-6 text-xs">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#21262d]">
-        <div className="flex items-center gap-1 border border-[#30363d] rounded-md p-0.5 bg-[#161b22]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-default">
+        <div className="flex items-center gap-1 border border-border-default rounded-md p-0.5 bg-canvas-subtle">
           <button
             type="button"
             onClick={() => setActiveTab('releases')}
             className={`px-3 py-1 rounded font-semibold cursor-pointer transition-colors ${
               activeTab === 'releases'
-                ? 'bg-[#21262d] text-[#e6edf3]'
-                : 'text-[#8b949e] hover:text-[#e6edf3]'
+                ? 'bg-canvas-raised text-fg-default shadow-xs'
+                : 'text-fg-muted hover:text-fg-default'
             }`}
           >
             <span>Releases</span>
             {releaseItems.length > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+              <span className="ml-1.5 px-1.5 py-0.2 bg-canvas-default border border-border-default rounded-full text-[10px] text-fg-muted">
                 {releaseItems.length}
               </span>
             )}
@@ -72,13 +72,13 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
             onClick={() => setActiveTab('tags')}
             className={`px-3 py-1 rounded font-semibold cursor-pointer transition-colors ${
               activeTab === 'tags'
-                ? 'bg-[#21262d] text-[#e6edf3]'
-                : 'text-[#8b949e] hover:text-[#e6edf3]'
+                ? 'bg-canvas-raised text-fg-default shadow-xs'
+                : 'text-fg-muted hover:text-fg-default'
             }`}
           >
             <span>Tags</span>
             {tagItems.length > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
+              <span className="ml-1.5 px-1.5 py-0.2 bg-canvas-default border border-border-default rounded-full text-[10px] text-fg-muted">
                 {tagItems.length}
               </span>
             )}
@@ -87,7 +87,7 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
 
         <Link
           to={`/${owner}/${repo}/releases/new`}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-success-fg hover:opacity-90 active:scale-[0.97] text-white shadow-sm transition-all cursor-pointer self-start sm:self-auto"
         >
           <Octicon name="tag" size={13} />
           <span>Draft a new release</span>
@@ -97,20 +97,20 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
       {activeTab === 'releases' && (
         <div className="space-y-6">
           {isReleasesLoading ? (
-            <div className="p-12 text-center text-[#8b949e]">
+            <div className="p-12 text-center text-fg-muted">
               Loading releases...
             </div>
           ) : releaseItems.length === 0 ? (
-            <div className="p-12 text-center text-[#8b949e] border border-[#30363d] rounded-md bg-[#0d1117] space-y-3">
-              <Octicon name="tag" size={36} className="mx-auto text-[#8b949e]/60" />
-              <h3 className="text-base font-semibold text-[#e6edf3]">There aren’t any releases here</h3>
+            <div className="p-12 text-center text-fg-muted border border-border-default rounded-md bg-canvas-default space-y-3">
+              <Octicon name="tag" size={36} className="mx-auto text-fg-muted/60" />
+              <h3 className="text-base font-semibold text-fg-default">There aren’t any releases here</h3>
               <p className="max-w-md mx-auto text-xs">
                 Releases are packaged software iterations that can be tagged from specific branches or commits.
               </p>
               <div className="pt-2">
                 <Link
                   to={`/${owner}/${repo}/releases/new`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white shadow-sm transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold bg-success-fg hover:opacity-90 active:scale-[0.97] text-white shadow-sm transition-all cursor-pointer"
                 >
                   Draft a new release
                 </Link>
@@ -126,36 +126,36 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
                 return (
                   <div
                     key={rel.id}
-                    className="border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden"
+                    className="border border-border-default rounded-md bg-canvas-default overflow-hidden"
                   >
-                    <div className="p-5 border-b border-[#21262d] bg-[#161b22] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="p-5 border-b border-border-default bg-canvas-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <h2 className="text-base font-bold text-[#e6edf3]">
+                          <h2 className="text-base font-bold text-fg-default">
                             {rel.name || rel.tag_name}
                           </h2>
 
                           {isLatest && (
-                            <span className="px-2 py-0.5 rounded-full border border-[#238636] text-[10px] font-semibold text-[#3fb950] bg-[#238636]/10">
+                            <span className="px-2 py-0.5 rounded-full border border-success-fg/30 text-[10px] font-semibold text-success-fg bg-success-fg/10">
                               Latest
                             </span>
                           )}
 
                           {rel.prerelease && (
-                            <span className="px-2 py-0.5 rounded-full border border-[#d29922] text-[10px] font-semibold text-[#d29922] bg-[#d29922]/10">
+                            <span className="px-2 py-0.5 rounded-full border border-attention-fg/30 text-[10px] font-semibold text-attention-fg bg-attention-fg/10">
                               Pre-release
                             </span>
                           )}
 
                           {rel.draft && (
-                            <span className="px-2 py-0.5 rounded-full border border-[#8b949e] text-[10px] font-semibold text-[#8b949e] bg-[#21262d]">
+                            <span className="px-2 py-0.5 rounded-full border border-border-default text-[10px] font-semibold text-fg-muted bg-canvas-raised">
                               Draft
                             </span>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 text-[11px] text-[#8b949e] flex-wrap">
-                          <span className="inline-flex items-center gap-1 font-mono text-[#58a6ff]">
+                        <div className="flex items-center gap-2 text-[11px] text-fg-muted flex-wrap">
+                          <span className="inline-flex items-center gap-1 font-mono text-accent-fg">
                             <Octicon name="tag" size={12} />
                             <span>{rel.tag_name}</span>
                           </span>
@@ -166,7 +166,7 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
                               alt=""
                               className="w-3.5 h-3.5 rounded-full object-cover"
                             />
-                            <span className="text-[#e6edf3]">{rel.author.login}</span>
+                            <span className="text-fg-default">{rel.author.login}</span>
                           </div>
                           <span>•</span>
                           <span>released on {new Date(dateStr).toLocaleDateString()}</span>
@@ -178,7 +178,7 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
                           <button
                             type="button"
                             onClick={() => handleDelete(rel.id)}
-                            className="p-1 rounded text-[#8b949e] hover:text-[#f85149] hover:bg-[#21262d] cursor-pointer"
+                            className="p-1 rounded text-fg-muted hover:text-danger-fg hover:bg-canvas-hover active:scale-[0.97] cursor-pointer transition-colors"
                             title="Delete release"
                           >
                             <Octicon name="trash" size={14} />
@@ -196,14 +196,14 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
                           refName={rel.tag_name}
                         />
                       ) : (
-                        <p className="text-[#8b949e] italic text-xs">No release notes provided.</p>
+                        <p className="text-fg-muted italic text-xs">No release notes provided.</p>
                       )}
 
-                      <div className="pt-3 border-t border-[#21262d] space-y-2">
+                      <div className="pt-3 border-t border-border-default space-y-2">
                         <button
                           type="button"
                           onClick={() => toggleAssets(rel.id)}
-                          className="flex items-center gap-1.5 font-semibold text-[#e6edf3] hover:text-[#58a6ff] cursor-pointer text-xs"
+                          className="flex items-center gap-1.5 font-semibold text-fg-default hover:text-accent-fg cursor-pointer text-xs transition-colors"
                         >
                           <Octicon name="triangle-down" size={12} className={isAssetsOpen ? '' : '-rotate-90'} />
                           <span>Assets</span>
@@ -215,18 +215,18 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
                               href={rel.zipball_url || `https://codeberg.org/${owner}/${repo}/archive/${rel.tag_name}.zip`}
                               target="_blank"
                               rel="noreferrer"
-                              className="flex items-center gap-2 text-[#58a6ff] hover:underline py-1"
+                              className="flex items-center gap-2 text-accent-fg hover:underline py-1"
                             >
-                              <Octicon name="file" size={13} className="text-[#8b949e]" />
+                              <Octicon name="file" size={13} className="text-fg-muted" />
                               <span>Source code (zip)</span>
                             </a>
                             <a
                               href={rel.tarball_url || `https://codeberg.org/${owner}/${repo}/archive/${rel.tag_name}.tar.gz`}
                               target="_blank"
                               rel="noreferrer"
-                              className="flex items-center gap-2 text-[#58a6ff] hover:underline py-1"
+                              className="flex items-center gap-2 text-accent-fg hover:underline py-1"
                             >
-                              <Octicon name="file" size={13} className="text-[#8b949e]" />
+                              <Octicon name="file" size={13} className="text-fg-muted" />
                               <span>Source code (tar.gz)</span>
                             </a>
                           </div>
@@ -242,22 +242,22 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
       )}
 
       {activeTab === 'tags' && (
-        <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#0d1117]">
+        <div className="border border-border-default rounded-md overflow-hidden bg-canvas-default">
           {tagItems.length === 0 ? (
-            <div className="p-8 text-center text-[#8b949e]">
+            <div className="p-8 text-center text-fg-muted">
               No tags found in this repository.
             </div>
           ) : (
-            <ul className="divide-y divide-[#21262d]">
+            <ul className="divide-y divide-border-default">
               {tagItems.map((tag) => (
                 <li key={tag.name} className="p-4 flex items-center justify-between gap-4 text-xs">
                   <div className="flex items-center gap-3">
-                    <span className="w-6 h-6 rounded-md bg-[#21262d] flex items-center justify-center text-[#8b949e]">
+                    <span className="w-6 h-6 rounded-md bg-canvas-subtle border border-border-default flex items-center justify-center text-fg-muted">
                       <Octicon name="tag" size={13} />
                     </span>
                     <div>
-                      <span className="font-mono font-bold text-[#58a6ff] block">{tag.name}</span>
-                      <span className="font-mono text-[11px] text-[#8b949e]">
+                      <span className="font-mono font-bold text-accent-fg block">{tag.name}</span>
+                      <span className="font-mono text-[11px] text-fg-muted">
                         {tag.commit ? tag.commit.sha.slice(0, 7) : ''}
                       </span>
                     </div>
@@ -266,7 +266,7 @@ export function ReleaseList({ owner, repo, repository }: ReleaseListProps) {
                   <div className="flex items-center gap-2">
                     <Link
                       to={`/${owner}/${repo}/tree/${encodeURIComponent(tag.name)}`}
-                      className="px-2.5 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] font-semibold border border-[#30363d]"
+                      className="px-2.5 py-1 rounded bg-canvas-raised hover:bg-canvas-hover text-fg-default font-semibold border border-border-default active:scale-[0.97] transition-all"
                     >
                       Browse code
                     </Link>

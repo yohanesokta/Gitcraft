@@ -201,7 +201,7 @@ export function RepositoryPage() {
         canManage ? (
           <RepositorySettings repository={repository} onRepositoryUpdated={refetchRepo} />
         ) : (
-          <div className="p-8 text-center text-xs text-[#8b949e] border border-[#30363d] rounded-md bg-[#161b22]">
+          <div className="p-8 text-center text-xs text-fg-muted border border-border-default rounded-md bg-canvas-subtle">
             You do not have administrative access to this repository.
           </div>
         )
@@ -244,9 +244,9 @@ export function RepositoryPage() {
             />
             <Link
               to={`/${owner}/${repo}/tree/${encodeURIComponent(selectedRef)}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors active:scale-[0.97]"
             >
-              <Octicon name="arrow-left" size={14} />
+              <Octicon name="arrow-left" size={13} />
               <span>Browse code</span>
             </Link>
           </div>
@@ -283,16 +283,16 @@ export function RepositoryPage() {
             <div className="flex items-center gap-2">
               <Link
                 to={`/${owner}/${repo}/commits/${encodeURIComponent(selectedRef)}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors active:scale-[0.97]"
               >
-                <Octicon name="history" size={14} className="text-[#8b949e]" />
+                <Octicon name="history" size={13} className="text-fg-muted" />
                 <span>History</span>
               </Link>
             </div>
           </div>
 
           {isBlobLoading ? (
-            <div className="p-8 text-center text-xs text-[#8b949e]">
+            <div className="p-8 text-center text-xs text-fg-muted">
               Loading file content...
             </div>
           ) : (
@@ -338,11 +338,11 @@ export function RepositoryPage() {
                 <button
                   type="button"
                   onClick={() => setIsFileSearchOpen(true)}
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
                 >
-                  <Octicon name="search" size={12} className="text-[#8b949e]" />
+                  <Octicon name="search" size={12} className="text-fg-muted" />
                   <span>Go to file</span>
-                  <span className="px-1.5 py-0.2 rounded border border-[#30363d] text-[10px] text-[#8b949e] font-mono">
+                  <span className="px-1.5 py-0.5 rounded border border-border-default text-[10px] text-fg-muted font-mono bg-canvas-raised">
                     t
                   </span>
                 </button>
@@ -351,23 +351,23 @@ export function RepositoryPage() {
                   <button
                     type="button"
                     onClick={() => setIsCodeMenuOpen(!isCodeMenuOpen)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white border border-[#2ea043] shadow-sm transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold bg-accent-fg hover:opacity-90 text-[var(--accent-text)] border border-accent-fg shadow-xs transition-opacity cursor-pointer active:scale-[0.97]"
                   >
-                    <Octicon name="code" size={14} />
+                    <Octicon name="code" size={13} />
                     <span>Code</span>
-                    <Octicon name="triangle-down" size={12} className="opacity-75" />
+                    <Octicon name="triangle-down" size={11} className="opacity-75" />
                   </button>
 
                   {isCodeMenuOpen && (
-                    <div className="absolute right-0 mt-1 w-80 bg-[#161b22] border border-[#30363d] rounded-md shadow-2xl z-50 p-3 text-xs space-y-3">
-                      <div className="flex items-center gap-2 border-b border-[#30363d] pb-2">
+                    <div className="absolute right-0 mt-1.5 w-80 bg-canvas-raised border border-border-default rounded-lg shadow-xl z-50 p-3.5 text-xs space-y-3">
+                      <div className="flex items-center gap-3 border-b border-border-default pb-2">
                         <button
                           type="button"
                           onClick={() => setCloneType('https')}
                           className={`font-semibold pb-1 border-b-2 transition-colors cursor-pointer ${
                             cloneType === 'https'
-                              ? 'border-[#f78166] text-[#e6edf3]'
-                              : 'border-transparent text-[#8b949e] hover:text-[#e6edf3]'
+                              ? 'border-accent-fg text-fg-default'
+                              : 'border-transparent text-fg-muted hover:text-fg-default'
                           }`}
                         >
                           HTTPS
@@ -377,41 +377,41 @@ export function RepositoryPage() {
                           onClick={() => setCloneType('ssh')}
                           className={`font-semibold pb-1 border-b-2 transition-colors cursor-pointer ${
                             cloneType === 'ssh'
-                              ? 'border-[#f78166] text-[#e6edf3]'
-                              : 'border-transparent text-[#8b949e] hover:text-[#e6edf3]'
+                              ? 'border-accent-fg text-fg-default'
+                              : 'border-transparent text-fg-muted hover:text-fg-default'
                           }`}
                         >
                           SSH
                         </button>
                       </div>
 
-                      <div className="flex items-center rounded-md border border-[#30363d] bg-[#0d1117] overflow-hidden">
+                      <div className="flex items-center rounded-md border border-border-default bg-canvas-default overflow-hidden">
                         <input
                           type="text"
                           readOnly
                           value={cloneUrl}
-                          className="w-full px-2.5 py-1 text-xs font-mono text-[#e6edf3] bg-transparent focus:outline-none select-all"
+                          className="w-full px-2.5 py-1.5 text-xs font-mono text-fg-default bg-transparent focus:outline-none select-all"
                         />
                         <button
                           type="button"
                           onClick={handleCopyClone}
                           aria-label="Copy clone URL"
-                          className="p-1.5 hover:bg-[#21262d] text-[#8b949e] hover:text-[#e6edf3] border-l border-[#30363d] transition-colors cursor-pointer"
+                          className="p-1.5 hover:bg-canvas-hover text-fg-muted hover:text-fg-default border-l border-border-default transition-colors cursor-pointer"
                         >
                           {hasCopiedClone ? (
-                            <Octicon name="check" size={14} className="text-[#3fb950]" />
+                            <Octicon name="check" size={14} className="text-success-fg" />
                           ) : (
                             <Octicon name="copy" size={14} />
                           )}
                         </button>
                       </div>
 
-                      <div className="pt-2 border-t border-[#30363d]">
+                      <div className="pt-2 border-t border-border-default">
                         <a
                           href={`${baseUrl}/api/v1/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/archive/${selectedRef}.zip`}
-                          className="flex items-center gap-2 py-1 text-[#e6edf3] hover:text-[#58a6ff] transition-colors font-medium"
+                          className="flex items-center gap-2 py-1 text-fg-default hover:text-accent-fg transition-colors font-medium"
                         >
-                          <Octicon name="download" size={14} className="text-[#8b949e]" />
+                          <Octicon name="download" size={14} className="text-fg-muted" />
                           <span>Download ZIP</span>
                         </a>
                       </div>
@@ -422,7 +422,7 @@ export function RepositoryPage() {
             </div>
 
             {isContentsError && (
-              <div className="p-4 text-xs text-[#f85149] border border-[#f85149]/40 rounded-md bg-[#3c1e21]/20">
+              <div className="p-4 text-xs text-danger-fg border border-danger-fg/30 rounded-md bg-danger-fg/10">
                 {contentsError instanceof Error ? contentsError.message : 'Failed to load directory contents'}
               </div>
             )}
@@ -439,7 +439,7 @@ export function RepositoryPage() {
             />
 
             {!subPath && isReadmeLoading && readmeItem && (
-              <div className="border border-[#30363d] rounded-md p-6 bg-[#0d1117] space-y-3">
+              <div className="border border-border-default rounded-lg p-6 bg-canvas-default space-y-3">
                 <Skeleton className="h-5 w-48" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-3/4" />

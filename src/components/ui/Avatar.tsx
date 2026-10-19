@@ -29,7 +29,7 @@ export function Avatar({
   if (!src || hasError) {
     return (
       <div
-        className={`inline-flex items-center justify-center font-semibold rounded-full bg-[#30363d] text-[#e6edf3] select-none ${sizeClasses} ${className}`}
+        className={`inline-flex items-center justify-center font-semibold rounded-full bg-canvas-subtle text-fg-default border border-border-default select-none ${sizeClasses} ${className}`}
         aria-label={alt}
       >
         {initial}
@@ -42,7 +42,7 @@ export function Avatar({
       src={src}
       alt={alt}
       onError={() => setHasError(true)}
-      className={`rounded-full object-cover border border-[#30363d]/50 ${sizeClasses} ${className}`}
+      className={`rounded-full object-cover border border-border-default/50 ${sizeClasses} ${className}`}
       {...props}
     />
   )

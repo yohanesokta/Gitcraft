@@ -19,32 +19,39 @@ export function ReadmeViewer({
   refName = 'main',
 }: ReadmeViewerProps) {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2 border-b border-[#21262d] pb-2 text-xs text-[#8b949e]">
-        <div className="flex items-center gap-1.5 font-semibold text-[#e6edf3]">
-          <Octicon name="book" size={14} />
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 border-b border-border-default pb-2 text-xs text-fg-muted">
+        <div className="flex items-center gap-1.5 font-semibold text-fg-default">
+          <Octicon name="book" size={14} className="text-fg-muted" />
           <span>README</span>
         </div>
         {licenseName && (
           <div className="flex items-center gap-1.5 ml-4">
-            <Octicon name="law" size={14} />
+            <Octicon name="law" size={14} className="text-fg-muted" />
             <span>{licenseName}</span>
           </div>
         )}
       </div>
 
-      <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#0d1117]">
-        <div className="p-3 bg-[#161b22] border-b border-[#30363d] flex items-center justify-between text-xs font-semibold text-[#e6edf3]">
+      <div className="border border-border-default rounded-lg overflow-hidden bg-canvas-default">
+        <div className="px-4 py-3 bg-canvas-subtle border-b border-border-default flex items-center justify-between text-xs font-semibold text-fg-default">
           <div className="flex items-center gap-2">
-            <Octicon name="book" size={16} className="text-[#8b949e]" />
+            <Octicon name="book" size={16} className="text-fg-muted" />
             <span>{filename}</span>
           </div>
-          <div className="flex items-center gap-1 text-[#8b949e]">
-            <Octicon name="pencil" size={14} className="hover:text-[#58a6ff] cursor-pointer" />
+          <div className="flex items-center gap-2 text-fg-muted">
+            <button
+              type="button"
+              title="Edit file"
+              aria-label="Edit file"
+              className="p-1 rounded-md hover:bg-canvas-hover hover:text-fg-default transition-colors"
+            >
+              <Octicon name="pencil" size={14} />
+            </button>
           </div>
         </div>
 
-        <div className="p-8">
+        <div className="p-6 sm:p-8">
           <MarkdownViewer
             content={content}
             owner={owner}

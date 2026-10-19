@@ -90,26 +90,26 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3 pb-4 border-b border-[#21262d]">
+      <div className="space-y-3 pb-4 border-b border-border-default">
         <div className="flex items-center justify-between gap-4">
           <Link
             to={`/${owner}/${repo}/issues`}
-            className="inline-flex items-center gap-1.5 text-xs text-[#8b949e] hover:text-[#58a6ff]"
+            className="inline-flex items-center gap-1.5 text-xs text-fg-muted hover:text-accent-fg transition-colors"
           >
             <Octicon name="arrow-left" size={12} />
             <span>Back to issues</span>
           </Link>
         </div>
 
-        <h1 className="text-2xl font-normal text-[#e6edf3] leading-tight">
+        <h1 className="text-2xl font-normal text-fg-default leading-tight">
           {issue.title}{' '}
-          <span className="text-[#8b949e] font-light">#{issue.number}</span>
+          <span className="text-fg-muted font-light">#{issue.number}</span>
         </h1>
 
         <div className="flex items-center gap-3 text-xs flex-wrap">
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white ${
-              issue.state === 'open' ? 'bg-[#238636]' : 'bg-[#8957e5]'
+              issue.state === 'open' ? 'bg-success-fg' : 'bg-done-fg'
             }`}
           >
             <Octicon
@@ -119,10 +119,10 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
             <span className="capitalize">{issue.state}</span>
           </span>
 
-          <span className="text-[#8b949e]">
+          <span className="text-fg-muted">
             <Link
               to={`/${issue.user.login}`}
-              className="font-semibold text-[#e6edf3] hover:text-[#58a6ff]"
+              className="font-semibold text-fg-default hover:text-accent-fg transition-colors"
             >
               {issue.user.login}
             </Link>{' '}
@@ -134,31 +134,31 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-3 space-y-6">
-          <div className="border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] text-xs">
+          <div className="border border-border-default rounded-md bg-canvas-default overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-2.5 bg-canvas-subtle border-b border-border-default text-xs">
               <div className="flex items-center gap-2">
                 <img
                   src={issue.user.avatar_url || '/default-avatar.jpg'}
                   alt={issue.user.login}
-                  className="w-5 h-5 rounded-full border border-[#30363d] object-cover"
+                  className="w-5 h-5 rounded-full border border-border-default object-cover"
                 />
                 <Link
                   to={`/${issue.user.login}`}
-                  className="font-semibold text-[#e6edf3] hover:text-[#58a6ff]"
+                  className="font-semibold text-fg-default hover:text-accent-fg transition-colors"
                 >
                   {issue.user.login}
                 </Link>
-                <span className="text-[#8b949e]">commented on {formatTime(issue.created_at)}</span>
+                <span className="text-fg-muted">commented on {formatTime(issue.created_at)}</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full border border-[#30363d] text-[10px] text-[#8b949e]">
+              <span className="px-2 py-0.5 rounded-full border border-border-default text-[10px] text-fg-muted bg-canvas-default">
                 Author
               </span>
             </div>
-            <div className="p-4 text-sm text-[#e6edf3]">
+            <div className="p-4 text-sm text-fg-default">
               {issue.body ? (
                 <MarkdownViewer content={issue.body} />
               ) : (
-                <p className="text-xs text-[#8b949e] italic">No description provided.</p>
+                <p className="text-xs text-fg-muted italic">No description provided.</p>
               )}
             </div>
           </div>
@@ -171,41 +171,41 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
             comments?.map((comment) => (
               <div
                 key={comment.id}
-                className="border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden"
+                className="border border-border-default rounded-md bg-canvas-default overflow-hidden"
               >
-                <div className="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] text-xs">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-canvas-subtle border-b border-border-default text-xs">
                   <div className="flex items-center gap-2">
                     <img
                       src={comment.user.avatar_url || '/default-avatar.jpg'}
                       alt={comment.user.login}
-                      className="w-5 h-5 rounded-full border border-[#30363d] object-cover"
+                      className="w-5 h-5 rounded-full border border-border-default object-cover"
                     />
                     <Link
                       to={`/${comment.user.login}`}
-                      className="font-semibold text-[#e6edf3] hover:text-[#58a6ff]"
+                      className="font-semibold text-fg-default hover:text-accent-fg transition-colors"
                     >
                       {comment.user.login}
                     </Link>
-                    <span className="text-[#8b949e]">
+                    <span className="text-fg-muted">
                       commented on {formatTime(comment.created_at)}
                     </span>
                   </div>
                 </div>
-                <div className="p-4 text-sm text-[#e6edf3]">
+                <div className="p-4 text-sm text-fg-default">
                   <MarkdownViewer content={comment.body} />
                 </div>
               </div>
             ))
           )}
 
-          <div className="border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden">
-            <div className="px-4 py-2.5 bg-[#161b22] border-b border-[#30363d] text-xs font-semibold text-[#e6edf3]">
+          <div className="border border-border-default rounded-md bg-canvas-default overflow-hidden">
+            <div className="px-4 py-2.5 bg-canvas-subtle border-b border-border-default text-xs font-semibold text-fg-default">
               Add a comment
             </div>
             {isLoggedIn ? (
               <form onSubmit={handleAddComment} className="p-4 space-y-3">
                 {commentError && (
-                  <div className="p-2.5 rounded border border-[#f85149]/40 bg-[#f85149]/10 text-xs text-[#f85149]">
+                  <div className="p-2.5 rounded border border-danger-fg/40 bg-danger-fg/10 text-xs text-danger-fg">
                     {commentError}
                   </div>
                 )}
@@ -215,25 +215,25 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
                   placeholder="Leave a comment (Markdown supported)..."
                   rows={4}
                   required
-                  className="w-full px-3 py-2 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] resize-y"
+                  className="w-full px-3 py-2 text-xs bg-canvas-subtle text-fg-default placeholder-fg-muted border border-border-default rounded-md focus:outline-none focus:border-accent-fg resize-y"
                 />
                 <div className="flex justify-end">
                   <button
                     type="submit"
                     disabled={isSubmitting || !commentBody.trim()}
-                    className="px-4 py-1.5 text-xs font-semibold text-white rounded-md bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 cursor-pointer"
+                    className="px-4 py-1.5 text-xs font-semibold text-white rounded-md bg-success-fg hover:opacity-90 active:scale-[0.97] disabled:opacity-50 cursor-pointer transition-all"
                   >
                     {isSubmitting ? 'Posting...' : 'Comment'}
                   </button>
                 </div>
               </form>
             ) : (
-              <div className="p-6 text-center text-xs text-[#8b949e] space-y-2">
+              <div className="p-6 text-center text-xs text-fg-muted space-y-2">
                 <p>Sign in to join this conversation and add comments.</p>
                 <button
                   type="button"
                   onClick={() => navigate('/login')}
-                  className="px-4 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white cursor-pointer"
+                  className="px-4 py-1.5 rounded-md text-xs font-semibold bg-success-fg hover:opacity-90 active:scale-[0.97] text-white cursor-pointer transition-all"
                 >
                   Sign in
                 </button>
@@ -242,9 +242,9 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
           </div>
         </div>
 
-        <div className="space-y-6 text-xs text-[#8b949e]">
-          <div className="space-y-2 border-b border-[#21262d] pb-4">
-            <h4 className="font-semibold text-[#e6edf3]">Labels</h4>
+        <div className="space-y-6 text-xs text-fg-muted">
+          <div className="space-y-2 border-b border-border-default pb-4">
+            <h4 className="font-semibold text-fg-default">Labels</h4>
             {issue.labels && issue.labels.length > 0 ? (
               <div className="flex flex-wrap gap-1">
                 {issue.labels.map((label) => (
@@ -267,13 +267,13 @@ export function IssueDetail({ owner, repo, index }: IssueDetailProps) {
             )}
           </div>
 
-          <div className="space-y-2 border-b border-[#21262d] pb-4">
-            <h4 className="font-semibold text-[#e6edf3]">Assignees</h4>
+          <div className="space-y-2 border-b border-border-default pb-4">
+            <h4 className="font-semibold text-fg-default">Assignees</h4>
             <p className="italic">No one assigned</p>
           </div>
 
           <div className="space-y-2">
-            <h4 className="font-semibold text-[#e6edf3]">Notifications</h4>
+            <h4 className="font-semibold text-fg-default">Notifications</h4>
             <p>You’re receiving notifications because you’re subscribed to this thread.</p>
           </div>
         </div>

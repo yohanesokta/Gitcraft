@@ -49,36 +49,36 @@ export function ContributionGraph({ heatmapData }: ContributionGraphProps) {
   }, [days])
 
   const levelColors = [
-    'bg-[#161b22] border border-[#30363d]/50',
-    'bg-[#0e4429] border border-[#0e4429]',
-    'bg-[#006d32] border border-[#006d32]',
-    'bg-[#26a641] border border-[#26a641]',
-    'bg-[#39d353] border border-[#39d353]',
+    'bg-canvas-subtle border border-border-default/60',
+    'bg-success-fg/30 border border-success-fg/30',
+    'bg-success-fg/55 border border-success-fg/55',
+    'bg-success-fg/80 border border-success-fg/80',
+    'bg-success-fg border border-success-fg',
   ]
 
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
   return (
-    <div className="border border-[#30363d] rounded-md p-4 bg-[#0d1117] space-y-3">
+    <div className="border border-border-default rounded-lg p-4 bg-canvas-default space-y-3">
       <div className="flex items-center justify-between text-sm">
-        <h2 className="font-semibold text-[#e6edf3]">
+        <h2 className="font-semibold text-fg-default">
           {totalContributions.toLocaleString()} contributions in the last year
         </h2>
-        <div className="text-xs text-[#8b949e]">
+        <div className="text-xs text-fg-muted">
           Contribution settings
         </div>
       </div>
 
       <div className="overflow-x-auto pb-2 no-scrollbar">
         <div className="min-w-[720px]">
-          <div className="flex text-[10px] text-[#8b949e] mb-1.5 pl-6 justify-between pr-2">
+          <div className="flex text-[10px] text-fg-muted mb-1.5 pl-6 justify-between pr-2">
             {months.map((m) => (
               <span key={m}>{m}</span>
             ))}
           </div>
 
           <div className="flex gap-1 items-start">
-            <div className="flex flex-col gap-1 text-[9px] text-[#8b949e] pr-2 select-none h-[88px] justify-between">
+            <div className="flex flex-col gap-1 text-[9px] text-fg-muted pr-2 select-none h-[88px] justify-between">
               <span>Mon</span>
               <span>Wed</span>
               <span>Fri</span>
@@ -103,12 +103,12 @@ export function ContributionGraph({ heatmapData }: ContributionGraphProps) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-[11px] text-[#8b949e] pt-1 border-t border-[#21262d]">
+      <div className="flex items-center justify-between text-[11px] text-fg-muted pt-1 border-t border-border-default">
         <a
           href="https://docs.github.com/articles/why-are-my-contributions-not-showing-up-on-my-profile"
           target="_blank"
           rel="noreferrer"
-          className="text-[#58a6ff] hover:underline"
+          className="text-accent-fg hover:underline"
         >
           Learn how we count contributions
         </a>

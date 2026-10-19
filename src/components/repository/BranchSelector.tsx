@@ -59,45 +59,45 @@ export function BranchSelector({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
         >
-          <Octicon name="git-branch" size={14} className="text-[#8b949e]" />
-          <span className="max-w-[120px] truncate">{currentRef}</span>
-          <Octicon name="triangle-down" size={12} className="text-[#8b949e] ml-1" />
+          <Octicon name="git-branch" size={13} className="text-fg-muted" />
+          <span className="max-w-[140px] truncate font-mono">{currentRef}</span>
+          <Octicon name="triangle-down" size={11} className="text-fg-muted ml-0.5" />
         </button>
 
         {isOpen && (
-          <div className="absolute left-0 mt-1 w-72 bg-[#161b22] border border-[#30363d] rounded-md shadow-2xl z-50 overflow-hidden text-xs">
-            <div className="p-2 border-b border-[#30363d] flex items-center justify-between">
-              <span className="font-semibold text-[#e6edf3]">Switch branches/tags</span>
+          <div className="absolute left-0 mt-1.5 w-72 bg-canvas-raised border border-border-default rounded-lg shadow-xl z-50 overflow-hidden text-xs">
+            <div className="p-2.5 border-b border-border-default flex items-center justify-between">
+              <span className="font-semibold text-fg-default">Switch branches/tags</span>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-[#8b949e] hover:text-[#e6edf3]"
+                className="text-fg-muted hover:text-fg-default p-0.5 rounded cursor-pointer"
               >
                 &times;
               </button>
             </div>
 
-            <div className="p-2 border-b border-[#30363d]">
+            <div className="p-2 border-b border-border-default">
               <input
                 type="text"
                 autoFocus
                 value={filterQuery}
                 onChange={(e) => setFilterQuery(e.target.value)}
                 placeholder="Filter branches/tags"
-                className="w-full px-2.5 py-1 bg-[#0d1117] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] text-xs"
+                className="w-full px-2.5 py-1.5 bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg text-xs"
               />
             </div>
 
-            <div className="flex border-b border-[#30363d] bg-[#0d1117]/50">
+            <div className="flex border-b border-border-default bg-canvas-subtle">
               <button
                 type="button"
                 onClick={() => setActiveTab('branches')}
                 className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-colors cursor-pointer ${
                   activeTab === 'branches'
-                    ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                    : 'border-transparent text-[#8b949e] hover:text-[#e6edf3]'
+                    ? 'border-accent-fg text-fg-default font-semibold'
+                    : 'border-transparent text-fg-muted hover:text-fg-default'
                 }`}
               >
                 Branches
@@ -107,19 +107,19 @@ export function BranchSelector({
                 onClick={() => setActiveTab('tags')}
                 className={`flex-1 py-1.5 text-center font-medium border-b-2 transition-colors cursor-pointer ${
                   activeTab === 'tags'
-                    ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                    : 'border-transparent text-[#8b949e] hover:text-[#e6edf3]'
+                    ? 'border-accent-fg text-fg-default font-semibold'
+                    : 'border-transparent text-fg-muted hover:text-fg-default'
                 }`}
               >
                 Tags
               </button>
             </div>
 
-            <div className="max-h-60 overflow-y-auto divide-y divide-[#21262d]">
+            <div className="max-h-60 overflow-y-auto divide-y divide-border-default">
               {activeTab === 'branches' && (
                 <>
                   {filteredBranches.length === 0 ? (
-                    <div className="p-3 text-center text-[#8b949e]">
+                    <div className="p-4 text-center text-fg-muted">
                       No branches found
                     </div>
                   ) : (
@@ -128,22 +128,22 @@ export function BranchSelector({
                         key={b.name}
                         type="button"
                         onClick={() => handleSelect(b.name)}
-                        className="w-full text-left px-3 py-2 hover:bg-[#21262d] flex items-center justify-between group transition-colors cursor-pointer"
+                        className="w-full text-left px-3 py-2 hover:bg-canvas-hover flex items-center justify-between group transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-2 truncate">
                           {b.name === currentRef && (
-                            <Octicon name="check" size={14} className="text-[#e6edf3] shrink-0" />
+                            <Octicon name="check" size={14} className="text-fg-default shrink-0" />
                           )}
                           <span
-                            className={`truncate ${
-                              b.name === currentRef ? 'font-semibold text-[#e6edf3]' : 'text-[#8b949e] group-hover:text-[#e6edf3]'
+                            className={`truncate font-mono ${
+                              b.name === currentRef ? 'font-semibold text-fg-default' : 'text-fg-muted group-hover:text-fg-default'
                             }`}
                           >
                             {b.name}
                           </span>
                         </div>
                         {b.name === 'main' || b.name === 'master' ? (
-                          <span className="px-1.5 py-0.2 rounded-full border border-[#30363d] text-[10px] text-[#8b949e]">
+                          <span className="px-1.5 py-0.5 rounded-full border border-border-default text-[10px] text-fg-muted bg-canvas-subtle">
                             default
                           </span>
                         ) : null}
@@ -156,7 +156,7 @@ export function BranchSelector({
               {activeTab === 'tags' && (
                 <>
                   {filteredTags.length === 0 ? (
-                    <div className="p-3 text-center text-[#8b949e]">
+                    <div className="p-4 text-center text-fg-muted">
                       No tags found
                     </div>
                   ) : (
@@ -165,14 +165,14 @@ export function BranchSelector({
                         key={t.name}
                         type="button"
                         onClick={() => handleSelect(t.name)}
-                        className="w-full text-left px-3 py-2 hover:bg-[#21262d] flex items-center gap-2 group transition-colors cursor-pointer"
+                        className="w-full text-left px-3 py-2 hover:bg-canvas-hover flex items-center gap-2 group transition-colors cursor-pointer"
                       >
                         {t.name === currentRef && (
-                          <Octicon name="check" size={14} className="text-[#e6edf3] shrink-0" />
+                          <Octicon name="check" size={14} className="text-fg-default shrink-0" />
                         )}
                         <span
-                          className={`truncate ${
-                            t.name === currentRef ? 'font-semibold text-[#e6edf3]' : 'text-[#8b949e] group-hover:text-[#e6edf3]'
+                          className={`truncate font-mono ${
+                            t.name === currentRef ? 'font-semibold text-fg-default' : 'text-fg-muted group-hover:text-fg-default'
                           }`}
                         >
                           {t.name}
@@ -187,21 +187,21 @@ export function BranchSelector({
         )}
       </div>
 
-      <div className="hidden sm:flex items-center gap-3 text-xs text-[#8b949e]">
+      <div className="hidden sm:flex items-center gap-3 text-xs text-fg-muted">
         <Link
           to={`/${owner}/${repo}/branches`}
-          className="flex items-center gap-1.5 hover:text-[#58a6ff]"
+          className="flex items-center gap-1.5 hover:text-accent-fg transition-colors"
         >
-          <Octicon name="git-branch" size={14} />
-          <span className="font-semibold text-[#e6edf3]">{branchCount}</span>
+          <Octicon name="git-branch" size={13} />
+          <span className="font-semibold text-fg-default font-mono">{branchCount}</span>
           <span>{branchCount === 1 ? 'Branch' : 'Branches'}</span>
         </Link>
         <Link
           to={`/${owner}/${repo}/tags`}
-          className="flex items-center gap-1.5 hover:text-[#58a6ff]"
+          className="flex items-center gap-1.5 hover:text-accent-fg transition-colors"
         >
-          <Octicon name="tag" size={14} />
-          <span className="font-semibold text-[#e6edf3]">{tagCount}</span>
+          <Octicon name="tag" size={13} />
+          <span className="font-semibold text-fg-default font-mono">{tagCount}</span>
           <span>{tagCount === 1 ? 'Tag' : 'Tags'}</span>
         </Link>
       </div>

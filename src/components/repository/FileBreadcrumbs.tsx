@@ -21,7 +21,7 @@ export function FileBreadcrumbs({
     <nav className="flex items-center gap-1.5 text-sm flex-wrap">
       <Link
         to={`/${owner}/${repo}`}
-        className="text-[#58a6ff] hover:underline font-semibold"
+        className="text-accent-fg hover:underline font-semibold"
       >
         {repo}
       </Link>
@@ -33,15 +33,15 @@ export function FileBreadcrumbs({
 
         return (
           <span key={subPath} className="flex items-center gap-1.5">
-            <span className="text-[#8b949e]">/</span>
+            <span className="text-fg-subtle">/</span>
             {isLast ? (
-              <span className={`font-semibold ${isFileSegment ? 'text-[#e6edf3]' : 'text-[#e6edf3]'}`}>
+              <span className={`font-semibold ${isFileSegment ? 'text-fg-default' : 'text-fg-default'}`}>
                 {segment}
               </span>
             ) : (
               <Link
                 to={`/${owner}/${repo}/tree/${encodeURIComponent(refName)}/${subPath}`}
-                className="text-[#58a6ff] hover:underline"
+                className="text-accent-fg hover:underline"
               >
                 {segment}
               </Link>

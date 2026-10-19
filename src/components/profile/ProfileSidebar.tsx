@@ -101,20 +101,20 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).src = '/default-avatar.jpg'
             }}
-            className="w-20 h-20 sm:w-32 sm:h-32 lg:w-64 lg:h-64 rounded-full border border-[#30363d] object-cover shadow-sm"
+            className="w-20 h-20 sm:w-32 sm:h-32 lg:w-64 lg:h-64 rounded-full border border-border-default object-cover shadow-xs"
           />
         </div>
 
         {!isEditing ? (
           <div className="pt-2 lg:pt-4 space-y-1">
-            <h1 className="text-2xl font-bold text-[#e6edf3] leading-tight">
+            <h1 className="text-2xl font-bold text-fg-default leading-tight">
               {displayName}
             </h1>
-            <p className="text-xl font-light text-[#8b949e] leading-tight">
+            <p className="text-xl font-light text-fg-muted leading-tight">
               {user.login}
             </p>
             {user.pronouns && (
-              <span className="inline-block text-xs text-[#8b949e]">
+              <span className="inline-block text-xs text-fg-muted">
                 {user.pronouns}
               </span>
             )}
@@ -125,7 +125,7 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
       {!isEditing ? (
         <>
           {user.description && (
-            <p className="text-sm text-[#e6edf3] pt-1 leading-normal">
+            <p className="text-sm text-fg-default pt-1 leading-normal">
               {user.description}
             </p>
           )}
@@ -134,35 +134,35 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
             <button
               type="button"
               onClick={handleStartEditing}
-              className="w-full py-1.5 px-3 rounded-md text-xs font-semibold bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
+              className="w-full py-1.5 px-3 rounded-md text-xs font-semibold bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
             >
               Edit profile
             </button>
           )}
 
-          <div className="flex items-center gap-1.5 text-xs text-[#8b949e]">
+          <div className="flex items-center gap-1.5 text-xs text-fg-muted">
             <Octicon name="people" size={14} />
-            <span className="font-semibold text-[#e6edf3]">{followersCount}</span>
+            <span className="font-semibold text-fg-default">{followersCount}</span>
             <span>followers</span>
             <span>&middot;</span>
-            <span className="font-semibold text-[#e6edf3]">{followingCount}</span>
+            <span className="font-semibold text-fg-default">{followingCount}</span>
             <span>following</span>
           </div>
 
-          <div className="space-y-2 pt-2 text-xs text-[#8b949e] border-t border-[#21262d]">
+          <div className="space-y-2.5 pt-2 text-xs text-fg-muted border-t border-border-default">
             {user.location && (
               <div className="flex items-center gap-2">
-                <Octicon name="location" size={14} className="shrink-0" />
-                <span className="text-[#e6edf3] truncate">{user.location}</span>
+                <Octicon name="location" size={14} className="shrink-0 text-fg-muted" />
+                <span className="text-fg-default truncate">{user.location}</span>
               </div>
             )}
 
             {isPublicEmail && (
               <div className="flex items-center gap-2">
-                <Octicon name="mail" size={14} className="shrink-0" />
+                <Octicon name="mail" size={14} className="shrink-0 text-fg-muted" />
                 <a
                   href={`mailto:${user.email}`}
-                  className="hover:text-[#58a6ff] hover:underline truncate"
+                  className="hover:text-accent-fg hover:underline truncate"
                 >
                   {user.email}
                 </a>
@@ -171,12 +171,12 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
 
             {user.website && (
               <div className="flex items-center gap-2">
-                <Octicon name="link" size={14} className="shrink-0" />
+                <Octicon name="link" size={14} className="shrink-0 text-fg-muted" />
                 <a
                   href={user.website.startsWith('http') ? user.website : `https://${user.website}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#58a6ff] hover:underline truncate font-semibold"
+                  className="text-accent-fg hover:underline truncate font-semibold"
                 >
                   {user.website}
                 </a>
@@ -184,8 +184,8 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
             )}
 
             {joinedDate && (
-              <div className="flex items-center gap-2 text-[#8b949e]">
-                <Octicon name="history" size={14} className="shrink-0" />
+              <div className="flex items-center gap-2 text-fg-muted">
+                <Octicon name="history" size={14} className="shrink-0 text-fg-muted" />
                 <span>Joined {joinedDate}</span>
               </div>
             )}
@@ -194,13 +194,13 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
       ) : (
         <form onSubmit={handleSave} className="space-y-3 pt-2 text-xs">
           {errorMsg && (
-            <div className="p-2.5 rounded border border-[#f85149]/40 bg-[#f85149]/10 text-xs text-[#f85149]">
+            <div className="p-2.5 rounded-md border border-danger-fg/40 bg-danger-fg/10 text-xs text-danger-fg">
               {errorMsg}
             </div>
           )}
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-[#e6edf3]">
+            <label className="block text-xs font-semibold text-fg-default">
               Name
             </label>
             <input
@@ -208,12 +208,12 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Your name"
-              className="w-full px-2.5 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+              className="w-full px-2.5 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-[#e6edf3]">
+            <label className="block text-xs font-semibold text-fg-default">
               Bio
             </label>
             <textarea
@@ -221,12 +221,12 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
               onChange={(e) => setBio(e.target.value)}
               placeholder="Add a bio"
               rows={3}
-              className="w-full px-2.5 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] resize-y"
+              className="w-full px-2.5 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg resize-y"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-[#e6edf3]">
+            <label className="block text-xs font-semibold text-fg-default">
               Pronouns
             </label>
             <input
@@ -234,16 +234,16 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
               value={pronouns}
               onChange={(e) => setPronouns(e.target.value)}
               placeholder="e.g. they/them"
-              className="w-full px-2.5 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+              className="w-full px-2.5 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-[#e6edf3]">
+            <label className="block text-xs font-semibold text-fg-default">
               Location
             </label>
             <div className="relative">
-              <span className="absolute left-2.5 top-2 text-[#8b949e]">
+              <span className="absolute left-2.5 top-2 text-fg-muted">
                 <Octicon name="location" size={14} />
               </span>
               <input
@@ -251,17 +251,17 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Location"
-                className="w-full pl-8 pr-2.5 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+                className="w-full pl-8 pr-2.5 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-[#e6edf3]">
+            <label className="block text-xs font-semibold text-fg-default">
               Website
             </label>
             <div className="relative">
-              <span className="absolute left-2.5 top-2 text-[#8b949e]">
+              <span className="absolute left-2.5 top-2 text-fg-muted">
                 <Octicon name="link" size={14} />
               </span>
               <input
@@ -269,7 +269,7 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
                 value={website}
                 onChange={(e) => setWebsite(e.target.value)}
                 placeholder="https://example.com"
-                className="w-full pl-8 pr-2.5 py-1.5 bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+                className="w-full pl-8 pr-2.5 py-1.5 bg-canvas-default text-fg-default border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
             <button
               type="submit"
               disabled={isSaving}
-              className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-white bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-[var(--accent-text)] bg-accent-fg hover:opacity-90 disabled:opacity-50 transition-opacity cursor-pointer active:scale-[0.97]"
             >
               {isSaving ? 'Saving...' : 'Save'}
             </button>
@@ -286,7 +286,7 @@ export function ProfileSidebar({ user, onUserUpdated }: ProfileSidebarProps) {
               type="button"
               onClick={handleCancel}
               disabled={isSaving}
-              className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-[#e6edf3] bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-fg-muted hover:text-fg-default bg-canvas-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
             >
               Cancel
             </button>

@@ -39,12 +39,12 @@ export function HomePage() {
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       <aside className="lg:col-span-3 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-[#e6edf3]">
+          <h2 className="text-sm font-semibold text-fg-default">
             Top Repositories
           </h2>
           <Link
             to="/new"
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold bg-accent-fg hover:opacity-90 text-[var(--accent-text)] transition-opacity cursor-pointer active:scale-[0.97]"
           >
             <Octicon name="repo" size={12} />
             <span>New</span>
@@ -56,7 +56,7 @@ export function HomePage() {
           value={repoFilter}
           onChange={(e) => setRepoFilter(e.target.value)}
           placeholder="Find a repository..."
-          className="w-full px-2.5 py-1 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] transition-all h-7"
+          className="w-full px-2.5 py-1 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg transition-all h-8"
         />
 
         {isUserReposLoading && (
@@ -73,7 +73,7 @@ export function HomePage() {
               <li key={repo.id}>
                 <Link
                   to={`/${repo.owner.login}/${repo.name}`}
-                  className="flex items-center gap-2 py-1 text-[#e6edf3] hover:text-[#58a6ff] group truncate"
+                  className="flex items-center gap-2 py-1 text-fg-default hover:text-accent-fg group truncate"
                 >
                   <img
                     src={repo.avatar_url?.trim() || repo.owner.avatar_url || '/default-avatar.jpg'}
@@ -81,7 +81,7 @@ export function HomePage() {
                     onError={(e) => {
                       (e.currentTarget as HTMLImageElement).src = repo.owner.avatar_url || '/default-avatar.jpg'
                     }}
-                    className="w-4 h-4 rounded-full border border-[#30363d] object-cover shrink-0"
+                    className="w-4 h-4 rounded-full border border-border-default object-cover shrink-0"
                   />
                   <span className="truncate group-hover:underline">
                     {repo.owner.login}/{repo.name}
@@ -93,28 +93,28 @@ export function HomePage() {
         )}
 
         {!isUserReposLoading && filteredMyRepos.length === 0 && (
-          <p className="text-xs text-[#8b949e]">
+          <p className="text-xs text-fg-muted">
             No repositories found.
           </p>
         )}
 
-        <div className="pt-4 border-t border-[#21262d] space-y-2">
-          <h3 className="text-xs font-semibold text-[#8b949e] uppercase tracking-wider">
+        <div className="pt-4 border-t border-border-default space-y-2">
+          <h3 className="text-xs font-semibold text-fg-muted uppercase tracking-wider">
             Recent activity
           </h3>
-          <p className="text-xs text-[#8b949e]">
+          <p className="text-xs text-fg-muted">
             When you take actions across repositories, we’ll show your activity here.
           </p>
         </div>
       </aside>
 
       <section className="lg:col-span-6 space-y-6">
-        <div className="flex items-center justify-between pb-3 border-b border-[#21262d]">
-          <h1 className="text-lg font-bold text-[#e6edf3]">
+        <div className="flex items-center justify-between pb-3 border-b border-border-default">
+          <h1 className="text-lg font-bold text-fg-default">
             Home
           </h1>
-          <div className="flex items-center gap-1.5 text-xs text-[#8b949e]">
-            <Link to="/yohanesokta" className="text-[#58a6ff] hover:underline font-semibold">
+          <div className="flex items-center gap-1.5 text-xs text-fg-muted">
+            <Link to="/yohanesokta" className="text-accent-fg hover:underline font-semibold">
               Go to your profile
             </Link>
           </div>
@@ -123,7 +123,7 @@ export function HomePage() {
         {isExploreLoading && (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="p-4 border border-[#30363d] rounded-md bg-[#161b22] space-y-3">
+              <div key={i} className="p-4 border border-border-default rounded-lg bg-canvas-default space-y-3">
                 <Skeleton className="h-5 w-48" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-3 w-32" />
@@ -145,7 +145,7 @@ export function HomePage() {
             {exploreList.map((repo) => (
               <div
                 key={repo.id}
-                className="p-4 border border-[#30363d] rounded-md bg-[#161b22] hover:border-[#8b949e]/50 transition-colors space-y-2"
+                className="p-4 border border-border-default rounded-lg bg-canvas-default hover:border-accent-fg/40 transition-colors space-y-2"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 truncate">
@@ -153,33 +153,33 @@ export function HomePage() {
                       <img
                         src={repo.avatar_url}
                         alt=""
-                        className="w-4 h-4 rounded-sm object-cover border border-[#30363d] shrink-0"
+                        className="w-4 h-4 rounded-sm object-cover border border-border-default shrink-0"
                       />
                     ) : (
-                      <Octicon name="repo" size={16} className="text-[#8b949e] shrink-0" />
+                      <Octicon name="repo" size={16} className="text-fg-muted shrink-0" />
                     )}
                     <Link
                       to={`/${repo.owner.login}/${repo.name}`}
-                      className="text-sm font-semibold text-[#58a6ff] hover:underline truncate"
+                      className="text-sm font-semibold text-accent-fg hover:underline truncate"
                     >
                       {repo.owner.login}/{repo.name}
                     </Link>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full border border-[#30363d] text-[10px] text-[#8b949e]">
+                  <span className="px-2 py-0.5 rounded-full border border-border-default text-[10px] text-fg-muted bg-canvas-subtle">
                     {repo.private ? 'Private' : 'Public'}
                   </span>
                 </div>
 
                 {repo.description && (
-                  <p className="text-xs text-[#8b949e] line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-fg-muted line-clamp-2 leading-relaxed">
                     {repo.description}
                   </p>
                 )}
 
-                <div className="flex items-center gap-4 text-xs text-[#8b949e] pt-2 border-t border-[#30363d]/50">
+                <div className="flex items-center gap-4 text-xs text-fg-muted pt-2 border-t border-border-default">
                   {repo.language && (
                     <div className="flex items-center gap-1.5">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#3178c6]" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-accent-fg" />
                       <span>{repo.language}</span>
                     </div>
                   )}
@@ -199,25 +199,25 @@ export function HomePage() {
       </section>
 
       <aside className="lg:col-span-3 space-y-6">
-        <div className="p-4 rounded-md border border-[#30363d] bg-[#161b22] space-y-3">
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#e6edf3]">
+        <div className="p-4 rounded-lg border border-border-default bg-canvas-subtle space-y-3">
+          <div className="flex items-center gap-2 text-xs font-semibold text-fg-default">
             <Octicon name="mark-github" size={16} />
             <span>Connected to Forgejo</span>
           </div>
-          <p className="text-xs text-[#8b949e] font-mono break-all">
+          <p className="text-xs text-fg-muted font-mono break-all">
             {baseUrl}
           </p>
           {versionData?.version && (
-            <div className="text-[11px] text-[#8b949e]">
-              Engine version: <span className="font-mono text-[#58a6ff]">v{versionData.version}</span>
+            <div className="text-[11px] text-fg-muted">
+              Engine version: <span className="font-mono text-accent-fg">v{versionData.version}</span>
             </div>
           )}
         </div>
 
-        <div className="p-4 rounded-md border border-[#30363d] bg-[#161b22] space-y-2 text-xs text-[#8b949e]">
-          <h3 className="font-semibold text-[#e6edf3]">Explore users</h3>
+        <div className="p-4 rounded-lg border border-border-default bg-canvas-subtle space-y-2 text-xs text-fg-muted">
+          <h3 className="font-semibold text-fg-default">Explore users</h3>
           <p>
-            Visit <Link to="/yohanesokta" className="text-[#58a6ff] hover:underline font-semibold">/yohanesokta</Link> to view the full profile dashboard.
+            Visit <Link to="/yohanesokta" className="text-accent-fg hover:underline font-semibold">/yohanesokta</Link> to view the full profile dashboard.
           </p>
         </div>
       </aside>

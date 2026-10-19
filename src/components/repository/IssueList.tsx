@@ -85,7 +85,7 @@ export function IssueList({ owner, repo }: IssueListProps) {
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#8b949e]">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-fg-muted">
             <Octicon name="search" size={14} />
           </span>
           <input
@@ -93,7 +93,7 @@ export function IssueList({ owner, repo }: IssueListProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search all issues..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
           />
         </div>
 
@@ -106,7 +106,7 @@ export function IssueList({ owner, repo }: IssueListProps) {
               navigate('/login')
             }
           }}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-[#238636] hover:bg-[#2ea043] text-white border border-[#2ea043] shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-accent-fg hover:opacity-90 text-[var(--accent-text)] border border-accent-fg shadow-xs transition-opacity cursor-pointer self-start sm:self-auto active:scale-[0.97]"
         >
           <Octicon name="issue-opened" size={14} />
           <span>New issue</span>
@@ -116,21 +116,21 @@ export function IssueList({ owner, repo }: IssueListProps) {
       {isNewIssueOpen && (
         <form
           onSubmit={handleCreateIssue}
-          className="p-4 border border-[#30363d] rounded-md bg-[#161b22] space-y-3"
+          className="p-4 border border-border-default rounded-lg bg-canvas-subtle space-y-3"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#e6edf3]">Create a new issue</h3>
+            <h3 className="text-sm font-semibold text-fg-default">Create a new issue</h3>
             <button
               type="button"
               onClick={() => setIsNewIssueOpen(false)}
-              className="text-[#8b949e] hover:text-[#e6edf3] cursor-pointer"
+              className="text-fg-muted hover:text-fg-default cursor-pointer p-1 rounded"
             >
               <Octicon name="x" size={14} />
             </button>
           </div>
 
           {submitError && (
-            <div className="p-2.5 rounded border border-[#f85149]/40 bg-[#f85149]/10 text-xs text-[#f85149]">
+            <div className="p-2.5 rounded-md border border-danger-fg/40 bg-danger-fg/10 text-xs text-danger-fg">
               {submitError}
             </div>
           )}
@@ -141,7 +141,7 @@ export function IssueList({ owner, repo }: IssueListProps) {
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Title"
             required
-            className="w-full px-3 py-2 text-sm bg-[#0d1117] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+            className="w-full px-3 py-2 text-sm bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg"
           />
 
           <textarea
@@ -149,21 +149,21 @@ export function IssueList({ owner, repo }: IssueListProps) {
             onChange={(e) => setNewBody(e.target.value)}
             placeholder="Leave a comment (Markdown supported)..."
             rows={5}
-            className="w-full px-3 py-2 text-xs bg-[#0d1117] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] resize-y"
+            className="w-full px-3 py-2 text-xs bg-canvas-default text-fg-default placeholder-fg-subtle border border-border-default rounded-md focus:outline-none focus:border-accent-fg resize-y"
           />
 
           <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => setIsNewIssueOpen(false)}
-              className="px-3 py-1.5 text-xs text-[#8b949e] hover:text-[#e6edf3] rounded-md border border-[#30363d] bg-[#21262d] cursor-pointer"
+              className="px-3 py-1.5 text-xs text-fg-muted hover:text-fg-default rounded-md border border-border-default bg-canvas-default cursor-pointer active:scale-[0.97]"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !newTitle.trim()}
-              className="px-4 py-1.5 text-xs font-semibold text-white rounded-md bg-[#238636] hover:bg-[#2ea043] disabled:opacity-50 cursor-pointer"
+              className="px-4 py-1.5 text-xs font-semibold text-[var(--accent-text)] rounded-md bg-accent-fg hover:opacity-90 disabled:opacity-50 cursor-pointer active:scale-[0.97]"
             >
               {isSubmitting ? 'Submitting...' : 'Submit new issue'}
             </button>
@@ -171,17 +171,17 @@ export function IssueList({ owner, repo }: IssueListProps) {
         </form>
       )}
 
-      <div className="border border-[#30363d] rounded-md bg-[#0d1117] overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 bg-[#161b22] border-b border-[#30363d] text-xs">
+      <div className="border border-border-default rounded-lg bg-canvas-default overflow-hidden">
+        <div className="flex items-center justify-between px-4 py-3 bg-canvas-subtle border-b border-border-default text-xs">
           <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={() => setFilterState('open')}
               className={`flex items-center gap-1.5 font-medium cursor-pointer ${
-                filterState === 'open' ? 'text-[#e6edf3]' : 'text-[#8b949e] hover:text-[#e6edf3]'
+                filterState === 'open' ? 'text-fg-default font-semibold' : 'text-fg-muted hover:text-fg-default'
               }`}
             >
-              <Octicon name="issue-opened" size={14} className="text-[#3fb950]" />
+              <Octicon name="issue-opened" size={14} className="text-success-fg" />
               <span>{openIssues?.length ?? 0} Open</span>
             </button>
 
@@ -189,10 +189,10 @@ export function IssueList({ owner, repo }: IssueListProps) {
               type="button"
               onClick={() => setFilterState('closed')}
               className={`flex items-center gap-1.5 font-medium cursor-pointer ${
-                filterState === 'closed' ? 'text-[#e6edf3]' : 'text-[#8b949e] hover:text-[#e6edf3]'
+                filterState === 'closed' ? 'text-fg-default font-semibold' : 'text-fg-muted hover:text-fg-default'
               }`}
             >
-              <Octicon name="check" size={14} className="text-[#a371f7]" />
+              <Octicon name="check" size={14} className="text-done-fg" />
               <span>{closedIssues?.length ?? 0} Closed</span>
             </button>
           </div>
@@ -212,42 +212,42 @@ export function IssueList({ owner, repo }: IssueListProps) {
           </div>
         ) : filteredIssues.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[#161b22] border border-[#30363d] flex items-center justify-center text-[#8b949e]">
+            <div className="w-12 h-12 mx-auto rounded-full bg-canvas-subtle border border-border-default flex items-center justify-center text-fg-muted">
               <Octicon name="issue-opened" size={24} />
             </div>
-            <h4 className="text-base font-semibold text-[#e6edf3]">
+            <h4 className="text-base font-semibold text-fg-default">
               {filterState === 'open' ? 'There aren’t any open issues.' : 'There aren’t any closed issues.'}
             </h4>
-            <p className="text-xs text-[#8b949e] max-w-sm mx-auto">
+            <p className="text-xs text-fg-muted max-w-sm mx-auto">
               Issues are used to track todos, bugs, feature requests, and more.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-[#21262d]">
+          <div className="divide-y divide-border-default">
             {filteredIssues.map((issue) => (
               <div
                 key={issue.id}
-                className="flex items-start justify-between gap-3 p-4 hover:bg-[#161b22]/50 transition-colors"
+                className="flex items-start justify-between gap-3 p-4 hover:bg-canvas-hover transition-colors"
               >
                 <div className="flex items-start gap-3 min-w-0">
                   {issue.state === 'open' ? (
                     <Octicon
                       name="issue-opened"
                       size={16}
-                      className="text-[#3fb950] shrink-0 mt-0.5"
+                      className="text-success-fg shrink-0 mt-0.5"
                     />
                   ) : (
                     <Octicon
                       name="issue-closed"
                       size={16}
-                      className="text-[#a371f7] shrink-0 mt-0.5"
+                      className="text-done-fg shrink-0 mt-0.5"
                     />
                   )}
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Link
                         to={`/${owner}/${repo}/issues/${issue.number}`}
-                        className="text-sm font-semibold text-[#e6edf3] hover:text-[#58a6ff]"
+                        className="text-sm font-semibold text-fg-default hover:text-accent-fg"
                       >
                         {issue.title}
                       </Link>
@@ -269,11 +269,11 @@ export function IssueList({ owner, repo }: IssueListProps) {
                         </span>
                       ))}
                     </div>
-                    <div className="text-xs text-[#8b949e]">
+                    <div className="text-xs text-fg-muted">
                       #{issue.number} opened on {formatTime(issue.created_at)} by{' '}
                       <Link
                         to={`/${issue.user.login}`}
-                        className="hover:text-[#58a6ff] hover:underline"
+                        className="hover:text-accent-fg hover:underline"
                       >
                         {issue.user.login}
                       </Link>
@@ -282,7 +282,7 @@ export function IssueList({ owner, repo }: IssueListProps) {
                 </div>
 
                 {issue.comments > 0 && (
-                  <div className="flex items-center gap-1 text-xs text-[#8b949e] shrink-0 mt-0.5">
+                  <div className="flex items-center gap-1 text-xs text-fg-muted shrink-0 mt-0.5">
                     <Octicon name="comment" size={14} />
                     <span>{issue.comments}</span>
                   </div>

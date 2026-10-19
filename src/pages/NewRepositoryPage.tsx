@@ -138,20 +138,20 @@ export function NewRepositoryPage() {
   if (!isLoggedIn) {
     return (
       <div className="max-w-xl mx-auto py-16 px-4">
-        <div className="border border-[#30363d] rounded-md p-8 bg-[#161b22] text-center space-y-4">
-          <div className="w-12 h-12 rounded-full bg-[#21262d] border border-[#30363d] flex items-center justify-center mx-auto text-[#58a6ff]">
+        <div className="border border-border-default rounded-[var(--radius-card)] p-8 bg-canvas-subtle text-center space-y-4">
+          <div className="w-12 h-12 rounded-full bg-canvas-raised border border-border-default flex items-center justify-center mx-auto text-accent-fg">
             <Octicon name="repo" size={24} />
           </div>
-          <h2 className="text-xl font-semibold text-[#e6edf3]">
+          <h2 className="text-xl font-semibold text-fg-default">
             Sign in to create a repository
           </h2>
-          <p className="text-xs text-[#8b949e] max-w-sm mx-auto">
+          <p className="text-xs text-fg-muted max-w-sm mx-auto">
             You must be logged in with your Forgejo account to create personal or organizational repositories.
           </p>
           <div className="pt-2">
             <Link
               to="/login"
-              className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold text-white bg-[#238636] hover:bg-[#2ea043] rounded-md transition-colors"
+              className="inline-flex items-center justify-center px-4 py-2 text-xs font-medium text-accent-text bg-accent-fg hover:bg-accent-hover active:scale-[0.97] rounded-[var(--radius-control)] transition-all"
             >
               Sign in
             </Link>
@@ -162,19 +162,19 @@ export function NewRepositoryPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4 text-[#e6edf3]">
-      <div className="pb-6 border-b border-[#21262d] space-y-1">
-        <h1 className="text-2xl font-normal text-[#e6edf3]">
+    <div className="max-w-3xl mx-auto py-8 px-4 text-fg-default">
+      <div className="pb-6 border-b border-border-default space-y-1">
+        <h1 className="text-2xl font-normal text-fg-default">
           Create a new repository
         </h1>
-        <p className="text-xs text-[#8b949e]">
+        <p className="text-xs text-fg-muted">
           A repository contains all project files, including the revision history.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="py-6 space-y-6 text-xs">
         {errorMsg && (
-          <div className="p-3 bg-[#f85149]/10 border border-[#f85149]/40 rounded-md text-xs text-[#f85149]">
+          <div className="p-3 bg-danger-fg/10 border border-danger-fg/30 rounded-[var(--radius-control)] text-xs text-danger-fg">
             {errorMsg}
           </div>
         )}
@@ -182,13 +182,13 @@ export function NewRepositoryPage() {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-end gap-3">
             <div className="w-full sm:w-48 space-y-1.5">
-              <label className="block text-xs font-semibold text-[#e6edf3]">
-                Owner <span className="text-[#f85149]">*</span>
+              <label className="block text-xs font-semibold text-fg-default">
+                Owner <span className="text-danger-fg">*</span>
               </label>
               <select
                 value={selectedOwner}
                 onChange={(e) => setSelectedOwner(e.target.value)}
-                className="w-full h-8 px-2.5 text-xs bg-[#161b22] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] cursor-pointer"
+                className="w-full h-8 px-2.5 text-xs bg-canvas-subtle text-fg-default border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg cursor-pointer"
               >
                 {ownerOptions.map((opt) => (
                   <option key={opt.login} value={opt.login}>
@@ -198,13 +198,13 @@ export function NewRepositoryPage() {
               </select>
             </div>
 
-            <span className="hidden sm:inline-block text-xl font-light text-[#8b949e] pb-1">
+            <span className="hidden sm:inline-block text-xl font-light text-fg-muted pb-1">
               /
             </span>
 
             <div className="flex-1 space-y-1.5">
-              <label className="block text-xs font-semibold text-[#e6edf3]">
-                Repository name <span className="text-[#f85149]">*</span>
+              <label className="block text-xs font-semibold text-fg-default">
+                Repository name <span className="text-danger-fg">*</span>
               </label>
               <input
                 type="text"
@@ -213,40 +213,40 @@ export function NewRepositoryPage() {
                 placeholder="my-awesome-project"
                 required
                 pattern="^[a-zA-Z0-9_\-\.]+$"
-                className="w-full h-8 px-3 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+                className="w-full h-8 px-3 text-xs bg-canvas-subtle text-fg-default placeholder:text-fg-subtle border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg"
               />
             </div>
           </div>
 
-          <p className="text-[11px] text-[#8b949e]">
-            Great repository names are short and memorable. Need inspiration? How about <span className="text-[#58a6ff] font-medium">legendary-waddle</span>?
+          <p className="text-[11px] text-fg-muted">
+            Great repository names are short and memorable. Need inspiration? How about <span className="text-accent-fg font-medium">legendary-waddle</span>?
           </p>
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-xs font-semibold text-[#e6edf3]">
-            Description <span className="text-[#8b949e] font-normal">(optional)</span>
+          <label className="block text-xs font-semibold text-fg-default">
+            Description <span className="text-fg-muted font-normal">(optional)</span>
           </label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="A short description of this repository"
-            className="w-full h-8 px-3 text-xs bg-[#161b22] text-[#e6edf3] placeholder-[#8b949e] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff]"
+            className="w-full h-8 px-3 text-xs bg-canvas-subtle text-fg-default placeholder:text-fg-subtle border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg"
           />
         </div>
 
-        <div className="pt-4 border-t border-[#21262d] space-y-3">
-          <label className="block text-xs font-semibold text-[#e6edf3]">
+        <div className="pt-4 border-t border-border-default space-y-3">
+          <label className="block text-xs font-semibold text-fg-default">
             Visibility
           </label>
 
           <div className="space-y-2">
             <label
-              className={`flex items-start gap-3 p-3 rounded-md border cursor-pointer transition-colors ${
+              className={`flex items-start gap-3 p-3 rounded-[var(--radius-control)] border cursor-pointer transition-colors ${
                 !isPrivate
-                  ? 'border-[#58a6ff] bg-[#161b22]'
-                  : 'border-[#30363d] bg-[#0d1117] hover:bg-[#161b22]/50'
+                  ? 'border-accent-fg bg-canvas-subtle'
+                  : 'border-border-default bg-canvas-default hover:bg-canvas-subtle'
               }`}
             >
               <input
@@ -254,24 +254,24 @@ export function NewRepositoryPage() {
                 name="visibility"
                 checked={!isPrivate}
                 onChange={() => setIsPrivate(false)}
-                className="mt-0.5 text-[#238636] focus:ring-0 cursor-pointer"
+                className="mt-0.5 accent-[var(--accent)] cursor-pointer"
               />
               <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5 font-semibold text-[#e6edf3]">
-                  <Octicon name="repo" size={14} className="text-[#8b949e]" />
+                <div className="flex items-center gap-1.5 font-semibold text-fg-default">
+                  <Octicon name="repo" size={14} className="text-fg-muted" />
                   <span>Public</span>
                 </div>
-                <p className="text-[11px] text-[#8b949e]">
+                <p className="text-[11px] text-fg-muted">
                   Anyone on the internet can see this repository. You choose who can commit.
                 </p>
               </div>
             </label>
 
             <label
-              className={`flex items-start gap-3 p-3 rounded-md border cursor-pointer transition-colors ${
+              className={`flex items-start gap-3 p-3 rounded-[var(--radius-control)] border cursor-pointer transition-colors ${
                 isPrivate
-                  ? 'border-[#58a6ff] bg-[#161b22]'
-                  : 'border-[#30363d] bg-[#0d1117] hover:bg-[#161b22]/50'
+                  ? 'border-accent-fg bg-canvas-subtle'
+                  : 'border-border-default bg-canvas-default hover:bg-canvas-subtle'
               }`}
             >
               <input
@@ -279,14 +279,14 @@ export function NewRepositoryPage() {
                 name="visibility"
                 checked={isPrivate}
                 onChange={() => setIsPrivate(true)}
-                className="mt-0.5 text-[#238636] focus:ring-0 cursor-pointer"
+                className="mt-0.5 accent-[var(--accent)] cursor-pointer"
               />
               <div className="space-y-0.5">
-                <div className="flex items-center gap-1.5 font-semibold text-[#e6edf3]">
-                  <Octicon name="shield" size={14} className="text-[#8b949e]" />
+                <div className="flex items-center gap-1.5 font-semibold text-fg-default">
+                  <Octicon name="shield" size={14} className="text-fg-muted" />
                   <span>Private</span>
                 </div>
-                <p className="text-[11px] text-[#8b949e]">
+                <p className="text-[11px] text-fg-muted">
                   You choose who can see and commit to this repository.
                 </p>
               </div>
@@ -294,29 +294,29 @@ export function NewRepositoryPage() {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-[#21262d] space-y-3">
+        <div className="pt-4 border-t border-border-default space-y-3">
           <div>
-            <h3 className="text-xs font-semibold text-[#e6edf3]">
+            <h3 className="text-xs font-semibold text-fg-default">
               Initialize this repository with:
             </h3>
-            <p className="text-[11px] text-[#8b949e]">
+            <p className="text-[11px] text-fg-muted">
               Skip this step if you're pushing an existing repository.
             </p>
           </div>
 
-          <div className="border border-[#30363d] rounded-md bg-[#161b22] divide-y divide-[#21262d]">
-            <label className="flex items-start gap-3 p-3 cursor-pointer hover:bg-[#21262d]/40 transition-colors">
+          <div className="border border-border-default rounded-[var(--radius-card)] bg-canvas-subtle divide-y divide-border-default">
+            <label className="flex items-start gap-3 p-3 cursor-pointer hover:bg-canvas-hover transition-colors">
               <input
                 type="checkbox"
                 checked={addReadme}
                 onChange={(e) => setAddReadme(e.target.checked)}
-                className="mt-0.5 rounded border-[#30363d] bg-[#0d1117] text-[#238636] focus:ring-0 cursor-pointer"
+                className="mt-0.5 rounded border-border-default bg-canvas-default text-accent-fg focus:ring-0 cursor-pointer"
               />
               <div className="space-y-0.5">
-                <span className="font-semibold text-[#e6edf3] block">
+                <span className="font-semibold text-fg-default block">
                   Add a README file
                 </span>
-                <p className="text-[11px] text-[#8b949e]">
+                <p className="text-[11px] text-fg-muted">
                   This is where you can write a long description for your project.
                 </p>
               </div>
@@ -328,13 +328,13 @@ export function NewRepositoryPage() {
                   type="checkbox"
                   checked={addGitignore}
                   onChange={(e) => setAddGitignore(e.target.checked)}
-                  className="mt-0.5 rounded border-[#30363d] bg-[#0d1117] text-[#238636] focus:ring-0 cursor-pointer"
+                  className="mt-0.5 rounded border-border-default bg-canvas-default text-accent-fg focus:ring-0 cursor-pointer"
                 />
                 <div className="space-y-0.5">
-                  <span className="font-semibold text-[#e6edf3] block">
+                  <span className="font-semibold text-fg-default block">
                     Add .gitignore
                   </span>
-                  <p className="text-[11px] text-[#8b949e]">
+                  <p className="text-[11px] text-fg-muted">
                     Choose which files not to track from a list of templates.
                   </p>
                 </div>
@@ -342,13 +342,13 @@ export function NewRepositoryPage() {
 
               {addGitignore && (
                 <div className="pl-6 pt-1 max-w-xs">
-                  <label className="block text-[11px] text-[#8b949e] mb-1">
+                  <label className="block text-[11px] text-fg-muted mb-1">
                     .gitignore template
                   </label>
                   <select
                     value={selectedGitignore}
                     onChange={(e) => setSelectedGitignore(e.target.value)}
-                    className="w-full h-7 px-2 text-xs bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] cursor-pointer"
+                    className="w-full h-7 px-2 text-xs bg-canvas-default text-fg-default border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg cursor-pointer"
                   >
                     {gitignoreList.map((tpl) => (
                       <option key={tpl} value={tpl}>
@@ -366,13 +366,13 @@ export function NewRepositoryPage() {
                   type="checkbox"
                   checked={addLicense}
                   onChange={(e) => setAddLicense(e.target.checked)}
-                  className="mt-0.5 rounded border-[#30363d] bg-[#0d1117] text-[#238636] focus:ring-0 cursor-pointer"
+                  className="mt-0.5 rounded border-border-default bg-canvas-default text-accent-fg focus:ring-0 cursor-pointer"
                 />
                 <div className="space-y-0.5">
-                  <span className="font-semibold text-[#e6edf3] block">
+                  <span className="font-semibold text-fg-default block">
                     Choose a license
                   </span>
-                  <p className="text-[11px] text-[#8b949e]">
+                  <p className="text-[11px] text-fg-muted">
                     A license tells others what they can and can't do with your code.
                   </p>
                 </div>
@@ -380,13 +380,13 @@ export function NewRepositoryPage() {
 
               {addLicense && (
                 <div className="pl-6 pt-1 max-w-xs">
-                  <label className="block text-[11px] text-[#8b949e] mb-1">
+                  <label className="block text-[11px] text-fg-muted mb-1">
                     License
                   </label>
                   <select
                     value={selectedLicense}
                     onChange={(e) => setSelectedLicense(e.target.value)}
-                    className="w-full h-7 px-2 text-xs bg-[#0d1117] text-[#e6edf3] border border-[#30363d] rounded-md focus:outline-none focus:border-[#58a6ff] cursor-pointer"
+                    className="w-full h-7 px-2 text-xs bg-canvas-default text-fg-default border border-border-default rounded-[var(--radius-control)] focus:outline-none focus:border-accent-fg cursor-pointer"
                   >
                     {licenseList.map((lic) => (
                       <option key={lic.key} value={lic.key}>
@@ -400,15 +400,15 @@ export function NewRepositoryPage() {
           </div>
         </div>
 
-        <div className="pt-4 border-t border-[#21262d] flex items-center justify-between flex-wrap gap-4">
-          <p className="text-[11px] text-[#8b949e]">
-            Your default branch will be named <span className="font-mono text-[#e6edf3]">main</span>.
+        <div className="pt-4 border-t border-border-default flex items-center justify-between flex-wrap gap-4">
+          <p className="text-[11px] text-fg-muted">
+            Your default branch will be named <span className="font-mono text-fg-default">main</span>.
           </p>
 
           <button
             type="submit"
             disabled={isSubmitting || !repoName.trim()}
-            className="px-5 py-2 text-xs font-semibold text-white bg-[#238636] hover:bg-[#2ea043] rounded-md disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
+            className="px-5 py-2 text-xs font-medium text-accent-text bg-accent-fg hover:bg-accent-hover active:scale-[0.97] rounded-[var(--radius-control)] disabled:opacity-50 transition-all shadow-sm cursor-pointer"
           >
             {isSubmitting ? 'Creating repository...' : 'Create repository'}
           </button>

@@ -105,21 +105,21 @@ export function FileSearchModal({
         aria-hidden="true"
       />
 
-      <div className="relative w-full max-w-2xl bg-[#161b22] border border-[#30363d] rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[70vh]">
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-[#30363d] bg-[#0d1117]">
-          <Octicon name="search" size={16} className="text-[#8b949e] shrink-0" />
+      <div className="relative w-full max-w-2xl bg-canvas-raised border border-border-default rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[70vh]">
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-border-default bg-canvas-subtle">
+          <Octicon name="search" size={16} className="text-fg-muted shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Go to file in ${owner}/${repo}@${refName}...`}
-            className="flex-1 bg-transparent text-sm text-[#e6edf3] placeholder-[#8b949e] focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-fg-default placeholder-fg-muted focus:outline-none"
           />
           <button
             type="button"
             onClick={onClose}
-            className="p-1 text-[#8b949e] hover:text-[#e6edf3] rounded cursor-pointer"
+            className="p-1 text-fg-muted hover:text-fg-default active:scale-[0.97] rounded cursor-pointer transition-colors"
             aria-label="Close"
           >
             <Octicon name="x" size={16} />
@@ -128,17 +128,17 @@ export function FileSearchModal({
 
         <div
           ref={listRef}
-          className="flex-1 overflow-y-auto divide-y divide-[#21262d] max-h-96"
+          className="flex-1 overflow-y-auto divide-y divide-border-default max-h-96"
         >
           {isLoading && (
-            <div className="p-8 text-center text-xs text-[#8b949e]">
+            <div className="p-8 text-center text-xs text-fg-muted">
               Loading file index...
             </div>
           )}
 
           {!isLoading && filteredFiles.length === 0 && (
-            <div className="p-8 text-center text-xs text-[#8b949e]">
-              No files found matching <span className="text-[#e6edf3] font-mono">"{query}"</span>
+            <div className="p-8 text-center text-xs text-fg-muted">
+              No files found matching <span className="text-fg-default font-mono">"{query}"</span>
             </div>
           )}
 
@@ -156,19 +156,19 @@ export function FileSearchModal({
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`flex items-center justify-between gap-3 px-4 py-2.5 text-xs cursor-pointer transition-colors ${
                     isSelected
-                      ? 'bg-[#1f6feb] text-white'
-                      : 'hover:bg-[#21262d] text-[#e6edf3]'
+                      ? 'bg-accent text-accent-contrast'
+                      : 'hover:bg-canvas-hover text-fg-default'
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
                     <Octicon
                       name="file"
                       size={14}
-                      className={isSelected ? 'text-white shrink-0' : 'text-[#8b949e] shrink-0'}
+                      className={isSelected ? 'text-accent-contrast shrink-0' : 'text-fg-muted shrink-0'}
                     />
                     <div className="truncate font-mono">
                       {dir && (
-                        <span className={isSelected ? 'text-white/80' : 'text-[#8b949e]'}>
+                        <span className={isSelected ? 'opacity-80' : 'text-fg-muted'}>
                           {dir}
                         </span>
                       )}
@@ -178,7 +178,7 @@ export function FileSearchModal({
                   {item.size !== undefined && (
                     <span
                       className={`text-[11px] shrink-0 ${
-                        isSelected ? 'text-white/80' : 'text-[#8b949e]'
+                        isSelected ? 'opacity-80' : 'text-fg-muted'
                       }`}
                     >
                       {item.size < 1024
@@ -191,17 +191,17 @@ export function FileSearchModal({
             })}
         </div>
 
-        <div className="flex items-center justify-between px-4 py-2 border-t border-[#30363d] bg-[#0d1117] text-[11px] text-[#8b949e]">
+        <div className="flex items-center justify-between px-4 py-2 border-t border-border-default bg-canvas-subtle text-[11px] text-fg-muted">
           <div className="flex items-center gap-3">
             <span>
-              <kbd className="px-1 py-0.5 rounded border border-[#30363d] bg-[#21262d] text-[10px]">↑</kbd>{' '}
-              <kbd className="px-1 py-0.5 rounded border border-[#30363d] bg-[#21262d] text-[10px]">↓</kbd> to navigate
+              <kbd className="px-1 py-0.5 rounded border border-border-default bg-canvas-default text-[10px]">↑</kbd>{' '}
+              <kbd className="px-1 py-0.5 rounded border border-border-default bg-canvas-default text-[10px]">↓</kbd> to navigate
             </span>
             <span>
-              <kbd className="px-1 py-0.5 rounded border border-[#30363d] bg-[#21262d] text-[10px]">↵</kbd> to select
+              <kbd className="px-1 py-0.5 rounded border border-border-default bg-canvas-default text-[10px]">↵</kbd> to select
             </span>
             <span>
-              <kbd className="px-1 py-0.5 rounded border border-[#30363d] bg-[#21262d] text-[10px]">esc</kbd> to close
+              <kbd className="px-1 py-0.5 rounded border border-border-default bg-canvas-default text-[10px]">esc</kbd> to close
             </span>
           </div>
           <div>

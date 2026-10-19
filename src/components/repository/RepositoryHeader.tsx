@@ -206,142 +206,149 @@ export function RepositoryHeader({ repository }: RepositoryHeaderProps) {
     : baseTabs
 
   return (
-    <div className="bg-[#0d1117] border-b border-[#21262d] -mx-4 sm:-mx-6 -mt-6 px-4 sm:px-6 mb-6">
-      <nav className="flex items-center gap-1 overflow-x-auto overflow-y-hidden no-scrollbar border-b border-[#21262d] pt-2">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.id}
-            to={tab.path}
-            className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap -mb-[1px] ${
-              tab.active
-                ? 'border-[#f78166] text-[#e6edf3] font-semibold'
-                : 'border-transparent text-[#8b949e] hover:text-[#e6edf3] hover:border-[#8b949e]/40'
-            }`}
-          >
-            <span className={tab.active ? 'text-[#e6edf3]' : 'text-[#8b949e]'}>
-              {tab.icon}
-            </span>
-            <span>{tab.label}</span>
-            {typeof tab.count === 'number' && (
-              <span className="px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
-                {tab.count}
-              </span>
-            )}
-          </Link>
-        ))}
-      </nav>
-
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
-        <div className="flex items-center gap-2 flex-wrap">
-          <img
-            src={repository.avatar_url?.trim() || repository.owner.avatar_url || '/default-avatar.jpg'}
-            alt={repository.name}
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = repository.owner.avatar_url || '/default-avatar.jpg'
-            }}
-            className="w-6 h-6 rounded-full border border-[#30363d] object-cover shrink-0"
-          />
-          <h1 className="text-xl font-bold text-[#e6edf3] tracking-tight">
-            {repository.name}
-          </h1>
-          <span className="px-2 py-0.5 rounded-full border border-[#30363d] text-xs text-[#8b949e]">
-            {repository.private ? 'Private' : 'Public'}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2 flex-wrap relative">
-          {pinAlert && (
-            <div className="absolute -top-8 right-0 bg-[#f85149] text-white text-[11px] px-2.5 py-1 rounded shadow-md whitespace-nowrap z-20">
-              {pinAlert}
+    <div className="bg-canvas-subtle border-b border-border-default -mx-4 sm:-mx-6 -mt-6 px-4 sm:px-6 mb-6 pt-4">
+      <div className="max-w-[1280px] mx-auto">
+        {/* Repo Title & Action Buttons Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Octicon name="repo" size={18} className="text-fg-muted shrink-0" />
+            <div className="flex items-center gap-1.5 text-lg font-semibold tracking-tight">
+              <Link to={`/${owner}`} className="text-accent-fg hover:underline">
+                {owner}
+              </Link>
+              <span className="text-fg-subtle font-normal">/</span>
+              <Link to={basePath} className="text-fg-default hover:underline">
+                {repo}
+              </Link>
             </div>
-          )}
-
-          <button
-            type="button"
-            onClick={handleTogglePin}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
-              isPinned
-                ? 'bg-[#21262d] text-[#58a6ff] border-[#58a6ff]/40 hover:bg-[#30363d]'
-                : 'bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border-[#30363d]'
-            }`}
-          >
-            <Octicon name="pin" size={14} className={isPinned ? 'text-[#58a6ff]' : 'text-[#8b949e]'} />
-            <span>{isPinned ? 'Unpin' : 'Pin'}</span>
-          </button>
-
-          <div className="inline-flex rounded-md shadow-sm">
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-l-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
-            >
-              <Octicon name="eye" size={14} className="text-[#8b949e]" />
-              <span>Watch</span>
-              <span className="ml-1 px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
-                {repository.watchers_count}
-              </span>
-            </button>
-            <button
-              type="button"
-              aria-label="Watch options"
-              className="px-2 py-1 rounded-r-md text-xs bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] border-y border-r border-[#30363d] transition-colors cursor-pointer"
-            >
-              <Octicon name="triangle-down" size={12} />
-            </button>
+            <span className="ml-1 px-2 py-0.5 rounded-full border border-border-default text-xs font-medium text-fg-muted bg-canvas-raised">
+              {repository.private ? 'Private' : 'Public'}
+            </span>
           </div>
 
-          <div className="inline-flex rounded-md shadow-sm">
-            <button
-              type="button"
-              onClick={handleForkClick}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-l-md text-xs font-medium bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3] border border-[#30363d] transition-colors cursor-pointer"
-            >
-              <Octicon name="repo-forked" size={14} className="text-[#8b949e]" />
-              <span>Fork</span>
-              <span className="ml-1 px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
-                {repository.forks_count}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={handleForkClick}
-              aria-label="Fork options"
-              className="px-2 py-1 rounded-r-md text-xs bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] border-y border-r border-[#30363d] transition-colors cursor-pointer"
-            >
-              <Octicon name="triangle-down" size={12} />
-            </button>
-          </div>
+          <div className="flex items-center gap-2 flex-wrap relative">
+            {pinAlert && (
+              <div className="absolute -top-8 right-0 bg-danger-fg text-white text-[11px] px-2.5 py-1 rounded-md shadow-md whitespace-nowrap z-20">
+                {pinAlert}
+              </div>
+            )}
 
-          <div className="inline-flex rounded-md shadow-sm">
+            {/* Pin Button */}
             <button
               type="button"
-              onClick={handleToggleStar}
-              disabled={isStarring}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-l-md text-xs font-medium border border-[#30363d] transition-colors cursor-pointer ${
-                isStarred
-                  ? 'bg-[#21262d] text-[#e6edf3] hover:bg-[#30363d]'
-                  : 'bg-[#21262d] hover:bg-[#30363d] text-[#e6edf3]'
+              onClick={handleTogglePin}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer active:scale-[0.97] ${
+                isPinned
+                  ? 'bg-canvas-raised text-accent-fg border-accent-fg/40 hover:bg-canvas-hover'
+                  : 'bg-canvas-subtle hover:bg-canvas-hover text-fg-default border-border-default'
               }`}
             >
-              <Octicon
-                name={isStarred ? 'star-fill' : 'star'}
-                size={14}
-                className={isStarred ? 'text-[#e3b341]' : 'text-[#8b949e]'}
-              />
-              <span>{isStarred ? 'Starred' : 'Star'}</span>
-              <span className="ml-1 px-1.5 py-0.2 bg-[#30363d] rounded-full text-[10px] text-[#e6edf3]">
-                {starsCount}
-              </span>
+              <Octicon name="pin" size={13} className={isPinned ? 'text-accent-fg' : 'text-fg-muted'} />
+              <span>{isPinned ? 'Unpin' : 'Pin'}</span>
             </button>
-            <button
-              type="button"
-              onClick={handleToggleStar}
-              aria-label="Star options"
-              className="px-2 py-1 rounded-r-md text-xs bg-[#21262d] hover:bg-[#30363d] text-[#8b949e] border-y border-r border-[#30363d] transition-colors cursor-pointer"
-            >
-              <Octicon name="triangle-down" size={12} />
-            </button>
+
+            {/* Watch Button Group */}
+            <div className="inline-flex rounded-md shadow-xs">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-l-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
+              >
+                <Octicon name="eye" size={13} className="text-fg-muted" />
+                <span>Watch</span>
+                <span className="ml-1 px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
+                  {repository.watchers_count}
+                </span>
+              </button>
+              <button
+                type="button"
+                aria-label="Watch options"
+                className="px-2 py-1.5 rounded-r-md text-xs bg-canvas-subtle hover:bg-canvas-hover text-fg-muted border-y border-r border-border-default transition-colors cursor-pointer"
+              >
+                <Octicon name="triangle-down" size={11} />
+              </button>
+            </div>
+
+            {/* Fork Button Group */}
+            <div className="inline-flex rounded-md shadow-xs">
+              <button
+                type="button"
+                onClick={handleForkClick}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-l-md text-xs font-medium bg-canvas-subtle hover:bg-canvas-hover text-fg-default border border-border-default transition-colors cursor-pointer active:scale-[0.97]"
+              >
+                <Octicon name="repo-forked" size={13} className="text-fg-muted" />
+                <span>Fork</span>
+                <span className="ml-1 px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
+                  {repository.forks_count}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={handleForkClick}
+                aria-label="Fork options"
+                className="px-2 py-1.5 rounded-r-md text-xs bg-canvas-subtle hover:bg-canvas-hover text-fg-muted border-y border-r border-border-default transition-colors cursor-pointer"
+              >
+                <Octicon name="triangle-down" size={11} />
+              </button>
+            </div>
+
+            {/* Star Button Group */}
+            <div className="inline-flex rounded-md shadow-xs">
+              <button
+                type="button"
+                onClick={handleToggleStar}
+                disabled={isStarring}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-l-md text-xs font-medium border border-border-default transition-colors cursor-pointer active:scale-[0.97] ${
+                  isStarred
+                    ? 'bg-canvas-raised text-fg-default hover:bg-canvas-hover'
+                    : 'bg-canvas-subtle hover:bg-canvas-hover text-fg-default'
+                }`}
+              >
+                <Octicon
+                  name={isStarred ? 'star-fill' : 'star'}
+                  size={13}
+                  className={isStarred ? 'text-attention-fg' : 'text-fg-muted'}
+                />
+                <span>{isStarred ? 'Starred' : 'Star'}</span>
+                <span className="ml-1 px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
+                  {starsCount}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={handleToggleStar}
+                aria-label="Star options"
+                className="px-2 py-1.5 rounded-r-md text-xs bg-canvas-subtle hover:bg-canvas-hover text-fg-muted border-y border-r border-border-default transition-colors cursor-pointer"
+              >
+                <Octicon name="triangle-down" size={11} />
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Repository Navigation Tabs */}
+        <nav className="flex items-center gap-1 overflow-x-auto overflow-y-hidden no-scrollbar -mb-[1px]">
+          {tabs.map((tab) => (
+            <Link
+              key={tab.id}
+              to={tab.path}
+              className={`flex items-center gap-2 px-3 py-2 text-xs border-b-2 transition-colors whitespace-nowrap ${
+                tab.active
+                  ? 'border-accent-fg text-fg-default font-semibold'
+                  : 'border-transparent text-fg-muted hover:text-fg-default hover:border-border-default'
+              }`}
+            >
+              <span className={tab.active ? 'text-fg-default' : 'text-fg-subtle'}>
+                {tab.icon}
+              </span>
+              <span>{tab.label}</span>
+              {typeof tab.count === 'number' && (
+                <span className="px-1.5 py-0.5 bg-canvas-raised border border-border-default rounded-full text-[10px] font-mono text-fg-muted">
+                  {tab.count}
+                </span>
+              )}
+            </Link>
+          ))}
+        </nav>
       </div>
 
       <ForkModal

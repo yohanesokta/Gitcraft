@@ -7,7 +7,7 @@ export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Skeleton({ className = '', ...props }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse bg-[#21262d] rounded ${className}`}
+      className={`animate-pulse bg-canvas-subtle rounded ${className}`}
       {...props}
     />
   )
